@@ -1,0 +1,43 @@
+<script lang="ts">
+	export let className: string = '';
+</script>
+
+<div class="gallery-container {className}">
+	<slot></slot>
+</div>
+
+<style>
+	.gallery-container {
+		display: grid;
+		grid-auto-rows: min-content;
+		width: 90%;
+		min-width: 510px;
+		max-width: 1510px;
+		min-height: 765px;
+		background-color: #ffffff;
+		box-shadow: 0 2px 10px #888888;
+	}
+
+	.gallery-user {
+		min-height: 675px;
+	}
+
+	.gallery-users {
+		width: 1600px;
+		max-width: 1600px;
+		min-height: 850px;
+		background-color: #dddddd;
+	}
+
+	@media (max-width: 1600px) {
+		.gallery-users {
+			width: 1200px;
+		}
+	}
+
+	@media (max-width: 1200px) {
+		.gallery-users {
+			width: 800px;
+		}
+	}
+</style>

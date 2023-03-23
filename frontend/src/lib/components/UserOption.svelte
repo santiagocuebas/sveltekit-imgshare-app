@@ -1,0 +1,156 @@
+<script lang="ts">
+  import axios from "axios";
+  import type { ILink } from "$lib/global";
+	import { handleRequest } from "$lib/services/services";
+
+	export let username: string;
+	export let description: string;
+	export let links: ILink[];
+	export let showBox: (value: boolean) => void;
+  
+	let visibility = false;
+  
+  async function handleSubmit(this: HTMLFormElement) {
+		visibility = false;
+
+		const data = await handleRequest(this);
+
+		showBox(data.change);
+	}
+
+	async function deleteLink(this: HTMLElement) {
+		const data = await axios({
+			method: 'DELETE',
+			url: `http://localhost:4200/api/admin/${username}/link`,
+			data: { link: `${this.id}` },
+			withCredentials: true
+		}).then(res => res.data);
+
+		links = links.filter((link: any) => link.title !== this.id);
+		
+		showBox(data.change);
+	}
+</script>
+
+<div class="user-box-option">
+  <div class="user-box-option">
+    <h6>Description:</h6>
+      <form
+        action="http://localhost:4200/api/admin/{username}/description"
+        method='POST'
+        on:submit|preventDefault={handleSubmit}
+      >
+        <textarea
+          class="user-box-description"
+          name="description"
+          spellcheck="false"
+					autocomplete="off"
+          maxlength="4200"
+					bind:value={description}
+          on:focus={() => visibility = true}
+        ></textarea>
+        {#if visibility}
+        <button on:click|preventDefault={() => visibility = false}>Cancel</button>
+        <button class="blue">Done</button>
+        {/if}
+      </form>
+  </div>
+  <div class="user-box-option">
+    <h6>Links:</h6>
+    <div class="user-box-links">
+      {#each links as link}
+        <p title="{link.url}">
+          {link.title}
+          <i
+            id={link.title}
+            class="fa-solid fa-xmark"
+            title='delete-link-{link.title}'
+            on:mousedown={deleteLink}
+          ></i>
+        </p>
+      {/each}
+    </div>
+  </div>
+</div>
+
+<style>
+	.user-box-option {
+		display: grid;
+		row-gap: 5px;
+	}
+
+	.user-box-description, .user-box-links {
+		height: 200px;
+		padding: 10px;
+		box-shadow: 0 0 0 1px #bbbbbb;
+		overflow-y: auto;
+		overflow-x: hidden;
+		overflow-wrap: break-word;
+		scrollbar-width: thin;
+		scrollbar-color: #5383d3 #ffffff;
+		overscroll-behavior: contain;
+	}
+
+	.user-box-description {
+		cursor: pointer;
+	}
+
+	.user-box-option form {
+		display: flex;
+		justify-content: flex-end;
+		flex-wrap: wrap;
+		row-gap: 6px;
+		column-gap: 5px;
+	}
+
+	.user-box-option textarea {
+		width: 100%;
+		border: none;
+		outline: none;
+	}
+
+	.user-box-option button {
+		width: 70px;
+		padding: 5px 0;
+		border: none;
+		background-color: #db1818;
+		font-weight: 700;
+		color: #ffffff;
+		cursor: pointer;
+	}
+
+	.user-box-option .blue {
+		background-color: #4464f3;
+	}
+
+	.user-box-links {
+		display: flex;
+		align-content: start;
+		flex-wrap: wrap;
+		gap: 7px;
+	}
+
+	.user-box-links p {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		padding: 5px;
+		border-radius: 6px;
+		box-shadow: 0 0 0 1px #bbbbbb;
+	}
+	
+	.user-box-links i {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 16px;
+		height: 16px;
+		margin-left: auto;
+		padding: 2px;
+		border-radius: 50%;
+		background-color: #df403b;
+		font-size: 12px;
+		color: #ffffff;
+		cursor: pointer;
+	}
+</style>
