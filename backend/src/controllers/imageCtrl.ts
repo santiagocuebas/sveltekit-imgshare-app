@@ -8,12 +8,13 @@ import { Image, Comment } from '../models/index.js';
 
 export const postUpload: Direction = async (req, res) => {
 	if (req.file) {
+		const tempPath = req.file.path;
 		const ext = extname(req.file.originalname).toLowerCase();
 		const imgUrl = await getImageId();
-		const targetPath = resolve(`src/uploads/${imgUrl + ext}`);
+		const targetPath = resolve(`uploads/${imgUrl + ext}`);
 
 		// Set image location
-		await fs.rename(req.file.path, targetPath);
+		await fs.rename(tempPath, targetPath);
 
 		// Create a new image
 		const image = await Image.create({

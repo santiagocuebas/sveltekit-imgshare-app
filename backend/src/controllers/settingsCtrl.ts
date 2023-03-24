@@ -10,16 +10,17 @@ import { Image, Comment } from '../models/index.js';
 export const postAvatar: Direction = async (req, res) => {
 	if (req.file) {
 		const { username, avatar } = req.user;
+		const tempPath = req.file.path;
 		const ext = extname(req.file.originalname).toLowerCase();
 		const avatarURL = await getAvatarId() + ext;
-		const oldPath = resolve(`src/uploads/avatars/${avatar}`);
-		const targetPath = resolve(`src/uploads/avatars/${avatarURL}`);
+		const oldPath = resolve(`uploads/avatars/${avatar}`);
+		const targetPath = resolve(`uploads/avatars/${avatarURL}`);
 
 		// Unlink old avatar
 		if (avatar !== 'default.png') await fs.unlink(oldPath);
 
 		// Set avatar location
-		await fs.rename(req.file.path, targetPath);
+		await fs.rename(tempPath, targetPath);
 
 		// Update databases with the new avatar
 		await Image.update({ author: username }, { avatar: avatarURL });
