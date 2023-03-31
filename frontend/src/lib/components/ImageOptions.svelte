@@ -1,6 +1,7 @@
 <script lang="ts">
   import axios from "axios";
   import type { IImage } from "$lib/global.js";
+	import { DIR } from '$lib/config.js';
 	import { clickOutside } from "$lib/services/click-outside";
 
 	export let image: IImage;
@@ -17,7 +18,7 @@
 
 		await axios({
 			method: 'POST',
-			url: `http://localhost:4200/api/image/${image.id}/public`,
+			url: `${DIR}/api/image/${image.id}/public`,
 			withCredentials: true
 		});
 
@@ -29,7 +30,7 @@
 
 		await axios({
 			method: 'DELETE',
-			url: `http://localhost:4200/api/image/${image.id}`,
+			url: `${DIR}/api/image/${image.id}`,
 			withCredentials: true
 		});
 

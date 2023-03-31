@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { DIR } from '$lib/config.js';
 	import Form from '$lib/components/Form.svelte';
 	import ErrorBox from '$lib/components/ErrorBox.svelte';
 	import BoxGallery from '$lib/components/BoxGallery.svelte';
@@ -20,7 +21,7 @@
 		Upload Image
 	</h2>
 	<Form
-	 action='http://localhost:4200/api/image/upload'
+	 action='{DIR}/api/image/upload'
 	 prefix='/gallery'
 	 change={changeBoxErrors}
 	 errors={setErrors}
@@ -69,7 +70,7 @@
 	<BoxGallery className='image-upload'>
 		{#each data.images as image}
 		<a href="/gallery/{image.id}">
-			<img src="http://localhost:4200/uploads/{image.filename}" alt="">
+			<img src="{DIR}/uploads/{image.filename}" alt={image.title}>
 		</a>
 		{/each}
 	</BoxGallery>

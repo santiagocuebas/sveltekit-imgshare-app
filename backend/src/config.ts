@@ -1,4 +1,4 @@
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.config();
 
 export const PORT = process.env.PORT;
@@ -14,3 +14,5 @@ export const DB_PASS = process.env.DB_PASS;
 export const DB_DATABASE = process.env.DB_DATABASE;
 
 export const JWT = process.env.JWT as string;
+
+export const ORIGIN = process.env.ORIGIN as string;

@@ -2,6 +2,7 @@
 	import axios from "axios";
 	import { format } from "timeago.js";
 	import type { IComment, IUser } from "$lib/global.js";
+	import { DIR } from '$lib/config.js';
 	import { UserRole } from "$lib/enums.js";
 	import { clickOutside } from "$lib/services/click-outside";
 	import { handleRequest } from "$lib/services/services";
@@ -40,7 +41,7 @@
 
 		await axios({
 			method: 'DELETE', 
-			url: `http://localhost:4200/api/comment/${comment.id}`,
+			url: `${DIR}/api/comment/${comment.id}`,
 			withCredentials: true
 		});
 	}
@@ -48,7 +49,7 @@
 
 <div class="comment">
 	<a class="comment-avatar" href="/user/{comment.author}">
-		<img src="http://localhost:4200/uploads/avatars/{comment.avatar}" alt="">
+		<img src="{DIR}/uploads/avatars/{comment.avatar}" alt={comment.author}>
 	</a>
 	<div class="comment-author">
 		<a href="/user/{comment.author}">{comment.author}</a>
@@ -61,7 +62,7 @@
 	{#if editable}
 		<form
 			class="comment-form"
-			action="http://localhost:4200/api/comment/{comment.id}/edit"
+			action="{DIR}/api/comment/{comment.id}/edit"
 			method="POST"
 			on:submit|preventDefault={editComment}
 		>

@@ -1,6 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 import axios from 'axios';
 import type { PageServerLoad } from './$types';
+import { DIR } from '$lib/config.js';
+import type { IUserExtended } from '$lib/global';
 
 export const load = (async ({ locals, params, cookies }) => {
 	if (locals.user.username !== params.username) {
@@ -11,12 +13,12 @@ export const load = (async ({ locals, params, cookies }) => {
 	
 	const data = await axios({
 		method: 'POST',
-		url: `http://localhost:4200/api/user/${locals.user.username}/settings`,
+		url: `${DIR}/api/user/${locals.user.username}/settings`,
 		withCredentials: true,
 		headers: { 'Cookie': `authenticate=${token}` }
 	}).then(res => res.data);
 	
 	return {
-		user: data.user
+		user: data.user as IUserExtended
 	};
 }) satisfies PageServerLoad;

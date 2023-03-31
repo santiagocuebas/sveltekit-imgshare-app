@@ -14,5 +14,8 @@ router.post('/:username/upload', async (req, res) => {
     });
     return res.json({ images: recentImages });
 });
-router.post('/:username/settings', isValidToken, (req, res) => res.json({ user: req.user }));
+router.post('/:username/settings', isValidToken, (req, res) => {
+    req.user.password = '';
+    return res.json({ user: req.user });
+});
 export default router;

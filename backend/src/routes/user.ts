@@ -23,7 +23,10 @@ router.post('/:username/upload', async (req, res) => {
 router.post(
 	'/:username/settings',
 	isValidToken,
-	(req, res) => res.json({ user: req.user })
+	(req, res) => {
+		req.user.password = '';
+		return res.json({ user: req.user });
+	}
 );
 
 export default router;

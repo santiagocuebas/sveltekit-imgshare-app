@@ -1,6 +1,7 @@
 <script lang="ts">
   import axios from "axios";
   import type { ILink } from "$lib/global";
+	import { DIR } from '$lib/config.js';
 	import { handleRequest } from "$lib/services/services";
 
 	export let username: string;
@@ -21,7 +22,7 @@
 	async function deleteLink(this: HTMLElement) {
 		const data = await axios({
 			method: 'DELETE',
-			url: `http://localhost:4200/api/admin/${username}/link`,
+			url: `${DIR}/api/admin/${username}/link`,
 			data: { link: `${this.id}` },
 			withCredentials: true
 		}).then(res => res.data);
@@ -36,7 +37,7 @@
   <div class="user-box-option">
     <h6>Description:</h6>
       <form
-        action="http://localhost:4200/api/admin/{username}/description"
+        action="{DIR}/api/admin/{username}/description"
         method='POST'
         on:submit|preventDefault={handleSubmit}
       >

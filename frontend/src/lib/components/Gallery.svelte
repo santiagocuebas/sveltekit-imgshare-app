@@ -2,12 +2,12 @@
 	export let className: string = '';
 </script>
 
-<div class="gallery-container {className}">
+<div class={className}>
 	<slot></slot>
 </div>
 
 <style>
-	.gallery-container {
+	div {
 		display: grid;
 		grid-auto-rows: min-content;
 		width: 90%;

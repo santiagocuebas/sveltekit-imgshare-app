@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 import { extname, resolve } from 'path';
 import { encryptPassword } from '../libs/bcrypt.js';
 import { deleteUserComments, deleteUserImages } from '../libs/delete-user.js';
-import { getAvatarId } from '../libs/random-id.js';
+import { getId } from '../libs/random-id.js';
 import { getSerializedCookie } from '../libs/serialized-cookie.js';
 import { Image, Comment } from '../models/index.js';
 export const postAvatar = async (req, res) => {
@@ -10,7 +10,7 @@ export const postAvatar = async (req, res) => {
         const { username, avatar } = req.user;
         const tempPath = req.file.path;
         const ext = extname(req.file.originalname).toLowerCase();
-        const avatarURL = await getAvatarId() + ext;
+        const avatarURL = await getId() + ext;
         const oldPath = resolve(`uploads/avatars/${avatar}`);
         const targetPath = resolve(`uploads/avatars/${avatarURL}`);
         // Unlink old avatar
@@ -90,7 +90,7 @@ export const deleteUser = async (req, res) => {
     const { username, avatar } = req.user;
     // Delete avatar
     if (avatar !== 'default.png') {
-        await fs.unlink(`src/uploads/avatars/${avatar}`);
+        await fs.unlink(`uploads/avatars/${avatar}`);
     }
     // Delete all images and comments of user and filters all their ratings
     deleteUserImages(username);

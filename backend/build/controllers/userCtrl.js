@@ -1,5 +1,5 @@
 import { Like } from 'typeorm';
-import { ShowValues } from '../enums.js';
+import { ShowValues, UserRole } from '../enums.js';
 import { getOrderGallery } from '../libs/libs.js';
 import { User, Image, Comment } from '../models/index.js';
 export const getUserData = async (req, res) => {
@@ -77,7 +77,8 @@ export const getImages = async (req, res) => {
     if (user) {
         const order = getOrderGallery(sort);
         let isPublicImage = true;
-        if (req.user && req.user.username === username) {
+        if (req.user &&
+            (req.user.username === username || req.user.role === UserRole.ADMIN || req.user.role === UserRole.SUPER)) {
             if (isPublic === ShowValues.PUBLIC)
                 isPublicImage = true;
             else if (isPublic === ShowValues.PRIVATE)

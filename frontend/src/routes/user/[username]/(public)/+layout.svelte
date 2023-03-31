@@ -1,5 +1,6 @@
 <script lang="ts">
   import { UserRole } from '$lib/enums';
+	import { DIR } from '$lib/config.js';
   import { beforeUpdate } from 'svelte';
 	import type { PageData } from './$types';
 	
@@ -11,7 +12,10 @@
 
 <div class="foreignuser-header">
 	<div class="foreignuser-head">
-		<img src="http://localhost:4200/uploads/avatars/{data.foreignUser?.avatar}" alt="">
+		<img
+			src="{DIR}/uploads/avatars/{data.foreignUser?.avatar}"
+			alt="Avatar of the user"
+		>
 		<div class="foreignuser-options">
 			<h1>
 				{data.foreignUser?.username}

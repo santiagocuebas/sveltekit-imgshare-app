@@ -1,5 +1,6 @@
 <script lang="ts">
-  import axios from "axios";
+	import { DIR } from '$lib/config.js';
+	import { handleRequest } from "$lib/services/services.js";
 
 	export let imageId: string;
 	export let avatar: string;
@@ -16,12 +17,7 @@
 	};
 
 	async function handleSubmit(this: HTMLFormElement) {
-		const data = await axios({
-			method: this.method,
-			url: this.action,
-			withCredentials: true,
-			data: this
-		}).then(res => res.data);
+		const data = await handleRequest(this);
 
 		if (data.comment) {
 			comments = [data.comment, ...comments];
@@ -37,11 +33,11 @@
 		Post
 	</h2>
 	<form
-		action="http://localhost:4200/api/image/{imageId}/comment"
+		action="{DIR}/api/image/{imageId}/comment"
 		method="POST"
 		on:submit|preventDefault={handleSubmit}
 	>
-		<img src="http://localhost:4200/uploads/avatars/{avatar}" alt="">
+		<img src="{DIR}/uploads/avatars/{avatar}" alt="">
 		<input
 			type="text"
 			name="comment"

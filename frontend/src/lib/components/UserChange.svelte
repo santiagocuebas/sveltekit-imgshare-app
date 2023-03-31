@@ -1,6 +1,7 @@
 <script lang="ts">
   import axios from "axios";
   import { UserRole } from "$lib/enums";
+	import { DIR } from '$lib/config.js';
 
 	export let username: string;
 	export let role: string;
@@ -11,7 +12,7 @@
 	async function changeRole(this: HTMLOptionElement) {
 		const data = await axios({
 			method: 'POST',
-			url: `http://localhost:4200/api/admin/${username}/role`,
+			url: `${DIR}/api/admin/${username}/role`,
 			data: { role: this.value },
 			withCredentials: true
 		}).then(res => res.data);

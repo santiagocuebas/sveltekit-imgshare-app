@@ -2,12 +2,12 @@
   export let className: string;
 </script>
 
-<div class="image-container {className}" data-sveltekit-preload-data='off'>
+<div class={className} data-sveltekit-preload-data='off'>
   <slot></slot>
 </div>
 
 <style>
-	.image-container {
+	div {
     display: grid;
     justify-content: center;
     width: 100%;

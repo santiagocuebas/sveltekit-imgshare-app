@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from "./$types";
   import type { IMessage } from "$lib/global.js";
+	import { DIR } from '$lib/config.js';
 	import Option from "$lib/components/OptionSettings.svelte";
 	import Link from '$lib/components/Link.svelte';
   import BoxSettings from "$lib/components/BoxSettings.svelte";
@@ -34,7 +35,7 @@
 
 		if (data.class === 'success-settings') {
 			const navAvatar = document.getElementById('nav-avatar') as HTMLImageElement;
-			navAvatar.src = `http://localhost:4200/uploads/avatars/${data.filename}`;
+			navAvatar.src = `${DIR}/uploads/avatars/${data.filename}`;
 		}
 
 		updatedBoxSettings(data);
@@ -84,14 +85,14 @@
 		<Option title='Set Avatar'>
 			<form
 				id='avatar'
-				action="http://localhost:4200/api/settings/avatar"
+				action="{DIR}/api/settings/avatar"
 				method="POST"
 				on:submit|preventDefault={handleAvatar}
 			>
 				<div>Change the avatar:</div>
 				<label
 					class="settings-avatar"
-					style="background-image: url(http://localhost:4200/uploads/avatars/{data.user.avatar});"
+					style="background-image: url({DIR}/uploads/avatars/{data.user.avatar});"
 				>
 					<input
 						type="file"
@@ -106,7 +107,7 @@
 		<Option title='Set Description'>
 			<form
 				id='description'
-				action="http://localhost:4200/api/settings/description"
+				action="{DIR}/api/settings/description"
 				method="POST"
 				on:submit|preventDefault={handleDescription}
 			>
@@ -128,7 +129,7 @@
 		<Option title='Change Password'>
 			<form
 				id='password'
-				action="http://localhost:4200/api/settings/password"
+				action="{DIR}/api/settings/password"
 				method="POST"
 				on:submit|preventDefault={handlePassword}
 			>
@@ -166,7 +167,7 @@
 		<Option title='Register Link'>
 			<form
 				id='link'
-				action="http://localhost:4200/api/settings/link"
+				action="{DIR}/api/settings/link"
 				method="POST"
 				on:submit|preventDefault={handleLink}
 			>
@@ -202,7 +203,7 @@
 		<Option title='Delete User'>
 			<form
 				id='deleteuser'
-				action="http://localhost:4200/api/settings/deleteuser"
+				action="{DIR}/api/settings/deleteuser"
 				method="DELETE"
 			>
 				<button

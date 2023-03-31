@@ -2,13 +2,13 @@ import fs from 'fs-extra';
 import { extname, resolve } from 'path';
 import { UserRole } from '../enums.js';
 import { getLike } from '../libs/libs.js';
-import { getImageId, getCommentId } from '../libs/random-id.js';
+import { getId } from '../libs/random-id.js';
 import { Image, Comment } from '../models/index.js';
 export const postUpload = async (req, res) => {
     if (req.file) {
         const tempPath = req.file.path;
         const ext = extname(req.file.originalname).toLowerCase();
-        const imgUrl = await getImageId();
+        const imgUrl = await getId('Image');
         const targetPath = resolve(`uploads/${imgUrl + ext}`);
         // Set image location
         await fs.rename(tempPath, targetPath);
@@ -93,7 +93,7 @@ export const postComment = async (req, res) => {
     if (image !== null && typeof comment === 'string' &&
         comment.length > 0 && comment.length < 4200) {
         const newComment = await Comment.create({
-            id: await getCommentId(),
+            id: await getId('Comment', 16),
             imageId: image.id,
             imageDir: image.filename,
             receiver: image.author,

@@ -7,6 +7,7 @@
 		grid-column: 1 / span 4;
 		display: flex;
 		flex-wrap: wrap;
+		height: min-content;
 		margin-top: 20px;
 		gap: 20px;
 	}

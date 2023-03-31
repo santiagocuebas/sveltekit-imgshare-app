@@ -1,12 +1,13 @@
 <script lang="ts">
   import axios from "axios";
   import type { IImage } from "$lib/global.js";
+	import { DIR } from '$lib/config.js';
 	import { clickOutside } from "$lib/services/click-outside";
-    import { UserRole } from "$lib/enums";
+  import { UserRole } from "$lib/enums";
 
 	export let innerText: string = 'PUBLIC';
 	export let username: string;
-	export let role: string;
+	export let role: string = '';
 	export let author: string;
 	export let images: IImage[];
 	let publicText = 'PUBLIC';
@@ -41,7 +42,7 @@
 
 		images = await axios({
 			method: 'GET',
-			url: `http://localhost:4200/api/user/${username}/${publicText}/${orderText}`,
+			url: `${DIR}/api/user/${username}/${publicText}/${orderText}`,
 			withCredentials: true
 		}).then(res => res.data);
 	}
@@ -67,7 +68,10 @@
 	</div>
 	{/if}
 	{#if innerText === 'PUBLIC'}
-		<button class="nav-user-box ml" on:click={() => visibleOrder = !visibleOrder}>
+		<button
+			class="nav-user-box ml"
+			on:click={() => visibleOrder = !visibleOrder}
+		>
 			{orderText}
 			<i class="fa-solid fa-caret-down"></i>
 		</button>
@@ -78,7 +82,7 @@
 				on:outclick={() => visibleOrder = false}
 			>
 				{#each choiseOrder as choise}
-				<li on:mousedown={changeOrder}>{choise}</li>
+					<li on:mousedown={changeOrder}>{choise}</li>
 				{/each}
 			</ul>
 		{/if}

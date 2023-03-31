@@ -1,6 +1,7 @@
 <script lang="ts">
 	import axios from "axios";
 	import type { IUserExtended } from "$lib/global";
+	import { DIR } from '$lib/config.js';
 
 	export let users: IUserExtended[];
 	let searchedUser = '';
@@ -19,7 +20,7 @@
 
 <nav>
 	<form
-		action="http://localhost:4200/api/admin/{searchedUser}"
+		action="{DIR}/api/admin/{searchedUser}"
 		method="GET"
 		on:submit|preventDefault={handleSubmit}
 	>

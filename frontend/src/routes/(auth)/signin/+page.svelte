@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { DIR } from '$lib/config.js';
 	import ContainerForm from '$lib/components/ContainerForm.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import ErrorBox from '$lib/components/ErrorBox.svelte';
@@ -13,7 +14,7 @@
 
 <ContainerForm title='Signin'>
 	<Form
-		action='http://localhost:4200/api/auth/signin'
+		action='{DIR}/api/auth/signin'
 		prefix='/user'
 		change={changeBoxErrors}
 		errors={setErrors}

@@ -2,6 +2,7 @@
   import axios from 'axios';
 	import type { PageData } from './$types';
   import type { ILink, IUserExtended } from '$lib/global';
+	import { DIR } from '$lib/config.js';
 	import Gallery from '$lib/components/Gallery.svelte';
   import BoxGallery from '$lib/components/BoxGallery.svelte';
   import UserCell from '$lib/components/UserCell.svelte';
@@ -44,7 +45,7 @@
 
 		const resData = await axios({
 			method: 'DELETE',
-			url: `http://localhost:4200/api/admin/${username}`,
+			url: `${DIR}/api/admin/${username}`,
 			withCredentials: true
 		}).then(res => res.data);
 

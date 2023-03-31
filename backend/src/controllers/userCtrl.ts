@@ -1,5 +1,5 @@
 import { Like } from 'typeorm';
-import { ShowValues } from '../enums.js';
+import { ShowValues, UserRole } from '../enums.js';
 import { Direction } from '../global.js';
 import { getOrderGallery } from '../libs/libs.js';
 import { User, Image, Comment } from '../models/index.js';
@@ -93,7 +93,12 @@ export const getImages: Direction = async (req, res) => {
 		const order = getOrderGallery(sort);
 		let isPublicImage: boolean | undefined = true;
 
-		if (req.user && req.user.username === username) {
+		if (
+			req.user &&
+			(
+				req.user.username === username || req.user.role === UserRole.ADMIN || req.user.role === UserRole.SUPER
+			)
+		) {
 			if (isPublic === ShowValues.PUBLIC) isPublicImage = true;
 			else if (isPublic === ShowValues.PRIVATE) isPublicImage = false;
 			else isPublicImage = undefined;

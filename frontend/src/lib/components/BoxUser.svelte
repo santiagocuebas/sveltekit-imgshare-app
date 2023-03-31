@@ -1,6 +1,7 @@
 <script lang="ts">
   import axios from "axios";
 	import type { IUser } from "$lib/global.js";
+	import { DIR } from '$lib/config.js';
   import { UserRole } from "$lib/enums";
 	import { clickOutside } from "$lib/services/click-outside";
 
@@ -59,7 +60,7 @@
 
 <div class="user-list" use:clickOutside on:outclick={() => (visible = false)}>
 	<div class="user-header">
-		<img src="http://localhost:4200/uploads/avatars/{user?.avatar}" alt="">
+		<img src="{DIR}/uploads/avatars/{user?.avatar}" alt="">
 		<div>
 			<h3>{user?.username}</h3>
 			<p>{user?.email}</p>
@@ -86,7 +87,7 @@
 			</a>
 		{/each}
 			<a
-				href='http://localhost:4200/api/auth/logout'
+				href='{DIR}/api/auth/logout'
 				on:click|preventDefault={handleLogout}
 			>
 				<i class='fa-solid fa-right-from-bracket'></i>

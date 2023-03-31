@@ -1,5 +1,6 @@
 <script lang="ts">
   import axios from "axios";
+	import { DIR } from '$lib/config.js';
 
 	export let alert: boolean;
 
@@ -8,7 +9,7 @@
 
 		await axios({
 			method: 'DELETE',
-			url: 'http://localhost:4200/api/settings/deleteuser',
+			url: `${DIR}/api/settings/deleteuser`,
 			withCredentials: true
 		});
 

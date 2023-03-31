@@ -1,12 +1,13 @@
 <script lang="ts">
   import { format } from "timeago.js";
   import type { IImage } from "$lib/global.js";
+	import { DIR } from '$lib/config.js';
 
-  export let image: IImage
+  export let image: IImage;
 </script>
 
 <a href="/gallery/{image.id}" title="{image.title}">
-  <img src="http://localhost:4200/uploads/{image.filename}" alt="">
+  <img src="{DIR}/uploads/{image.filename}" alt="{image.title}">
   <h2>{image.title}</h2>
   <p>{image.author}</p>
   <div>

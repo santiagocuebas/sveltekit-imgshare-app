@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { format } from 'timeago.js';
+	import { DIR } from '$lib/config.js';
 
 	export let username: string;
 	export let email: string;
@@ -9,7 +10,7 @@
 </script>
 
 <div class="user-box-data">
-	<img src="http://localhost:4200/uploads/avatars/{avatar}" alt="">
+	<img src="{DIR}/uploads/avatars/{avatar}" alt="">
 	<div>
 		<h6>
 			Username:

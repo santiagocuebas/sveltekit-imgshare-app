@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IUser, IImage, IComment } from "$lib/global";
+	import { DIR } from '$lib/config.js';
   import { isImage } from "$lib/function.js";
 	import { handleRegister } from "$lib/services/services";
 
@@ -15,7 +16,7 @@
 
   async function handleLike(this: HTMLElement) {
 		if (user) {
-			const url = `http://localhost:4200/api/${text}/${object.id}/like`;
+			const url = `${DIR}/api/${text}/${object.id}/like`;
 			const { like, dislike } = await handleRegister(url, this.id);
 
 			object.like = like;
@@ -25,7 +26,7 @@
 
 	async function handleFavotite(this: HTMLElement) {
 		if (user && isImage(object)) {
-			const url = `http://localhost:4200/api/image/${object.id}/favorite`;
+			const url = `${DIR}/api/image/${object.id}/favorite`;
 			const { favorite } = await handleRegister(url, this.id);
 
 			object.favorite = favorite;

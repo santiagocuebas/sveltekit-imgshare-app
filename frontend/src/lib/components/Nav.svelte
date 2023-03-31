@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IUser } from '$lib/global.js';
+	import { DIR } from '$lib/config.js';
 	import { clickOutside } from '$lib/services/click-outside';
 
 	export let user: IUser;
@@ -22,7 +23,7 @@
 		<img
 			id='nav-avatar'
 			class="nav-avatar"
-			src="http://localhost:4200/uploads/avatars/{user.avatar}"
+			src="{DIR}/uploads/avatars/{user.avatar}"
 			alt=""
 			on:click
 		>

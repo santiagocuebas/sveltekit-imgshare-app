@@ -6,7 +6,7 @@ export const deleteUserImages = async (author: string) => {
 	const imagesUser = await Image.findBy({ author });
 
 	for (const image of imagesUser) {
-		await fs.unlink(`src/uploads/${image.filename}`);
+		await fs.unlink(`uploads/${image.filename}`);
 		await image.remove();
 	}
 

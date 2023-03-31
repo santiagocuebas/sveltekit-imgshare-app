@@ -50,7 +50,7 @@
 	<Sidebar>
 		<BoxGallery className='image-sidebar'>
 			{#each data.sidebar as image}
-			<SideImage image={image} />
+				<SideImage image={image} />
 			{/each}
 		</BoxGallery>
 	</Sidebar>
@@ -92,6 +92,7 @@
 	.image-container {
 		display: grid;
 		grid-template-columns: repeat(6, minmax(85px, 1fr));
+		grid-auto-rows: min-content 1fr;
 		width: 90%;
 		min-width: 510px;
 		max-width: 1520px;

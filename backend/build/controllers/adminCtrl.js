@@ -36,7 +36,7 @@ export const deleteUser = async (req, res) => {
     const user = req.foreignUser;
     // Delete avatar
     if (user.avatar !== 'default.png') {
-        await fs.unlink(`src/uploads/avatars/${user.avatar}`);
+        await fs.unlink(`uploads/avatars/${user.avatar}`);
     }
     // Delete all images and comments of user and filters all their ratings
     deleteUserImages(user.username);

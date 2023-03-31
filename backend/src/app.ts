@@ -5,26 +5,24 @@ import cookieParser from 'cookie-parser';
 import multer from 'multer';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { ORIGIN } from './config.js';
 import * as routes from './routes/index.js';
 
 // Initializations
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
-console.log(__dirname);
 
 // Middlewares
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors(
-	{
-		origin: 'http://localhost:3000',
-		methods: 'GET, POST, PUT, DELETE, OPTIONS',
-		allowedHeaders: 'Origin, Authorization, X-Requested-With, Content-Type, Accept',
-		credentials: true
-	}
-));
+app.use(cors({
+	origin: ORIGIN,
+	methods: 'GET, POST, PUT, DELETE, OPTIONS',
+	allowedHeaders: 'Origin, Authorization, X-Requested-With, Content-Type, Accept',
+	credentials: true
+}));
 
 // Uploads Directory
 app.use(multer({ dest: join(__dirname, '../uploads/temp') }).single('image'));

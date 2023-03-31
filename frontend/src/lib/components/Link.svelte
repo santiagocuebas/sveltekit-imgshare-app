@@ -1,5 +1,6 @@
 <script lang="ts">
   import axios from "axios";
+	import { DIR } from '$lib/config.js';
 
   export let title: string;
   export let url: string;
@@ -8,7 +9,7 @@
   const handleDelete = async () => {
     const data = await axios({
       method: 'DELETE',
-      url: 'http://localhost:4200/api/settings/deletelink',
+      url: `${DIR}/api/settings/deletelink`,
       withCredentials: true,
       data: { title, url }
     }).then(res => res.data);

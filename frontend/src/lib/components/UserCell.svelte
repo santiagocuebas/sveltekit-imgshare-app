@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { format } from "timeago.js";
 	import type { IUserExtended, ILink } from "$lib/global";
+	import { DIR } from '$lib/config.js';
 
 	export let user: IUserExtended;
 	export let selectUser: IUserExtended | null;
@@ -13,7 +14,7 @@
 </script>
 
 <div class="user-cell" on:mousedown={handleUser}>
-	<img src="http://localhost:4200/uploads/avatars/{user.avatar}" alt="">
+	<img src="{DIR}/uploads/avatars/{user.avatar}" alt="">
 	<span></span>
 	<div>
 		<h6>Username</h6>

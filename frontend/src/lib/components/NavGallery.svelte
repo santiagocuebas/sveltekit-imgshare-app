@@ -1,9 +1,10 @@
 <script lang="ts">
   import axios from "axios";
   import type { IImage } from "$lib/global.js";
+	import { DIR } from '$lib/config.js';
 	import { clickOutside } from "$lib/services/click-outside";
 
-	export let images: IImage;
+	export let images: IImage[];
 	export let visibleBox: boolean = true;
 
 	let visible = false;
@@ -16,7 +17,7 @@
 
 		images = await axios({
 			method: 'GET',
-			url: `http://localhost:4200/api/gallery/order/${selectText}`
+			url: `${DIR}/api/gallery/order/${selectText}`
 		}).then(res => res.data);
 	};
 </script>

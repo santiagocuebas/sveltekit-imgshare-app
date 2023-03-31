@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { IImage } from "$lib/global.js";
+	import { DIR } from '$lib/config.js';
 
   export let image: IImage;
 </script>
 
 <a href='/gallery/{image.id}' title="{image.title}">
   <img
-    src="http://localhost:4200/uploads/{image.filename}"
+    src="{DIR}/uploads/{image.filename}"
     alt={image.title}
     loading="lazy"
   >

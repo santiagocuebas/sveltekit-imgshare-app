@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { format } from 'timeago.js';
+	import { DIR } from '$lib/config.js';
   import { UserRole } from '$lib/enums.js';
   import type { IUser, IImage } from '$lib/global.js';
 	import { handleRequest } from '$lib/services/services';
@@ -38,8 +39,8 @@
 		<a class="image-author-link" href="/user/{image.author}">
 			<img
 				class="image-author-avatar"
-				src="http://localhost:4200/uploads/avatars/{image.avatar}"
-				alt=""
+				src="{DIR}/uploads/avatars/{image.avatar}"
+				alt="{image.author}"
 			>
 		</a>
 		<a class="image-author-username" href="/user/{image.author}">
@@ -51,14 +52,14 @@
 	</div>
 	<img
 		class="image-content"
-		src="http://localhost:4200/uploads/{image.filename}"
-		alt=""
+		src="{DIR}/uploads/{image.filename}"
+		alt="{image.title}"
 	>
 	<div class="image-description">
 		{#if description}
 			<form
 				class="image-form"
-				action="http://localhost:4200/api/image/{image.id}/description"
+				action="{DIR}/api/image/{image.id}/description"
 				method="POST"
 				on:submit|preventDefault={changeDescription}
 			>
@@ -90,6 +91,7 @@
 		grid-column: 1 / span 4;
 		display: grid;
 		grid-auto-rows: min-content;
+		height: min-content;
 		background-color: #ffffff;
 		box-shadow: 0 2px 10px #666666;
 	}
