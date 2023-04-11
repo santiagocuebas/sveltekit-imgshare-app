@@ -56,33 +56,17 @@
 		&#x25CF;
 		<p>{format(comment.createdAt)}</p>
 		{#if comment.edit}
-		<p class="grey">(edit)</p>
+			<p class="grey">(edit)</p>
 		{/if}
 	</div>
 	{#if editable}
-		<form
-			class="comment-form"
-			action="{DIR}/api/comment/{comment.id}/edit"
-			method="POST"
-			on:submit|preventDefault={editComment}
-		>
-			<input
-				type="text"
-				name="comment"
-				spellcheck="false"
-				autocomplete="off"
-				maxlength="4200"
-				bind:value={description}
-				bind:this={input}
-			>
+		<form class="comment-form" action="{DIR}/api/comment/{comment.id}/edit" method="POST" on:submit|preventDefault={editComment}>
+			<input type="text" name="comment" spellcheck="false" autocomplete="off" maxlength="4200" bind:value={description} bind:this={input}>
 			<button class="red" on:click|preventDefault={cancelComment}>
 				<i class="fa-solid fa-cancel"></i>
 				Cancel
 			</button>
-			<button
-				class="{description.length > 0 ? '' : 'disabled'}"
-				disabled={!(description.length > 0)}
-			>
+			<button class="{description.length > 0 ? '' : 'disabled'}" disabled={!(description.length > 0)}>
 				<i class="fa-solid fa-check"></i>
 				Done
 			</button>
@@ -103,10 +87,10 @@
 			{#if visible}
 			<ul use:clickOutside on:outclick={() => visible = false}>
 				{#if (user.username === comment.author)}
-				<li on:mousedown={focusComment}>
-					<i class="fa-solid fa-pen"></i>
-					Edit
-				</li>
+					<li on:mousedown={focusComment}>
+						<i class="fa-solid fa-pen"></i>
+						Edit
+					</li>
 				{/if}
 				<li on:mousedown={deleteComment}>
 					<i class="fa-solid fa-square-minus"></i>

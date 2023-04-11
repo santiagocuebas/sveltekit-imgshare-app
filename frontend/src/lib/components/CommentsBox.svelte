@@ -8,9 +8,9 @@
     {totalComments} Comments
   </h2>
   {#if totalComments > 0}
-  <div class="comments-list">
-    <slot></slot>
-  </div>
+		<div class="comments-list">
+			<slot></slot>
+		</div>
   {/if}
 </div>
 

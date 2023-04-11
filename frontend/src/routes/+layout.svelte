@@ -26,11 +26,7 @@
 
 <Nav user={data.user} on:click={changeVisible}>
 	{#if visible}
-	<BoxUser
-		user={data.user}
-		bind:change={changeVisible}
-		bind:visible={visible}
-	/>
+	<BoxUser user={data.user} bind:change={changeVisible} bind:visible={visible} />
 	{/if}
 </Nav>
 <div class="main-container" on:wheel={changeVisibility}>

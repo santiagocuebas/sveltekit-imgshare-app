@@ -1,4 +1,4 @@
-import { c as create_ssr_component, s as setContext, v as validate_component, m as missing_component, n as noop, a as safe_not_equal } from './chunks/index2-dd005ad7.js';
+import { c as create_ssr_component, s as setContext, v as validate_component, m as missing_component, n as noop, a as safe_not_equal } from './chunks/index2-1f46a731.js';
 import { e as error, j as json, t as text, R as Redirect, H as HttpError, A as ActionFailure } from './chunks/index-1dce6fb5.js';
 import { s as set_public_env, p as public_env, a as set_private_env } from './chunks/shared-server-f2d06a89.js';
 import { parse as parse$1, serialize } from 'cookie';
@@ -188,7 +188,7 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "1idjlrm"
+  version_hash: "xog0pm"
 };
 function get_hooks() {
   return import('./chunks/hooks.server-d4e06d95.js');
@@ -232,10 +232,15 @@ function negotiate(accept, types) {
 }
 function is_content_type(request, ...types) {
   const type = request.headers.get("content-type")?.split(";", 1)[0].trim() ?? "";
-  return types.includes(type);
+  return types.includes(type.toLowerCase());
 }
 function is_form_content_type(request) {
-  return is_content_type(request, "application/x-www-form-urlencoded", "multipart/form-data");
+  return is_content_type(
+    request,
+    "application/x-www-form-urlencoded",
+    "multipart/form-data",
+    "text/plain"
+  );
 }
 function coalesce_to_error(err) {
   return err instanceof Error || err && /** @type {any} */
@@ -1056,7 +1061,7 @@ async function call_action(event, actions) {
   }
   if (!is_form_content_type(event.request)) {
     throw new Error(
-      `Actions expect form-encoded data (received ${event.request.headers.get("content-type")}`
+      `Actions expect form-encoded data (received ${event.request.headers.get("content-type")})`
     );
   }
   return action(event);
@@ -3114,7 +3119,7 @@ const default_preload = ({ type }) => type === "js" || type === "css";
 async function respond(request, options2, manifest, state) {
   let url = new URL(request.url);
   if (options2.csrf_check_origin) {
-    const forbidden = request.method === "POST" && request.headers.get("origin") !== url.origin && is_form_content_type(request);
+    const forbidden = is_form_content_type(request) && (request.method === "POST" || request.method === "PUT" || request.method === "PATCH" || request.method === "DELETE") && request.headers.get("origin") !== url.origin;
     if (forbidden) {
       const csrf_error = error(403, `Cross-site ${request.method} form submissions are forbidden`);
       if (request.headers.get("accept") === "application/json") {

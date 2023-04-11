@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { DIR } from '$lib/config.js';
+  import type { IComment } from '$lib/global';
 	import { handleRequest } from "$lib/services/services.js";
 
 	export let imageId: string;
 	export let avatar: string;
-	export let comments: any;
+	export let comments: IComment[];
 
 	let input = '';
 	let visible = false;
@@ -27,45 +28,29 @@
 	}
 </script>
 
-<div class="comment-form">
+<div>
 	<h2 class="title">
 		<i class="fa-regular fa-copy title-icon"></i>
 		Post
 	</h2>
-	<form
-		action="{DIR}/api/image/{imageId}/comment"
-		method="POST"
-		on:submit|preventDefault={handleSubmit}
-	>
-		<img src="{DIR}/uploads/avatars/{avatar}" alt="">
-		<input
-			type="text"
-			name="comment"
-			placeholder="Send a comment..."
-			autocomplete="off"
-			spellcheck="false"
-			bind:value={input}
-			bind:this={inputElement}
-			on:focus={() => visible = true}
-		>
+	<form action="{DIR}/api/image/{imageId}/comment" method="POST" on:submit|preventDefault={handleSubmit}>
+		<img src="{DIR}/uploads/avatars/{avatar}" alt={imageId}>
+		<input type="text" name="comment" placeholder="Send a comment..." autocomplete="off" spellcheck="false" bind:value={input} bind:this={inputElement} on:focus={() => visible = true}>
 		{#if visible}
-		<div class="comment-buttons">
-			<button on:click={() => changeVisibility(false)}>
-				Cancel
-			</button>
-			<button
-				class="blue {input.length > 0 ? '' : 'disabled'}"
-				disabled={!(input.length > 0)}
-			>
-				Comment
-			</button>
-		</div>
+			<span>
+				<button on:click={() => changeVisibility(false)}>
+					Cancel
+				</button>
+				<button class="blue {input.length > 0 ? '' : 'disabled'}" disabled={!(input.length > 0)}>
+					Comment
+				</button>
+			</span>
 		{/if}
 	</form>
 </div>
 
 <style>
-	.comment-form {
+	div {
 		width: 100%;
 		background-color: #ffffff;
 		box-shadow: 0 2px 10px #666666;
@@ -101,7 +86,7 @@
 		border-bottom: 2px solid #333333;
 	}
 
-	.comment-buttons {
+	span {
 		display: flex;
 		margin-left: auto;
 		gap: 10px;

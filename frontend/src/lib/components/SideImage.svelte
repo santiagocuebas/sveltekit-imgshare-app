@@ -7,7 +7,7 @@
 </script>
 
 <a href="/gallery/{image.id}" title="{image.title}">
-  <img src="{DIR}/uploads/{image.filename}" alt="{image.title}">
+  <img src="{DIR}/uploads/{image.filename}" alt={image.title}>
   <h2>{image.title}</h2>
   <p>{image.author}</p>
   <div>
@@ -34,7 +34,7 @@
     grid-row: 1 / span 3;
     width: 80px;
     height: 80px;
-    object-fit: contain;
+    object-fit: cover;
   }
 
   h2 {

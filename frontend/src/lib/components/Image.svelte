@@ -6,11 +6,7 @@
 </script>
 
 <a href='/gallery/{image.id}' title="{image.title}">
-  <img
-    src="{DIR}/uploads/{image.filename}"
-    alt={image.title}
-    loading="lazy"
-  >
+  <img src="{DIR}/uploads/{image.filename}" alt={image.title} loading="lazy">
   <div>
     <h2>{image.title}</h2>
     <p>
@@ -42,7 +38,7 @@
   img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
   }
 
   div {

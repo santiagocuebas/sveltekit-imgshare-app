@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { imageCtrl } from '../controllers/index.js';
 import { isValidToken } from '../middleware/logged.js';
 import { validate } from '../middleware/validations.js';
-import * as array from '../validators/arraysValidators.js';
+import * as array from '../validators/arrays-validators.js';
 
 const router = Router();
 

@@ -26,10 +26,7 @@
 	<i class="fa-solid fa-images gallery-icon"></i>
 	IMAGES
 	{#if visibleBox}
-		<button
-			class="gallery-select"
-			on:click={() => visible = !visible}
-		>
+		<button class="gallery-select" on:click={() => visible = !visible}>
 			{selectText}
 			<i class="fa-solid fa-caret-down"></i>
 		</button>

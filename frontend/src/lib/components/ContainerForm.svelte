@@ -12,7 +12,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		justify-self: center;
-		width: 480px;
+		width: 600px;
 		height: fit-content;
 		margin-top: 70px;
 		border-radius: 16px;

@@ -33,21 +33,15 @@
   <div>
     <h6>Change role:</h6>
     <select name="role" id="role" on:change={changeRole}>
-      <option
-        value="editor"
-        selected={role === UserRole.EDITOR}
-        disabled={role === UserRole.ADMIN && myRole !== UserRole.SUPER}
-      >EDITOR</option>
-      <option
-        value="mod"
-        selected={role === UserRole.MOD}
-        disabled={role === UserRole.ADMIN && myRole !== UserRole.SUPER}
-      >MOD</option>
-      <option
-        value="admin"
-        selected={role === UserRole.ADMIN}
-        disabled={myRole !== UserRole.SUPER}
-      >ADMIN</option>
+      <option value="editor" selected={role === UserRole.EDITOR} disabled={role === UserRole.ADMIN && myRole !== UserRole.SUPER}>
+				EDITOR
+			</option>
+      <option value="mod" selected={role === UserRole.MOD} disabled={role === UserRole.ADMIN && myRole !== UserRole.SUPER}>
+				MOD
+			</option>
+      <option value="admin" selected={role === UserRole.ADMIN} disabled={myRole !== UserRole.SUPER}>
+				ADMIN
+			</option>
     </select>
   </div>
   <div>

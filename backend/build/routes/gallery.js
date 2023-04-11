@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { UserRole } from '../enums.js';
-import { getOrderGallery } from '../libs/libs.js';
-import { recentImages } from '../libs/sidebar-images.js';
+import { getOrderGallery, recentImages } from '../libs/index.js';
 import { getDataToken } from '../middleware/logged.js';
 import { Image, Comment } from '../models/index.js';
 const router = Router();

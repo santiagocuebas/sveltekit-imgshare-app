@@ -9,8 +9,6 @@
 	export let data: PageData;
 	let errors: any = {};
 	let visible = false;
-
-	let changeBoxErrors = (value: boolean) => visible = value;
 	
 	const setErrors = (data: any) => errors = data;
 </script>
@@ -20,42 +18,15 @@
 		<i class="fa-solid fa-image title-icon"></i>
 		Upload Image
 	</h2>
-	<Form
-	 action='{DIR}/api/image/upload'
-	 prefix='/gallery'
-	 change={changeBoxErrors}
-	 errors={setErrors}
-	>
+	<Form action='{DIR}/api/image/upload' prefix='/gallery' bind:show={visible} errors={setErrors}>
 		{#if visible}
-		<ErrorBox bind:hide={changeBoxErrors} errors={errors} />
+			<ErrorBox bind:hide={visible} errors={errors} />
 		{/if}
 		<label>
-			<input
-				type="file"
-				name="image"
-				on:change={handleImage}
-			>
+			<input type="file" name="image" on:change={handleImage}>
 		</label>
-		<input
-			class="upload-input"
-			type="text"
-			name="title"
-			placeholder="Title"
-			spellcheck="false"
-			autocomplete="off"
-			minlength="5"
-			maxlength="40"
-			required
-		>
-		<textarea
-			class="upload-input"
-			name="description"
-			placeholder="Description"
-			rows="3"
-			spellcheck="false"
-			autocomplete="off"
-			maxlength="4200"
-		></textarea>
+		<input class="upload-input" type="text" name="title" placeholder="Title" spellcheck="false" autocomplete="off">
+		<textarea class="upload-input" name="description" placeholder="Description" rows="3" spellcheck="false" autocomplete="off"></textarea>
 		<button>
 			<i class="fa-solid fa-upload"></i>
 			Upload
@@ -69,9 +40,9 @@
 	</h2>
 	<BoxGallery className='image-upload'>
 		{#each data.images as image}
-		<a href="/gallery/{image.id}">
-			<img src="{DIR}/uploads/{image.filename}" alt={image.title}>
-		</a>
+			<a href="/gallery/{image.id}">
+				<img src="{DIR}/uploads/{image.filename}" alt={image.title}>
+			</a>
 		{/each}
 	</BoxGallery>
 </div>
@@ -138,6 +109,6 @@
 	img {
 		width: 100%;
 		height: 100%;
-		object-fit: contain;
+		object-fit: cover;
 	}
 </style>

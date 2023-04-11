@@ -60,7 +60,7 @@
 
 <div class="user-list" use:clickOutside on:outclick={() => (visible = false)}>
 	<div class="user-header">
-		<img src="{DIR}/uploads/avatars/{user?.avatar}" alt="">
+		<img src="{DIR}/uploads/avatars/{user?.avatar}" alt="{user?.username}">
 		<div>
 			<h3>{user?.username}</h3>
 			<p>{user?.email}</p>
@@ -69,27 +69,18 @@
 	<span></span>
 	<ul>
 		{#if user?.role === UserRole.ADMIN || user?.role === UserRole.SUPER}
-			<a
-				href='/admin'
-				on:click={change}
-			>
+			<a href='/admin' on:click={change}>
 				<i class='fa-solid fa-user'></i>
 				<li>Admin</li>
 			</a>
 		{/if}
 		{#each links as link (link.name)}
-			<a
-				href={link.href}
-				on:click={change}
-			>
+			<a href={link.href} on:click={change}>
 				<i class={link.className}></i>
 				<li>{link.name}</li>
 			</a>
 		{/each}
-			<a
-				href='{DIR}/api/auth/logout'
-				on:click|preventDefault={handleLogout}
-			>
+			<a href='{DIR}/api/auth/logout' on:click|preventDefault={handleLogout}>
 				<i class='fa-solid fa-right-from-bracket'></i>
 				<li>Logout</li>
 			</a>

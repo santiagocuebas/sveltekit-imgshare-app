@@ -2,7 +2,11 @@ import { Router } from 'express';
 import { Like } from 'typeorm';
 import { adminCtrl } from '../controllers/index.js';
 import { UserRole } from '../enums.js';
-import { isValidToken, isAdminToken, isNotProperUser } from '../middleware/logged.js';
+import {
+	isValidToken,
+	isAdminToken,
+	isNotProperUser
+} from '../middleware/logged.js';
 import { User } from '../models/index.js';
 
 const router = Router();

@@ -13,7 +13,7 @@ export const getSerializedCookie = ({ username, email, avatar, role }) => {
     }, JWT);
     return serialize('authenticate', token, {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         maxAge: 1000 * 60 * 60 * 24 * 15,
         path: '/'

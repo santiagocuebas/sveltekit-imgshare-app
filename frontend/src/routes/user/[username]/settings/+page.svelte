@@ -83,112 +83,41 @@
 	</h1>
 	<div class="settings-options">
 		<Option title='Set Avatar'>
-			<form
-				id='avatar'
-				action="{DIR}/api/settings/avatar"
-				method="POST"
-				on:submit|preventDefault={handleAvatar}
-			>
+			<form id='avatar' action="{DIR}/api/settings/avatar" method="POST" on:submit|preventDefault={handleAvatar}>
 				<div>Change the avatar:</div>
-				<label
-					class="settings-avatar"
-					style="background-image: url({DIR}/uploads/avatars/{data.user.avatar});"
-				>
-					<input
-						type="file"
-						name="image"
-						on:change={handleImage}
-					>
+				<label class="settings-avatar" style="background-image: url({DIR}/uploads/avatars/{data.user.avatar});">
+					<input type="file" name="image" on:change={handleImage}>
 				</label>
 				<button>Send</button>
 			</form>
 		</Option>
 		<span></span>
 		<Option title='Set Description'>
-			<form
-				id='description'
-				action="{DIR}/api/settings/description"
-				method="POST"
-				on:submit|preventDefault={handleDescription}
-			>
+			<form id='description' action="{DIR}/api/settings/description" method="POST" on:submit|preventDefault={handleDescription}>
 				<label for="description">Change the description:</label>
-				<textarea
-					id="description"
-					name="description"
-					rows="5"
-					spellcheck="false"
-					autocomplete="off"
-					maxlength="4200"
-					bind:value={data.user.description}
-					required
-				></textarea>
+				<textarea id="description" name="description" rows="5" spellcheck="false" autocomplete="off" bind:value={data.user.description}></textarea>
 				<button>Accept</button>
 			</form>
 		</Option>
 		<span></span>
 		<Option title='Change Password'>
-			<form
-				id='password'
-				action="{DIR}/api/settings/password"
-				method="POST"
-				on:submit|preventDefault={handlePassword}
-			>
+			<form id='password' action="{DIR}/api/settings/password" method="POST" on:submit|preventDefault={handlePassword}>
 				<label for="actPassword">Enter the actual password:</label>
-				<input
-					type="password"
-					name="actPassword"
-					placeholder="Actual Password"
-					minlength="8"
-					maxlength="40"
-					required
-				>
+				<input type="password" name="actPassword" placeholder="Actual Password">
 				<label for="newPassword">Enter the new password:</label>
-				<input
-					type="password"
-					name="password"
-					placeholder="New Password"
-					minlength="8"
-					maxlength="40"
-					required
-				>
+				<input type="password" name="password" placeholder="New Password">
 				<label for="confirmPassword">Confirm the new password:</label>
-				<input
-					type="password"
-					name="confirmPassword"
-					placeholder="Confirm Password"
-					minlength="8"
-					maxlength="40"
-					required
-				>
+				<input type="password" name="confirmPassword" placeholder="Confirm Password">
 				<button>Send</button>
 			</form>
 		</Option>
 		<span></span>
 		<Option title='Register Link'>
-			<form
-				id='link'
-				action="{DIR}/api/settings/link"
-				method="POST"
-				on:submit|preventDefault={handleLink}
-			>
+			<form id='link' action="{DIR}/api/settings/link" method="POST" on:submit|preventDefault={handleLink}>
 				<label for="title">Enter the title:</label>
-				<input
-					type="text"
-					name="title"
-					placeholder="Title"
-					maxlength="20"
-					bind:value={title}
-					required
-				>
+				<input type="text" name="title" placeholder="Title" bind:value={title}>
 				<label for="url">Enter the URL:</label>
-				<input
-					type="url"
-					name="url"
-					placeholder="URL"
-					maxlength="4000"
-					bind:value={url}
-					required
-				>
+				<input type="url" name="url" placeholder="URL" maxlength="4000" bind:value={url}>
 				<button>Send</button>
 			</form>
 			{#if links.length > 0}
@@ -201,15 +130,8 @@
 		</Option>
 		<span></span>
 		<Option title='Delete User'>
-			<form
-				id='deleteuser'
-				action="{DIR}/api/settings/deleteuser"
-				method="DELETE"
-			>
-				<button
-					class="delete-user"
-					on:click|preventDefault={() => alert = true}
-				>
+			<form id='deleteuser' action="{DIR}/api/settings/deleteuser" method="DELETE">
+				<button class="delete-user" on:click|preventDefault={() => alert = true}>
 					Delete User
 				</button>
 			</form>

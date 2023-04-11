@@ -36,20 +36,8 @@
 <div class="user-box-option">
   <div class="user-box-option">
     <h6>Description:</h6>
-      <form
-        action="{DIR}/api/admin/{username}/description"
-        method='POST'
-        on:submit|preventDefault={handleSubmit}
-      >
-        <textarea
-          class="user-box-description"
-          name="description"
-          spellcheck="false"
-					autocomplete="off"
-          maxlength="4200"
-					bind:value={description}
-          on:focus={() => visibility = true}
-        ></textarea>
+      <form action="{DIR}/api/admin/{username}/description"  method='POST'  on:submit|preventDefault={handleSubmit}>
+        <textarea class="user-box-description" name="description" spellcheck="false" autocomplete="off" maxlength="4200" bind:value={description} on:focus={() => visibility = true}></textarea>
         {#if visibility}
         <button on:click|preventDefault={() => visibility = false}>Cancel</button>
         <button class="blue">Done</button>
@@ -62,12 +50,7 @@
       {#each links as link}
         <p title="{link.url}">
           {link.title}
-          <i
-            id={link.title}
-            class="fa-solid fa-xmark"
-            title='delete-link-{link.title}'
-            on:mousedown={deleteLink}
-          ></i>
+          <i id={link.title} class="fa-solid fa-xmark" title='delete-link-{link.title}' on:mousedown={deleteLink}></i>
         </p>
       {/each}
     </div>

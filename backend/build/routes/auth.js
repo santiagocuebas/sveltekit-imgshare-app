@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { authCtrl } from '../controllers/index.js';
 import { isValidToken, isNotValidToken } from '../middleware/logged.js';
 import { validate } from '../middleware/validations.js';
-import * as array from '../validators/arraysValidators.js';
+import * as array from '../validators/arrays-validators.js';
 const router = Router();
 router.post('/signup', isNotValidToken, validate(array.Signup), authCtrl.postSignup);
 router.post('/signin', isNotValidToken, validate(array.Signin), authCtrl.postSignin);

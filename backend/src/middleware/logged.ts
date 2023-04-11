@@ -15,7 +15,7 @@ export const isValidToken: Direction = async (req, res, next) => {
 		req.user = user;
 
 		return next();
-	} catch(err) {
+	} catch {
 		return res.json({ redirect: true, url: '/' });
 	}
 };
@@ -29,7 +29,7 @@ export const isNotValidToken: Direction = async (req, res, next) => {
 		if (user === null) throw 'Error';
 	
 		return res.json({ redirect: true, url: user.username });
-	} catch(err) {
+	} catch {
 		return next();
 	}
 };
@@ -45,12 +45,7 @@ export const isAdminToken: Direction = async (req, res, next) => {
 export const isNotProperUser: Direction = async (req, res, next) => {
 	const user = await User.findOneBy({ username: req.params.username });
 
-	if (
-		user &&
-		req.user.username !== user.username &&
-		user.role !== UserRole.SUPER &&
-		(user.role !== UserRole.ADMIN || req.user.role === UserRole.SUPER)
-	) {
+	if (user && req.user.username !== user.username && user.role !== UserRole.SUPER && (user.role !== UserRole.ADMIN || req.user.role === UserRole.SUPER)) {
 		req.foreignUser = user;
 		
 		return next();
@@ -69,7 +64,7 @@ export const getDataToken: Direction = async (req, _res, next) => {
 
 		req.user = user as User;
 		return next();
-	} catch(err) {
+	} catch {
 		return next();
 	}
 };

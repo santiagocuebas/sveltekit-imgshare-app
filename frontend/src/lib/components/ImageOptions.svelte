@@ -46,9 +46,9 @@
 	<a href="#placeholder" on:click|preventDefault={changePublic}>
 		<li>Public</li>
 		{#if image.isPublic}
-		<i class="fa-solid fa-eye"></i>
-		{:else}
-		<i class="fa-solid fa-eye-slash"></i>
+			<i class="fa-solid fa-eye"></i>
+			{:else}
+			<i class="fa-solid fa-eye-slash"></i>
 		{/if}
 	</a>
 	<a href="#placeholder" on:click|preventDefault={deleteImage}>

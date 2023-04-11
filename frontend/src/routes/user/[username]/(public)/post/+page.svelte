@@ -9,12 +9,7 @@
 </script>
 
 <Gallery className='gallery-user'>
-	<NavUser
-		username={data.foreignUser?.username}
-		role={data.user?.role}
-		author={data.user?.username}
-		bind:images={data.images}
-	/>
+	<NavUser username={data.foreignUser?.username} role={data.user?.role} author={data.user?.username} bind:images={data.images} />
 	<BoxGallery className='image-cell'>
 		{#if data.images.length > 0}
 			{#each data.images as image}
@@ -22,13 +17,11 @@
 			{/each}
 		{:else}
 			<div class="user-message user-column">
-				<p>
-					This user hasn't uploaded any image yet
-				</p>
+				<p>This user hasn't uploaded any image yet</p>
 				{#if data.user}
-				<a href="/user/{data.user.username}/upload">
-					Start now
-				</a>
+					<a href="/user/{data.user.username}/upload">
+						Start now
+					</a>
 				{/if}
 			</div>
 		{/if}

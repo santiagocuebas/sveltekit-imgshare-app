@@ -24,10 +24,7 @@
 <div class="image-box">
 	{#if user && (user.username === image.author || user.role !== UserRole.EDITOR)}
 		<div class="image-edit">
-			<i
-				class="fa-solid fa-ellipsis"
-				on:mousedown={() => visible = !visible}
-			></i>
+			<i class="fa-solid fa-ellipsis" on:mousedown={() => visible = !visible}></i>
 			<slot></slot>
 		</div>
 	{/if}
@@ -37,41 +34,18 @@
 	</h2>
 	<div class="image-author">
 		<a class="image-author-link" href="/user/{image.author}">
-			<img
-				class="image-author-avatar"
-				src="{DIR}/uploads/avatars/{image.avatar}"
-				alt="{image.author}"
-			>
+			<img src="{DIR}/uploads/avatars/{image.avatar}" alt="{image.author}">
 		</a>
 		<a class="image-author-username" href="/user/{image.author}">
 			{image.author}
 		</a>
-		<p>
-			{image.views} views &#x25CF; {format(image.createdAt)}
-		</p>
+		<p>{image.views} views &#x25CF; {format(image.createdAt)}</p>
 	</div>
-	<img
-		class="image-content"
-		src="{DIR}/uploads/{image.filename}"
-		alt="{image.title}"
-	>
+	<img class="image-content" src="{DIR}/uploads/{image.filename}" alt="{image.title}">
 	<div class="image-description">
 		{#if description}
-			<form
-				class="image-form"
-				action="{DIR}/api/image/{image.id}/description"
-				method="POST"
-				on:submit|preventDefault={changeDescription}
-			>
-				<textarea
-					id="edit"
-					name="description"
-					rows="1"
-					spellcheck="false"
-					autocomplete="off"
-					maxlength="4200"
-					bind:value={image.description}
-				></textarea>
+			<form action="{DIR}/api/image/{image.id}/description" method="POST" on:submit|preventDefault={changeDescription}>
+				<textarea id="edit" name="description" rows="1" spellcheck="false" autocomplete="off" maxlength="4200" bind:value={image.description}></textarea>
 				<button on:click|preventDefault={cancelDescription}>
 					Cancel
 				</button>
@@ -139,7 +113,7 @@
 		height: 48px;
 	}
 
-	.image-author-avatar {
+	.image-author img {
 		width: 100%;
 		height: 100%;
 		border-radius: 50%;
@@ -148,6 +122,7 @@
 	}
 
 	.image-author-username {
+		width: max-content;
 		height: min-content;
 		font-size: 20px;
 		font-weight: 700;
@@ -166,14 +141,14 @@
 		text-align: center;
 	}
 
-	.image-form {
+	.image-description form {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: 10px;
 	}
 
-	.image-form textarea {
+	.image-description textarea {
 		width: 100%;
 		height: fit-content;
 		padding: 10px;
@@ -185,7 +160,7 @@
 		scrollbar-width: none;
 	}
 
-	.image-form button {
+	.image-description button {
 		width: 100px;
 		padding: 8px 0;
 		border: none;
@@ -196,7 +171,7 @@
 		cursor: pointer;
 	}
 
-	.image-form .blue {
+	.image-description .blue {
 		background-color: #4d4adb;
 	}
 

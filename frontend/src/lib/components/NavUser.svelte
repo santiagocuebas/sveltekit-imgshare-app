@@ -55,32 +55,25 @@
 		{publicText}
 		<i class="fa-solid fa-caret-down"></i>
 	</button>
-	{#if visiblePublic}
-		<ul class="left" use:clickOutside on:outclick={() => visiblePublic = false}>
-			{#each choisePublic as choise}
-			<li on:mousedown={changePublic}>{choise}</li>
-			{/each}
-		</ul>
-	{/if}
-	{:else}
+		{#if visiblePublic}
+			<ul class="left" use:clickOutside on:outclick={() => visiblePublic = false}>
+				{#each choisePublic as choise}
+				<li on:mousedown={changePublic}>{choise}</li>
+				{/each}
+			</ul>
+		{/if}
+		{:else}
 	<div>
 		{innerText}
 	</div>
 	{/if}
 	{#if innerText === 'PUBLIC'}
-		<button
-			class="nav-user-box ml"
-			on:click={() => visibleOrder = !visibleOrder}
-		>
+		<button class="nav-user-box ml" on:click={() => visibleOrder = !visibleOrder}>
 			{orderText}
 			<i class="fa-solid fa-caret-down"></i>
 		</button>
 		{#if visibleOrder}
-			<ul
-				class="right"
-				use:clickOutside
-				on:outclick={() => visibleOrder = false}
-			>
+			<ul class="right" use:clickOutside on:outclick={() => visibleOrder = false}>
 				{#each choiseOrder as choise}
 					<li on:mousedown={changeOrder}>{choise}</li>
 				{/each}

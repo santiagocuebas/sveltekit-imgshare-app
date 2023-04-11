@@ -18,33 +18,14 @@
 </script>
 
 <div class="image-container">
-	<ImageBox
-		image={data.image}
-		user={data.user}
-		bind:visible={visible}
-		bind:description={description}
-	>
+	<ImageBox image={data.image} user={data.user} bind:visible={visible} bind:description={description}>
 		{#if visible}
-			<ImageOptions
-				bind:image={data.image}
-				bind:visible={visible}
-				bind:description={description}
-			/>
+			<ImageOptions bind:image={data.image} bind:visible={visible} bind:description={description}/>
 		{/if}
 		<div class="image-stats" slot='assessment'>
-			<ImageIcon
-				bind:object={data.image} user={data.user}
-				include={data.image.like.includes(data.user?.username)}
-				assessment={data.image.like.length}
-			/>
-			<ImageIcon
-				bind:object={data.image} user={data.user} id='dislike' icon='fa-thumbs-down' assessment={data.image.dislike.length}
-				include={data.image.dislike.includes(data.user?.username)}
-			/>
-			<ImageIcon
-				bind:object={data.image} user={data.user} id='fav' icon='fa-star' assessment={data.image.favorite.length} fav={true}
-				include={data.image.favorite.includes(data.user?.username)}
-			/>
+			<ImageIcon bind:object={data.image} user={data.user} include={data.image.like.includes(data.user?.username)} assessment={data.image.like.length} />
+			<ImageIcon bind:object={data.image} user={data.user} id='dislike' icon='fa-thumbs-down' assessment={data.image.dislike.length} include={data.image.dislike.includes(data.user?.username)} />
+			<ImageIcon bind:object={data.image} user={data.user} id='fav' fav={true} icon='fa-star' assessment={data.image.favorite.length} include={data.image.favorite.includes(data.user?.username)} />
 		</div>
 	</ImageBox>
 	<Sidebar>
@@ -56,32 +37,15 @@
 	</Sidebar>
 	<CommentsContainer>
 		{#if data.user}
-			<CommentForm
-				bind:imageId={data.image.id}
-				bind:avatar={data.user.avatar} 
-				bind:comments={data.comments}
-			/>
+			<CommentForm imageId={data.image.id} avatar={data.user.avatar} bind:comments={data.comments} />
 			{:else}
 			<Register />
 		{/if}
 		<CommentsBox totalComments={data.comments.length}>
 			{#each data.comments as comment (comment.id)}
-				<Comment
-					bind:comments={data.comments}
-					bind:comment={comment}
-					bind:user={data.user}
-				>
-					<ImageIcon
-						bind:object={comment} user={data.user} text='comment'
-						assessment={comment.like.length} className='grey'
-						include={comment.like.includes(data.user?.username)}
-					/>
-					<ImageIcon
-						bind:object={comment} user={data.user} id='dislike' text='comment'
-						icon='fa-solid fa-thumbs-down' className='grey'
-						assessment={comment.dislike.length}
-						include={comment.dislike.includes(data.user?.username)}
-					/>
+				<Comment bind:comments={data.comments} bind:comment={comment} user={data.user}>
+					<ImageIcon bind:object={comment} user={data.user} text='comment' assessment={comment.like.length} className='grey' include={comment.like.includes(data.user?.username)} />
+					<ImageIcon bind:object={comment} user={data.user} id='dislike' text='comment' icon='fa-solid fa-thumbs-down' className='grey' assessment={comment.dislike.length} include={comment.dislike.includes(data.user?.username)} />
 				</Comment>
 			{/each}
 		</CommentsBox>

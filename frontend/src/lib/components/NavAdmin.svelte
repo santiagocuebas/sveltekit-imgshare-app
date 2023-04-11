@@ -19,18 +19,9 @@
 </script>
 
 <nav>
-	<form
-		action="{DIR}/api/admin/{searchedUser}"
-		method="GET"
-		on:submit|preventDefault={handleSubmit}
-	>
+	<form action="{DIR}/api/admin/{searchedUser}" method="GET" on:submit|preventDefault={handleSubmit}>
 		<i class="fa-solid fa-user"></i>
-		<input
-			type="text"
-			name="username"
-			placeholder="Search User"
-			bind:value={searchedUser}
-		>
+		<input type="text" name="username" placeholder="Search User" bind:value={searchedUser}>
 		<button>
 			<i class="fa-solid fa-magnifying-glass"></i>
 		</button>

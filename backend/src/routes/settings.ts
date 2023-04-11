@@ -1,20 +1,20 @@
 import { Router } from 'express';
 import { settingsCtrl } from '../controllers/index.js';
 import { isValidToken } from '../middleware/logged.js';
-import { validateSettings } from '../middleware/validations.js';
-import * as array from '../validators/arraysValidators.js';
+import { validate } from '../middleware/validations.js';
+import * as array from '../validators/arrays-validators.js';
 
 const router = Router();
 
 router.use(isValidToken);
 
-router.post('/avatar', validateSettings(array.Avatar), settingsCtrl.postAvatar);
+router.post('/avatar', validate(array.Avatar), settingsCtrl.postAvatar);
 
 router.post('/description', settingsCtrl.postDescription);
 
-router.post('/password', validateSettings(array.Password), settingsCtrl.postPassword);
+router.post('/password', validate(array.Password), settingsCtrl.postPassword);
 
-router.post('/link', validateSettings(array.Link), settingsCtrl.postLinks);
+router.post('/link', validate(array.Link), settingsCtrl.postLinks);
 
 router.delete('/deletelink', settingsCtrl.deleteLinks);
 

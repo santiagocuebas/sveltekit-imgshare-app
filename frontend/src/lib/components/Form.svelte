@@ -3,7 +3,7 @@
 
 	export let action: string;
 	export let prefix: string;
-	export let change: (value: boolean) => {};
+	export let show: boolean;
 	export let errors: (data: any) => {};
 
 	async function handleSubmit(this: HTMLFormElement) {
@@ -17,16 +17,12 @@
 			window.location.href = prefix + data.url;
 		} else if (data.errors) {
 			errors(data.errors);
-			change(true);
+			show = true;
 		}
 	}
 </script>
 
-<form
-	action={action}
-	method='POST'
-	on:submit|preventDefault={handleSubmit}
->
+<form action={action} method='POST' on:submit|preventDefault={handleSubmit}>
 	<slot></slot>
 </form>
 

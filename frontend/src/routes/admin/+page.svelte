@@ -57,47 +57,29 @@
 {#if show}
 	<UserMessage className={className} text={text} />	
 {/if}
+
 {#if alert}
 	<AlertUser bind:alert={alert} bind:deleteUser={deleteUser} />
 {/if}
+
 {#if selectUser}
 	<div class="user-box">
-		<UserData
-			username={selectUser.username}
-			email={selectUser.email}
-			avatar={selectUser.avatar}
-			bind:role={selectUser.role}
-			createdAt={selectUser.createdAt}
-		/>
+		<UserData username={selectUser.username} email={selectUser.email} avatar={selectUser.avatar} bind:role={selectUser.role} createdAt={selectUser.createdAt} />
 		<div class="user-box-line"></div>
-		<UserOption
-			username={selectUser.username}
-			bind:description={selectUser.description}
-			bind:links={linksUser}
-			showBox={showBox}
-		/>
+		<UserOption username={selectUser.username} bind:description={selectUser.description} bind:links={linksUser} showBox={showBox} />
 		<div class="user-box-line"></div>
-		<UserChange
-			username={selectUser.username}
-			bind:role={selectUser.role}
-			bind:myRole={data.user.role}
-			bind:alert={alert}
-			showBox={showBox}
-		/>
+		<UserChange username={selectUser.username} bind:role={selectUser.role} bind:myRole={data.user.role} bind:alert={alert} showBox={showBox} />
 		<button class="close-user" on:click|preventDefault={() => selectUser = null}>
 			<i class="fa-solid fa-xmark"></i>
 		</button>
 	</div>
 {/if}
+
 <Gallery className='gallery-users'>
 	<NavAdmin bind:users={data.users} />
 	<BoxGallery className='image-cell-user'>
 		{#each data.users as user (user.username)}
-			<UserCell
-				bind:links={linksUser}
-				bind:selectUser={selectUser}
-				user={user} 
-			/>
+			<UserCell bind:links={linksUser} bind:selectUser={selectUser} user={user} />
 		{/each}
 	</BoxGallery>
 </Gallery>

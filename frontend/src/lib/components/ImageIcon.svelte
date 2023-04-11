@@ -35,11 +35,7 @@
 </script>
 
 <div>
-	<i
-		id={id}
-		class="fa-solid {icon} {include ? className : ''}"
-		on:mousedown={fav ? handleFavotite : handleLike}
-	></i>
+	<i id={id} class="fa-solid {icon} {include ? className : ''}" on:mousedown={fav ? handleFavotite : handleLike}></i>
 	{assessment}
 </div>
 

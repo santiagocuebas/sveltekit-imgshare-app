@@ -6,34 +6,17 @@
 
 	let errors: any = {};
 	let visible = false;
-
-	let changeBoxErrors = (value: boolean) => visible = value;
 	
 	const setErrors = (data: any) => errors = data;
 </script>
 
 <ContainerForm title='Signin'>
-	<Form
-		action='{DIR}/api/auth/signin'
-		prefix='/user'
-		change={changeBoxErrors}
-		errors={setErrors}
-	>
+	<Form action='{DIR}/api/auth/signin' prefix='/user' bind:show={visible} errors={setErrors}>
 		{#if visible}
-		<ErrorBox bind:hide={changeBoxErrors} errors={errors} />
+			<ErrorBox bind:hide={visible} errors={errors} />
 		{/if}
-		<input
-			type="text"
-			name="username"
-			placeholder="Username or Email"
-			required
-		>
-		<input
-			type="password"
-			name="password"
-			placeholder="Password"
-			required
-		>
+		<input type="text" name="username" placeholder="Username or Email">
+		<input type="password" name="password" placeholder="Password">
 		<button>Signin</button>
 	</Form>
 </ContainerForm>

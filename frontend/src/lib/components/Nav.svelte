@@ -20,13 +20,7 @@
 	</form>
 	{#if user}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<img
-			id='nav-avatar'
-			class="nav-avatar"
-			src="{DIR}/uploads/avatars/{user.avatar}"
-			alt=""
-			on:click
-		>
+		<img id='nav-avatar' class="nav-avatar" src="{DIR}/uploads/avatars/{user.avatar}" alt="" on:click>
 		<slot></slot>
 	{:else}
 		<div class="nav-sign">
@@ -37,11 +31,7 @@
 			</button>
 		</div>
 		{#if visible}
-			<ul
-				class="nav-sign-list"
-				use:clickOutside
-				on:outclick={() => visible = false}
-			>
+			<ul class="nav-sign-list" use:clickOutside on:outclick={() => visible = false}>
 				<a href="/signin" on:click={() => visible = false}>
 					<i class="fa-solid fa-right-to-bracket"></i>
 					<li>Signin</li>
