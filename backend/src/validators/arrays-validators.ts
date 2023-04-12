@@ -19,7 +19,7 @@ export const Signup: ValidationChain[] = [
 	body('username', 'Enter a valid username')
 		.exists({ checkFalsy: true }).bail()
 		.isString().bail()
-		.isLength({ min: 5, max: 40 }).bail()
+		.isLength({ min: 3, max: 40 }).bail()
 		.matches(/^[^/",]+$/).withMessage('Invalid character').bail()
 		.custom(isValidUsername),
 	body('email', 'Enter a valid e-mail')
@@ -32,7 +32,7 @@ export const Signup: ValidationChain[] = [
 		.exists({ checkFalsy: true }).bail()
 		.isString().bail()
 		.matches(/[0-9]/).withMessage('Password must contain a number').bail()
-		.isLength({ min: 5, max: 40 }).withMessage('Password must contain at least 5 characters'),
+		.isLength({ min: 8, max: 40 }).withMessage('Password must contain at least 8 characters'),
 	body('confirmPassword')
 		.custom(confirmPassword)
 ];
@@ -44,7 +44,7 @@ export const Signin: ValidationChain[] = [
 		.custom(isRegisterUser),
 	body('password', 'Enter a valid password')
 		.exists({ checkFalsy: true }).bail()
-		.isLength({ min: 5, max: 40 }).bail()
+		.isLength({ min: 8, max: 40 }).bail()
 		.custom(isCorrectPassword)
 ];
 
@@ -55,7 +55,7 @@ export const Upload: ValidationChain[] = [
 		.custom(isValidImageSize),
 	body('title', 'Enter a valid title')
 		.isString().bail()
-		.isLength({ min: 5, max: 60 }).withMessage('The title must contain between 5 and 60 characters'),
+		.isLength({ min: 3, max: 60 }).withMessage('The title must contain between 3 and 60 characters'),
 	body('description', 'Enter a valid description')
 		.isString().bail()
 		.isLength({ max: 4200 }).withMessage('Have exceeded the max number of characters allowed')
@@ -74,7 +74,7 @@ export const Password: ValidationChain[] = [
 	body('password', 'Enter a valid password')
 		.exists({ checkFalsy: true }).bail()
 		.matches(/[0-9]/).withMessage('Password must contain a number').bail()
-		.isLength({ min: 5, max: 255 }).withMessage('Password must contain at least 5 characters'),
+		.isLength({ min: 8, max: 40 }).withMessage('Password must contain at least 8 characters'),
 	body('confirmPassword')
 		.custom(confirmPassword)
 ];

@@ -108,7 +108,7 @@ export const deleteImage = async (req, res) => {
     const image = await Image.findOneBy({ id: req.params.imageId });
     // Delete a image and all their comments
     if (image?.author === username || role !== UserRole.EDITOR) {
-        await fs.unlink(`src/uploads/${image?.filename}`);
+        await fs.unlink(`uploads/${image?.filename}`);
         await Comment.delete({ imageId: image?.id });
         await image?.remove();
     }

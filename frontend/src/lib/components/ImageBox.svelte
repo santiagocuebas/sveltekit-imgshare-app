@@ -129,7 +129,6 @@
 	}
 
 	.image-content {
-		width: 100%;
 		max-width: 768px;
 		height: auto;
 		margin: 0 auto;
