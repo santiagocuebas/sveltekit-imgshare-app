@@ -6,7 +6,8 @@ import type { IImage } from '$lib/global';
 export const load = (async ({ url }) => {
 	const searchParams = url.searchParams.get('q');
 
-	const data = await axios.get(`${DIR}/api/search/${searchParams}`)
+	const data = await axios
+		.get(`${DIR}/api/search/${searchParams}`)
 		.then(res => res.data);
 
 	return {

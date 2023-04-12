@@ -9,7 +9,7 @@
 </script>
 
 <Gallery className='gallery-user'>
-	<NavUser username={data.foreignUser?.username} role={data.user?.role} author={data.user?.username} bind:images={data.images} />
+	<NavUser username={data.foreignUser.username} role={data.user?.role} author={data.user?.username} bind:images={data.images} />
 	<BoxGallery className='image-cell'>
 		{#if data.images.length > 0}
 			{#each data.images as image}

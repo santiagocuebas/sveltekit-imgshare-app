@@ -11,32 +11,32 @@
 
 	const links = [
 		{
-			href: `/user/${user.username}/post`,
+		href: `/user/${user?.username}/post`,
 			className: 'fa-regular fa-image',
 			name: 'Post'
 		},
 		{
-			href: `/user/${user.username}/favorite`,
+		href: `/user/${user?.username}/favorite`,
 			className: 'fa-regular fa-star',
 			name: 'Favorite'
 		},
 		{
-			href: `/user/${user.username}/comment`,
+		href: `/user/${user?.username}/comment`,
 			className: 'fa-regular fa-message',
 			name: 'Comments'
 		},
 		{
-			href: `/user/${user.username}/about`,
+		href: `/user/${user?.username}/about`,
 			className: 'fa-regular fa-file',
 			name: 'About'
 		},
 		{
-			href: `/user/${user.username}/upload`,
+		href: `/user/${user?.username}/upload`,
 			className: 'fa-solid fa-arrow-up-from-bracket',
 			name: 'Upload'
 		},
 		{
-			href: `/user/${user.username}/settings`,
+		href: `/user/${user?.username}/settings`,
 			className: 'fa-solid fa-gear',
 			name: 'Settings'
 		}

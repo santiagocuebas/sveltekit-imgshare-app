@@ -5,7 +5,9 @@ import { DIR } from '$lib/config.js';
 import type { IImage } from '$lib/global';
 
 export const load = (async ({ locals, params }) => {
-	if (locals.user.username !== params.username) {
+	if (!locals.user) {
+		throw redirect(307, '/');
+	} else if (locals.user.username !== params.username) {
 		throw redirect(307, `/user/${locals.user.username}/upload`);
 	}
 

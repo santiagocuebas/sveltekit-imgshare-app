@@ -9,7 +9,7 @@
 </script>
 
 <Gallery className='gallery-user'>
-	<NavUser innerText='ABOUT' username={data.foreignUser?.username} author={data.user?.username} bind:images={data.images} />
+	<NavUser innerText='ABOUT' username={data.foreignUser.username} author={data.user?.username} bind:images={data.images} />
 	<BoxGallery className='image-row'>
 		<div class="about-container">
 			<div class="about-box">

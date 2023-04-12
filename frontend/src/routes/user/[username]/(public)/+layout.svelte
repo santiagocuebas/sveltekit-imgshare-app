@@ -12,10 +12,10 @@
 
 <div class="foreignuser-header">
 	<div class="foreignuser-head">
-		<img src="{DIR}/uploads/avatars/{data.foreignUser?.avatar}" alt={data.foreignUser?.username}>
+		<img src="{DIR}/uploads/avatars/{data.foreignUser.avatar}" alt={data.foreignUser.username}>
 		<div class="foreignuser-options">
-			<h1>{data.foreignUser?.username}</h1>
-			{#if data.user?.username === data.foreignUser?.username}
+			<h1>{data.foreignUser.username}</h1>
+			{#if data.user?.username === data.foreignUser.username}
 			<i class="fa-solid fa-arrow-up-from-bracket"></i>
 			<a href="/user/{data.user?.username}/upload">UPLOAD</a>
 			<p>&#x25CF;</p>
@@ -29,10 +29,10 @@
 			{/if}
 		</div>
 		<div class="foreignuser-links">
-			<a class={pathname?.includes('/post') || pathname === `/user/${data.foreignUser?.username}` ? 'selected' : ''} href="/user/{data.foreignUser?.username}/post">POST</a>
-			<a class={pathname?.includes('/favorite') ? 'selected' : ''} href="/user/{data.foreignUser?.username}/favorite">FAVORITE</a>
-			<a class={pathname?.includes('/comment') ? 'selected' : ''} href="/user/{data.foreignUser?.username}/comment">COMMENT</a>
-			<a class={pathname?.includes('/about') ? 'selected' : ''} href="/user/{data.foreignUser?.username}/about">ABOUT</a>
+			<a class={pathname?.includes('/post') || pathname === `/user/${data.foreignUser.username}` ? 'selected' : ''} href="/user/{data.foreignUser.username}/post">POST</a>
+			<a class={pathname?.includes('/favorite') ? 'selected' : ''} href="/user/{data.foreignUser.username}/favorite">FAVORITE</a>
+			<a class={pathname?.includes('/comment') ? 'selected' : ''} href="/user/{data.foreignUser.username}/comment">COMMENT</a>
+			<a class={pathname?.includes('/about') ? 'selected' : ''} href="/user/{data.foreignUser.username}/about">ABOUT</a>
 		</div>
 	</div>
 </div>

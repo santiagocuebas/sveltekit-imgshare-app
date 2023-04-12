@@ -9,7 +9,7 @@
 </script>
 
 <Gallery className='gallery-user'>
-	<NavUser username={data.foreignUser?.username} author={data.user?.username} innerText='FAVORITES' bind:images={data.favorites} />
+	<NavUser username={data.foreignUser.username} author={data.user?.username} innerText='FAVORITES' bind:images={data.favorites} />
 	<BoxGallery className='image-cell'>
 		{#if data.favorites.length > 0}
 			{#each data.favorites as image}
