@@ -22,7 +22,7 @@
 </script>
 
 <div class="image-box">
-	{#if user?.username === image.author || user?.role !== UserRole.EDITOR}
+	{#if user && (user?.username === image.author || user?.role !== UserRole.EDITOR)}
 		<div class="image-edit">
 			<i class="fa-solid fa-ellipsis" on:mousedown={() => visible = !visible}></i>
 			<slot></slot>
