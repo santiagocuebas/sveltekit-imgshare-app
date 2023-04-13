@@ -13,7 +13,7 @@
 <ContainerForm title='Signup'>
 	<Form action='{DIR}/api/auth/signup' prefix='/user' bind:show={visible} errors={setErrors}>
 		{#if visible}
-			<ErrorBox bind:hide={visible} errors={errors} />
+			<ErrorBox on:click={() => visible = false} errors={errors} />
 		{/if}
 		<input type="text" name="username" placeholder="Username">
 		<input type="email" name="email" placeholder="Email" maxlength="100" required>

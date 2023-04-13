@@ -6,7 +6,6 @@
 	import { clickOutside } from "$lib/services/click-outside";
 
 	export let user: IUser;
-	export let change: () => boolean;
 	export let visible: boolean;
 
 	const links = [
@@ -52,13 +51,13 @@
 			withCredentials: true
 		}).then(res => res.data);
 
-		change();
+		visible = false;
 
 		if (data.url) window.location.href = '/';
 	}
 </script>
 
-<div class="user-list" use:clickOutside on:outclick={() => (visible = false)}>
+<div class="user-list" use:clickOutside on:outclick={() => visible = false}>
 	<div class="user-header">
 		<img src="{DIR}/uploads/avatars/{user?.avatar}" alt="{user?.username}">
 		<div>
@@ -69,13 +68,13 @@
 	<span></span>
 	<ul>
 		{#if user?.role === UserRole.ADMIN || user?.role === UserRole.SUPER}
-			<a href='/admin' on:click={change}>
+			<a href='/admin' on:click={() => visible = false}>
 				<i class='fa-solid fa-user'></i>
 				<li>Admin</li>
 			</a>
 		{/if}
 		{#each links as link (link.name)}
-			<a href={link.href} on:click={change}>
+			<a href={link.href} on:click={() => visible = false}>
 				<i class={link.className}></i>
 				<li>{link.name}</li>
 			</a>

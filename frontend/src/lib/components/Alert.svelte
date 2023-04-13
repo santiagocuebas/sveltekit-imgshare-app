@@ -20,10 +20,10 @@
 <div class="alert-absolute">
 	<div class="alert-container">
 		<p>Are you sure want delete this user?</p>
-		<button on:click|preventDefault={() => alert = false}>
+		<button on:click={() => alert = false}>
 			Cancel
 		</button>
-		<button class="blue" on:click|preventDefault={deleteUser}>
+		<button class="blue" on:click={deleteUser}>
 			Accept
 		</button>
 	</div>

@@ -10,8 +10,6 @@
 	let visible = false;
 	let visibleFooter = true;
 	let pathname: string;
-
-	let changeVisible = () => visible = !visible;
 	
 	async function changeVisibility(e: WheelEvent) {
 		if (e.deltaY <=  0) {
@@ -24,9 +22,9 @@
 	beforeUpdate(() => pathname = window.location.pathname);
 </script>
 
-<Nav user={data.user} on:click={changeVisible}>
+<Nav user={data.user} on:click={() => visible = !visible}>
 	{#if visible}
-	<BoxUser user={data.user} bind:change={changeVisible} bind:visible={visible} />
+		<BoxUser user={data.user} bind:visible={visible} />
 	{/if}
 </Nav>
 <div class="main-container" on:wheel={changeVisibility}>

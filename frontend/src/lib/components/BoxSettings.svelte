@@ -3,11 +3,7 @@
 
 	export let className: string;
 	export let message: string | IMessage;
-	export let visible: boolean;
 
-	const closeBox = () => {
-		visible = false;
-	};
 </script>
 
 <div class={className}>
@@ -19,7 +15,7 @@
 			{/each}
 		</ul>
 		<i class="fa-solid fa-xmark"></i>
-		<button on:click={closeBox}>
+		<button on:click>
 			<i class="fa-solid fa-xmark"></i>
 		</button>
 	{:else}

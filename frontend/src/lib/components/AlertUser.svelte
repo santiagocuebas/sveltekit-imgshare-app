@@ -1,15 +1,14 @@
 <script lang="ts">
-  export let alert: boolean;
   export let deleteUser: () => void;
 </script>
 
 <div class="alert-container">
   <div>
     <p>Are you sure want delete this user?</p>
-    <button on:click|preventDefault={() => alert = false}>
+    <button on:click>
       Cancel
     </button>
-    <button class="blue" on:click|preventDefault={deleteUser}>
+    <button class="blue" on:click={deleteUser}>
       Accept
     </button>
   </div>

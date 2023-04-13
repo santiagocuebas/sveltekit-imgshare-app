@@ -54,12 +54,13 @@
 		showBox(resData.change);
 	};
 </script>
+
 {#if show}
 	<UserMessage className={className} text={text} />	
 {/if}
 
 {#if alert}
-	<AlertUser bind:alert={alert} bind:deleteUser={deleteUser} />
+	<AlertUser on:click={() => alert = false} bind:deleteUser={deleteUser} />
 {/if}
 
 {#if selectUser}

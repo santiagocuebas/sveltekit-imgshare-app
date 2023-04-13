@@ -24,9 +24,7 @@
 		visible = true;
 
 		if (data.class === 'success-settings') {
-			setTimeout(() => {
-				visible = false;
-			}, 2000);
+			setTimeout(() => visible = false, 2000);
 		}
 	}
 
@@ -72,7 +70,7 @@
 </script>
 
 {#if visible}
-	<BoxSettings className={className} message={message} bind:visible={visible} />
+	<BoxSettings className={className} message={message} on:click={() => visible = false} />
 {/if}
 {#if alert}
 	<Alert bind:alert={alert} />

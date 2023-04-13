@@ -13,7 +13,7 @@
 <ContainerForm title='Signin'>
 	<Form action='{DIR}/api/auth/signin' prefix='/user' bind:show={visible} errors={setErrors}>
 		{#if visible}
-			<ErrorBox bind:hide={visible} errors={errors} />
+			<ErrorBox on:click={() => visible = false} errors={errors} />
 		{/if}
 		<input type="text" name="username" placeholder="Username or Email">
 		<input type="password" name="password" placeholder="Password">

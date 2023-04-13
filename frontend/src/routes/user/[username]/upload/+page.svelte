@@ -20,7 +20,7 @@
 	</h2>
 	<Form action='{DIR}/api/image/upload' prefix='/gallery' bind:show={visible} errors={setErrors}>
 		{#if visible}
-			<ErrorBox bind:hide={visible} errors={errors} />
+			<ErrorBox on:click={() => visible = false} errors={errors} />
 		{/if}
 		<label>
 			<input type="file" name="image" on:change={handleImage}>

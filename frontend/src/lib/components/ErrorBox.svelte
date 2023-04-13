@@ -1,5 +1,4 @@
 <script lang="ts">
-	export let hide: boolean;
 	export let errors: any;
 </script>
 
@@ -12,7 +11,7 @@
 			</li>
 		{/each}
 	</ul>
-	<button on:click|preventDefault={() => hide = false}>
+	<button on:click|preventDefault>
 		<i class="fa-solid fa-xmark"></i>
 	</button>
 </div>
