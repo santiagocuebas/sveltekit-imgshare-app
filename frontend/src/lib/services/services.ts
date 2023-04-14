@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export async function handleRequest(form: HTMLFormElement) {
-  return axios({
+  return await axios({
     method: form.method,
     url: form.action,
     data: form,
@@ -10,7 +10,7 @@ export async function handleRequest(form: HTMLFormElement) {
 }
 
 export async function handleRegister(url: string, like: string) {
-  return axios({
+  return await axios({
     method: 'POST',
     url,
     data: { like },
