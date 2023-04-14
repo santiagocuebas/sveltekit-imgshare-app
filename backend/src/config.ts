@@ -18,5 +18,3 @@ export const JWT = process.env.JWT as string;
 export const ORIGIN = process.env.ORIGIN as string;
 
 export const NODE_ENV = process.env.NODE_ENV;
-
-export const DOMAIN = process.env.DOMAIN;

@@ -9,4 +9,3 @@ export const DB_DATABASE = process.env.DB_DATABASE;
 export const JWT = process.env.JWT;
 export const ORIGIN = process.env.ORIGIN;
 export const NODE_ENV = process.env.NODE_ENV;
-export const DOMAIN = process.env.DOMAIN;

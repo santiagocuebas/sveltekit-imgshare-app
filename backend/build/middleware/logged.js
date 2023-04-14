@@ -7,9 +7,8 @@ export const isValidToken = async (req, res, next) => {
         const token = req.cookies['authenticate'];
         const decoded = jwt.verify(token, JWT);
         const user = await User.findOneBy({ username: decoded.user.username });
-        if (user === null) {
+        if (user === null)
             throw 'Error';
-        }
         req.user = user;
         return next();
     }
@@ -21,10 +20,9 @@ export const isNotValidToken = async (req, res, next) => {
     try {
         const token = req.cookies['authenticate'];
         const decoded = jwt.verify(token, JWT);
-        const user = await User.findOneBy({ username: decoded.id });
-        if (user === null) {
+        const user = await User.findOneBy({ username: decoded.user.username });
+        if (user === null)
             throw 'Error';
-        }
         return res.json({ redirect: true, url: '/' + user.username });
     }
     catch {
@@ -50,9 +48,8 @@ export const getDataToken = async (req, _res, next) => {
         const token = req.cookies['authenticate'];
         const decoded = jwt.verify(token, JWT);
         const user = await User.findOneBy({ username: decoded.user.username });
-        if (user === null) {
+        if (user === null)
             throw 'Error';
-        }
         req.user = user;
         return next();
     }
