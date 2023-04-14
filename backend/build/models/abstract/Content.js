@@ -12,8 +12,8 @@ let Content = class Content extends BaseEntity {
     id;
     author;
     avatar;
-    like;
-    dislike;
+    likes;
+    dislikes;
     createdAt;
 };
 __decorate([
@@ -31,11 +31,11 @@ __decorate([
 __decorate([
     Column('simple-array'),
     __metadata("design:type", Array)
-], Content.prototype, "like", void 0);
+], Content.prototype, "likes", void 0);
 __decorate([
     Column('simple-array'),
     __metadata("design:type", Array)
-], Content.prototype, "dislike", void 0);
+], Content.prototype, "dislikes", void 0);
 __decorate([
     CreateDateColumn(),
     __metadata("design:type", Date)

@@ -5,7 +5,8 @@ import type { LayoutLoad } from './$types';
 import { DIR } from '$lib/config.js';
 
 export const load = (async ({ params }) => {
-	const data = await axios.get(`${DIR}/api/user/${params.username}/data`)
+	const data = await axios
+		.get(`${DIR}/api/user/${params.username}/data`)
 		.then(res => res.data);
 
 	if (data === null) throw redirect(307, '/');

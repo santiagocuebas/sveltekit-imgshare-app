@@ -33,6 +33,7 @@
 		</button>
 	</Form>
 </div>
+
 <div>
 	<h2 class="title">
 		<i class="fa-solid fa-images title-icon"></i>

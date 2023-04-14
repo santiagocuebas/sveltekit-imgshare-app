@@ -15,11 +15,11 @@
     </p>
     <p>
       <i class="fa-solid fa-thumbs-up"></i>
-      {image.like.length}
+      {image.likes.length}
     </p>
     <p>
       <i class="fa-solid fa-thumbs-down"></i>
-      {image.dislike.length}
+      {image.dislikes.length}
     </p>
     <p>
       <i class="fa-solid fa-eye"></i>

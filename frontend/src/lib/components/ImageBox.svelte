@@ -15,10 +15,6 @@
 
 		handleRequest(this);
 	}
-
-	async function cancelDescription() {
-		description = false;
-	}
 </script>
 
 <div class="image-box">
@@ -46,7 +42,7 @@
 		{#if description}
 			<form action="{DIR}/api/image/{image.id}/description" method="POST" on:submit|preventDefault={changeDescription}>
 				<textarea id="edit" name="description" rows="1" spellcheck="false" autocomplete="off" maxlength="4200" bind:value={image.description}></textarea>
-				<button on:click|preventDefault={cancelDescription}>
+				<button on:click|preventDefault={() => description = false}>
 					Cancel
 				</button>
 				<button class="blue">

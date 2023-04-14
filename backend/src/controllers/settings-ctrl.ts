@@ -102,6 +102,7 @@ export const deleteLinks: Direction = async (req, res) => {
 	await req.user.save();
 	
 	return res.json({
+		change: true,
 		class: 'success-settings',
 		message: 'Your link has been successfully updated'
 	});

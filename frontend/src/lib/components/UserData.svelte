@@ -1,36 +1,33 @@
 <script lang="ts">
 	import { format } from 'timeago.js';
 	import { DIR } from '$lib/config.js';
+  import type { IUserExtended } from '$lib/global';
 
-	export let username: string;
-	export let email: string;
-	export let avatar: string;
-	export let role: string;
-	export let createdAt: Date;
+	export let user: IUserExtended;
 </script>
 
 <div class="user-box-data">
-	<img src="{DIR}/uploads/avatars/{avatar}" alt="">
+	<img src="{DIR}/uploads/avatars/{user.avatar}" alt="">
 	<div>
 		<h6>
 			Username:
-			<a href="/user/{username}" target="_blank" rel="noreferrer">
+			<a href="/user/{user.username}" target="_blank" rel="noreferrer">
 				<i class="fa-solid fa-share"></i>
 			</a>
 		</h6>
-		<p>{username}</p>
+		<p>{user.username}</p>
 	</div>
 	<div>
 		<h6>Email:</h6>
-		<p>{email}</p>
+		<p>{user.email}</p>
 	</div>
 	<div>
 		<h6>Role:</h6>
-		<p>{role}</p>
+		<p>{user.role}</p>
 	</div>
 	<div>
 		<h6>Join:</h6>
-		<p>{format(createdAt)}</p>
+		<p>{format(user.createdAt)}</p>
 	</div>
 </div>
 

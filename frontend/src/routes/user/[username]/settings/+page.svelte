@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from "./$types";
-  import type { IMessage } from "$lib/global.js";
+  import type { ILink, IMessage } from "$lib/global.js";
 	import { DIR } from '$lib/config.js';
 	import Option from "$lib/components/OptionSettings.svelte";
 	import Link from '$lib/components/Link.svelte';
@@ -10,7 +10,7 @@
 	import { handleRequest } from "$lib/services/services";
 
 	export let data: PageData;
-	let links = JSON.parse(data.user.links);
+	let links: ILink[] = JSON.parse(data.user.links);
 	let visible = false;
 	let alert = false;
 	let title: string;
@@ -70,11 +70,17 @@
 </script>
 
 {#if visible}
-	<BoxSettings className={className} message={message} on:click={() => visible = false} />
+	<BoxSettings
+		className={className}
+		message={message}
+		on:click={() => visible = false}
+	/>
 {/if}
+
 {#if alert}
 	<Alert bind:alert={alert} />
 {/if}
+
 <div class="settings-container">
 	<h1>
 		Settings

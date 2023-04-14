@@ -30,8 +30,8 @@ export const getUserData: Direction = async (req, res) => {
 				id: true,
 				filename: true,
 				title: true,
-				like: true,
-				dislike: true,
+				likes: true,
+				dislikes: true,
 				views: true,
 				totalComments: true
 			}
@@ -46,26 +46,21 @@ export const getUserData: Direction = async (req, res) => {
 
 		// Get favorites images of user
 		let favorites = await Image.find({
-			where: { favorite: Like(`%${username}%`), isPublic: true },
+			where: { favorites: Like(`%${username}%`), isPublic: true },
 			order: { createdAt: 'DESC' },
 			select: {
 				id: true,
 				filename: true,
 				title: true,
-				like: true,
-				dislike: true,
-				favorite: true,
+				likes: true,
+				dislikes: true,
+				favorites: true,
 				views: true,
 				totalComments: true
 			}
 		});
 
-		favorites = favorites.filter((image: Image) => {
-			if (image.favorite.includes(username)) {
-				return true;
-			}
-			return false;
-		});
+		favorites = favorites.filter((image: Image) => image.favorites.includes(username));
 
 		// Update total views
 		foreignUser.totalViews = 0;
@@ -107,8 +102,8 @@ export const getImages: Direction = async (req, res) => {
 				id: true,
 				filename: true,
 				title: true,
-				like: true,
-				dislike: true,
+				likes: true,
+				dislikes: true,
 				views: true,
 				totalComments: true
 			}

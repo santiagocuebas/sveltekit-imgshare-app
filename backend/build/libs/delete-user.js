@@ -7,32 +7,32 @@ export const deleteUserImages = async (author) => {
         await fs.unlink(`uploads/${image.filename}`);
         await image.remove();
     }
-    const imagesLikes = await Image.findBy({ like: Like(`%${author}%`) });
+    const imagesLikes = await Image.findBy({ likes: Like(`%${author}%`) });
     for (const image of imagesLikes) {
-        image.like = image.like.filter(opt => opt !== author);
+        image.likes = image.likes.filter(opt => opt !== author);
         await image.save();
     }
-    const imagesDislikes = await Image.findBy({ dislike: Like(`%${author}%`) });
+    const imagesDislikes = await Image.findBy({ dislikes: Like(`%${author}%`) });
     for (const image of imagesDislikes) {
-        image.dislike = image.dislike.filter(opt => opt !== author);
+        image.dislikes = image.dislikes.filter(opt => opt !== author);
         await image.save();
     }
-    const imagesFavorites = await Image.findBy({ favorite: Like(`%${author}%`) });
+    const imagesFavorites = await Image.findBy({ favorites: Like(`%${author}%`) });
     for (const image of imagesFavorites) {
-        image.favorite = image.favorite.filter(opt => opt !== author);
+        image.favorites = image.favorites.filter(opt => opt !== author);
         await image.save();
     }
 };
 export const deleteUserComments = async (author) => {
     await Comment.delete({ author });
-    const commentsLikes = await Comment.findBy({ like: Like(`%${author}%`) });
+    const commentsLikes = await Comment.findBy({ likes: Like(`%${author}%`) });
     for (const comment of commentsLikes) {
-        comment.like = comment.like.filter(opt => opt !== author);
+        comment.likes = comment.likes.filter(opt => opt !== author);
         await comment.save();
     }
-    const commentsDislikes = await Comment.findBy({ dislike: Like(`%${author}%`) });
+    const commentsDislikes = await Comment.findBy({ dislikes: Like(`%${author}%`) });
     for (const comment of commentsDislikes) {
-        comment.dislike = comment.dislike.filter(opt => opt !== author);
+        comment.dislikes = comment.dislikes.filter(opt => opt !== author);
         await comment.save();
     }
 };

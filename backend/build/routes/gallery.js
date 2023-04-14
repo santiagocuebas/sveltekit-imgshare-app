@@ -13,8 +13,8 @@ router.get('/', async (_req, res) => {
             id: true,
             filename: true,
             title: true,
-            like: true,
-            dislike: true,
+            likes: true,
+            dislikes: true,
             views: true,
             totalComments: true
         }
@@ -62,8 +62,8 @@ router.get('/order/:order', async (req, res) => {
             id: true,
             filename: true,
             title: true,
-            like: true,
-            dislike: true,
+            likes: true,
+            dislikes: true,
             views: true,
             totalComments: true
         }

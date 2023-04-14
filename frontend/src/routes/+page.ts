@@ -4,7 +4,9 @@ import { DIR } from '$lib/config.js';
 import type { IImage } from '$lib/global';
 
 export const load = (async () => {
-	const data = await axios.get(`${DIR}/api/gallery`).then(res => res.data);
+	const data = await axios
+		.get(`${DIR}/api/gallery`)
+		.then(res => res.data);
 
 	return {
 		images: data as IImage[]

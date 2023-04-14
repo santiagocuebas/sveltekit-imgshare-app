@@ -1,7 +1,7 @@
 <script lang="ts">
   import axios from 'axios';
 	import type { PageData } from './$types';
-  import type { ILink, IUserExtended } from '$lib/global';
+  import type { IUserExtended } from '$lib/global';
 	import { DIR } from '$lib/config.js';
 	import Gallery from '$lib/components/Gallery.svelte';
   import BoxGallery from '$lib/components/BoxGallery.svelte';
@@ -16,7 +16,6 @@
 	export let data: PageData;
 
 	let selectUser: IUserExtended | null = null;
-	let linksUser: ILink[];
 	let alert = false;
 	let className: string;
 	let text: string;
@@ -33,9 +32,7 @@
 
 		show = true;
 
-		setTimeout(() => {
-			show = false;
-		}, 3000);
+		setTimeout(() => show = false, 3000);
 	}
 
 	let deleteUser = async () => {
@@ -49,7 +46,7 @@
 			withCredentials: true
 		}).then(res => res.data);
 
-		data.users= data.users.filter((user: IUserExtended) => user.username !== username);
+		if (resData.change) data.users= data.users.filter((user: IUserExtended) => user.username !== username);
 
 		showBox(resData.change);
 	};
@@ -65,11 +62,17 @@
 
 {#if selectUser}
 	<div class="user-box">
-		<UserData username={selectUser.username} email={selectUser.email} avatar={selectUser.avatar} bind:role={selectUser.role} createdAt={selectUser.createdAt} />
+		<UserData bind:user={selectUser} />
 		<div class="user-box-line"></div>
-		<UserOption username={selectUser.username} bind:description={selectUser.description} bind:links={linksUser} showBox={showBox} />
+		<UserOption bind:user={selectUser} showBox={showBox} />
 		<div class="user-box-line"></div>
-		<UserChange username={selectUser.username} bind:role={selectUser.role} bind:myRole={data.user.role} bind:alert={alert} showBox={showBox} />
+		<UserChange
+			username={selectUser.username}
+			bind:role={selectUser.role}
+			bind:myRole={data.user.role}
+			bind:alert={alert}
+			showBox={showBox}
+		/>
 		<button class="close-user" on:click|preventDefault={() => selectUser = null}>
 			<i class="fa-solid fa-xmark"></i>
 		</button>
@@ -80,7 +83,7 @@
 	<NavAdmin bind:users={data.users} />
 	<BoxGallery className='image-cell-user'>
 		{#each data.users as user (user.username)}
-			<UserCell bind:links={linksUser} bind:selectUser={selectUser} user={user} />
+			<UserCell on:mousedown={() => selectUser = user} user={user} />
 		{/each}
 	</BoxGallery>
 </Gallery>

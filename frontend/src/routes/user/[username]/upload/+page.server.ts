@@ -11,10 +11,9 @@ export const load = (async ({ locals, params }) => {
 		throw redirect(307, `/user/${locals.user.username}/upload`);
 	}
 
-	const data = await axios({
-		method: 'POST',
-		url: `${DIR}/api/user/${locals.user.username}/upload`
-	}).then(res => res.data);
+	const data = await axios
+		.post(`${DIR}/api/user/${locals.user.username}/upload`)
+		.then(res => res.data);
 
 	return {
 		images: data.images as IImage[]

@@ -1,15 +1,14 @@
 <script lang="ts">
   import axios from "axios";
-  import type { ILink } from "$lib/global";
+  import type { ILink, IUserExtended } from "$lib/global";
 	import { DIR } from '$lib/config.js';
 	import { handleRequest } from "$lib/services/services";
 
-	export let username: string;
-	export let description: string;
-	export let links: ILink[];
+	export let user: IUserExtended;
 	export let showBox: (value: boolean) => void;
-  
+
 	let visibility = false;
+	let links: ILink[] = JSON.parse(user.links);
   
   async function handleSubmit(this: HTMLFormElement) {
 		visibility = false;
@@ -22,12 +21,12 @@
 	async function deleteLink(this: HTMLElement) {
 		const data = await axios({
 			method: 'DELETE',
-			url: `${DIR}/api/admin/${username}/link`,
+			url: `${DIR}/api/admin/${user.username}/link`,
 			data: { link: `${this.id}` },
 			withCredentials: true
 		}).then(res => res.data);
 
-		links = links.filter((link: any) => link.title !== this.id);
+		if (data.change) links = links.filter((link: any) => link.title !== this.id);
 		
 		showBox(data.change);
 	}
@@ -36,8 +35,8 @@
 <div class="user-box-option">
   <div class="user-box-option">
     <h6>Description:</h6>
-      <form action="{DIR}/api/admin/{username}/description"  method='POST'  on:submit|preventDefault={handleSubmit}>
-        <textarea class="user-box-description" name="description" spellcheck="false" autocomplete="off" maxlength="4200" bind:value={description} on:focus={() => visibility = true}></textarea>
+      <form action="{DIR}/api/admin/{user.username}/description" method='POST' on:submit|preventDefault={handleSubmit}>
+        <textarea class="user-box-description" name="description" spellcheck="false" autocomplete="off" maxlength="4200" bind:value={user.description} on:focus={() => visibility = true}></textarea>
         {#if visibility}
         <button on:click|preventDefault={() => visibility = false}>Cancel</button>
         <button class="blue">Done</button>

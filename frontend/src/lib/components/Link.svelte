@@ -1,10 +1,11 @@
 <script lang="ts">
   import axios from "axios";
 	import { DIR } from '$lib/config.js';
+  import type { ILink } from "$lib/global";
 
   export let title: string;
   export let url: string;
-  export let links: any[];
+  export let links: ILink[];
 
   const handleDelete = async () => {
     const data = await axios({
@@ -14,9 +15,7 @@
       data: { title, url }
     }).then(res => res.data);
 
-    links = links.filter(link => link.title !== title);
-
-    console.log(data);
+    if (data.change) links = links.filter(link => link.title !== title);
   };
 </script>
 

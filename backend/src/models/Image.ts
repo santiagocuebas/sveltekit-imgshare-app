@@ -23,5 +23,5 @@ export class Image extends Content implements IImage {
 	public totalComments!: number;
 	
 	@Column('simple-array')
-	public favorite!: string[];
+	public favorites!: string[];
 }

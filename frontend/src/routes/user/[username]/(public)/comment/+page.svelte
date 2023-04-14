@@ -9,7 +9,12 @@
 </script>
 
 <Gallery className='gallery-user'>
-	<NavUser innerText='COMMENTS' username={data.foreignUser.username} author={data.user?.username} bind:images={data.images} />
+	<NavUser
+		innerText='COMMENTS'
+		username={data.foreignUser.username}
+		author={data.user?.username}
+		bind:images={data.images}
+	/>
 	<BoxGallery className='image-row'>
 		{#if data.comments.length > 0}
 			{#each data.comments as comment}

@@ -18,9 +18,9 @@ export const postUpload = async (req, res) => {
         avatar: req.user.avatar,
         title: req.body.title,
         description: req.body.description,
-        like: [],
-        dislike: [],
-        favorite: []
+        likes: [],
+        dislikes: [],
+        favorites: []
     }).save();
     return res.json({ url: '/' + image.id });
 };
@@ -50,17 +50,17 @@ export const postLike = async (req, res) => {
     // Update like and dislike
     if (image !== null) {
         if (req.body.like === 'like') {
-            const [actLike, actDislike] = catchLike(image.like, image.dislike, username);
-            image.like = actLike;
-            image.dislike = actDislike;
+            const [actLike, actDislike] = catchLike(image.likes, image.dislikes, username);
+            image.likes = actLike;
+            image.dislikes = actDislike;
         }
         else if (req.body.like === 'dislike') {
-            const [actDislike, actLike] = catchLike(image.dislike, image.like, username);
-            image.like = actLike;
-            image.dislike = actDislike;
+            const [actDislike, actLike] = catchLike(image.dislikes, image.likes, username);
+            image.likes = actLike;
+            image.dislikes = actDislike;
         }
         await image.save();
-        return res.json({ like: image.like, dislike: image.dislike });
+        return res.json({ likes: image.likes, dislikes: image.dislikes });
     }
     return res.json(image);
 };
@@ -69,14 +69,14 @@ export const postFavorite = async (req, res) => {
     const image = await Image.findOneBy({ id: req.params.imageId });
     // Update favorite
     if (image !== null) {
-        if (image.favorite.includes(username)) {
-            image.favorite = image.favorite.filter(item => item !== username);
+        if (image.favorites.includes(username)) {
+            image.favorites = image.favorites.filter(item => item !== username);
         }
         else {
-            image.favorite = [username, ...image.favorite];
+            image.favorites = [username, ...image.favorites];
         }
         await image.save();
-        return res.json({ favorite: image.favorite });
+        return res.json({ favorites: image.favorites });
     }
     return res.json(image);
 };
@@ -93,8 +93,8 @@ export const postComment = async (req, res) => {
             author: req.user.username,
             avatar: req.user.avatar,
             comment,
-            like: [],
-            dislike: []
+            likes: [],
+            dislikes: []
         }).save();
         // Update total comments
         image.totalComments++;

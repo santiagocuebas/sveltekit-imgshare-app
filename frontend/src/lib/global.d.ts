@@ -22,8 +22,8 @@ interface IContent {
 	id: string;
 	author: string;
 	avatar: string;
-	like: string[];
-	dislike: string[];
+	likes: string[];
+	dislikes: string[];
 	createdAt: Date;
 }
 
@@ -34,7 +34,7 @@ export interface IImage extends IContent {
 	isPublic: boolean;
 	views: number;
 	totalComments: number;
-	favorite: string[];
+	favorites: string[];
 }
 
 export interface IComment extends IContent {

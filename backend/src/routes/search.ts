@@ -18,8 +18,8 @@ router.get('/:searchParams', async (req, res) => {
 			id: true,
 			filename: true,
 			title: true,
-			like: true,
-			dislike: true,
+			likes: true,
+			dislikes: true,
 			views: true,
 			totalComments: true
 		}

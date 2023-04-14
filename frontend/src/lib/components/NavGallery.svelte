@@ -15,10 +15,9 @@
 		selectText = this.innerText;
 		visible = false;
 
-		images = await axios({
-			method: 'GET',
-			url: `${DIR}/api/gallery/order/${selectText}`
-		}).then(res => res.data);
+		images = await axios
+			.get(`${DIR}/api/gallery/order/${selectText}`)
+			.then(res => res.data);
 	};
 </script>
 

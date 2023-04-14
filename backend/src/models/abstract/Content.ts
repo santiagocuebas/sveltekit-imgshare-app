@@ -19,10 +19,10 @@ export abstract class Content extends BaseEntity implements IContent {
 	public avatar!: string;
 
 	@Column('simple-array')
-	public like!: string[];
+	public likes!: string[];
 
 	@Column('simple-array')
-	public dislike!: string[];
+	public dislikes!: string[];
 
 	@CreateDateColumn()
 	public createdAt!: Date;

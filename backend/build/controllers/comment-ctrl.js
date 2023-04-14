@@ -17,17 +17,17 @@ export const postLike = async (req, res) => {
     // Update like and dislike
     if (comment !== null) {
         if (req.body.like === 'like') {
-            const [actLike, actDislike] = catchLike(comment.like, comment.dislike, username);
-            comment.like = actLike;
-            comment.dislike = actDislike;
+            const [actLike, actDislike] = catchLike(comment.likes, comment.dislikes, username);
+            comment.likes = actLike;
+            comment.dislikes = actDislike;
         }
         else if (req.body.like === 'dislike') {
-            const [actDislike, actLike] = catchLike(comment.dislike, comment.like, username);
-            comment.like = actLike;
-            comment.dislike = actDislike;
+            const [actDislike, actLike] = catchLike(comment.dislikes, comment.likes, username);
+            comment.likes = actLike;
+            comment.dislikes = actDislike;
         }
         await comment.save();
-        return res.json({ like: comment.like, dislike: comment.dislike });
+        return res.json({ likes: comment.likes, dislikes: comment.dislikes });
     }
     return res.json(comment);
 };

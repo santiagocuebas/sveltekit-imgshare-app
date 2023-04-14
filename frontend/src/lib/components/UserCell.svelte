@@ -1,19 +1,12 @@
 <script lang="ts">
 	import { format } from "timeago.js";
-	import type { IUserExtended, ILink } from "$lib/global";
+	import type { IUserExtended } from "$lib/global";
 	import { DIR } from '$lib/config.js';
 
 	export let user: IUserExtended;
-	export let selectUser: IUserExtended | null;
-	export let links: ILink[];
-
-	const handleUser = () => {
-		selectUser = user;
-		links = JSON.parse(user.links);
-	};
 </script>
 
-<div class="user-cell" on:mousedown={handleUser}>
+<div class="user-cell" on:mousedown>
 	<img src="{DIR}/uploads/avatars/{user.avatar}" alt="">
 	<span></span>
 	<div>
