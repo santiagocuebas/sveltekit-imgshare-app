@@ -10,7 +10,9 @@ export const isValidToken: Direction = async (req, res, next) => {
 		const decoded = jwt.verify(token, JWT) as JwtPayload;
 		const user = await User.findOneBy({ username: decoded.user.username });
 
-		if (user === null) throw 'Error';
+		if (user === null) {
+			throw 'Error';
+		}
 
 		req.user = user;
 
@@ -26,9 +28,11 @@ export const isNotValidToken: Direction = async (req, res, next) => {
 		const decoded = jwt.verify(token, JWT) as JwtPayload;
 		const user = await User.findOneBy({ username: decoded.id });
 	
-		if (user === null) throw 'Error';
+		if (user === null) {
+			throw 'Error';
+		}
 	
-		return res.json({ redirect: true, url: user.username });
+		return res.json({ redirect: true, url: '/' + user.username });
 	} catch {
 		return next();
 	}
@@ -42,7 +46,7 @@ export const isAdminToken: Direction = async (req, res, next) => {
 	return res.json({ redirect: true, url: '/' });
 };
 
-export const isNotProperUser: Direction = async (req, res, next) => {
+export const isValidUser: Direction = async (req, res, next) => {
 	const user = await User.findOneBy({ username: req.params.username });
 
 	if (user && req.user.username !== user.username && user.role !== UserRole.SUPER && (user.role !== UserRole.ADMIN || req.user.role === UserRole.SUPER)) {
@@ -60,7 +64,9 @@ export const getDataToken: Direction = async (req, _res, next) => {
 		const decoded = jwt.verify(token, JWT) as JwtPayload;
 		const user = await User.findOneBy({ username: decoded.user.username });
 
-		if (user === null) throw 'Error';
+		if (user === null) {
+			throw 'Error';
+		}
 
 		req.user = user as User;
 		return next();

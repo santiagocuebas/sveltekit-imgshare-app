@@ -2,11 +2,7 @@ import { Router } from 'express';
 import { Like } from 'typeorm';
 import { adminCtrl } from '../controllers/index.js';
 import { UserRole } from '../enums.js';
-import {
-	isValidToken,
-	isAdminToken,
-	isNotProperUser
-} from '../middleware/logged.js';
+import { isValidToken, isAdminToken, isValidUser } from '../middleware/logged.js';
 import { User } from '../models/index.js';
 
 const router = Router();
@@ -59,12 +55,12 @@ router.get('/:username', async (req, res) => {
 	return res.json({ users });
 });
 
-router.post('/:username/description', isNotProperUser, adminCtrl.postDescription);
+router.post('/:username/description', isValidUser, adminCtrl.postDescription);
 
-router.post('/:username/role', isNotProperUser, adminCtrl.postRole);
+router.post('/:username/role', isValidUser, adminCtrl.postRole);
 
-router.delete('/:username', isNotProperUser, adminCtrl.deleteUser);
+router.delete('/:username', isValidUser, adminCtrl.deleteUser);
 
-router.delete('/:username/link', isNotProperUser, adminCtrl.deleteLink);
+router.delete('/:username/link', isValidUser, adminCtrl.deleteLink);
 
 export default router;

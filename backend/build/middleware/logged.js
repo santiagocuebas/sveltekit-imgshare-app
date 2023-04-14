@@ -7,8 +7,9 @@ export const isValidToken = async (req, res, next) => {
         const token = req.cookies['authenticate'];
         const decoded = jwt.verify(token, JWT);
         const user = await User.findOneBy({ username: decoded.user.username });
-        if (user === null)
+        if (user === null) {
             throw 'Error';
+        }
         req.user = user;
         return next();
     }
@@ -21,9 +22,10 @@ export const isNotValidToken = async (req, res, next) => {
         const token = req.cookies['authenticate'];
         const decoded = jwt.verify(token, JWT);
         const user = await User.findOneBy({ username: decoded.id });
-        if (user === null)
+        if (user === null) {
             throw 'Error';
-        return res.json({ redirect: true, url: user.username });
+        }
+        return res.json({ redirect: true, url: '/' + user.username });
     }
     catch {
         return next();
@@ -35,7 +37,7 @@ export const isAdminToken = async (req, res, next) => {
     }
     return res.json({ redirect: true, url: '/' });
 };
-export const isNotProperUser = async (req, res, next) => {
+export const isValidUser = async (req, res, next) => {
     const user = await User.findOneBy({ username: req.params.username });
     if (user && req.user.username !== user.username && user.role !== UserRole.SUPER && (user.role !== UserRole.ADMIN || req.user.role === UserRole.SUPER)) {
         req.foreignUser = user;
@@ -48,8 +50,9 @@ export const getDataToken = async (req, _res, next) => {
         const token = req.cookies['authenticate'];
         const decoded = jwt.verify(token, JWT);
         const user = await User.findOneBy({ username: decoded.user.username });
-        if (user === null)
+        if (user === null) {
             throw 'Error';
+        }
         req.user = user;
         return next();
     }
