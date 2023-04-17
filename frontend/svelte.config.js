@@ -8,12 +8,7 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter({
-      out: 'build',
-      precompress: false,
-      envPrefix: '',
-      polyfill: true
-    })
+		adapter: adapter()
 	}
 };
 
