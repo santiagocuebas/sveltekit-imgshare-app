@@ -23,11 +23,8 @@ export const isValidToken: Direction = async (req, res, next) => {
 export const isNotValidToken: Direction = async (req, res, next) => {
 	try {
 		const token = req.cookies['authenticate'] as string;
-		console.log(token);
 		const decoded = jwt.verify(token, JWT) as JwtPayload;
-		console.log(decoded);
 		const user = await User.findOneBy({ username: decoded.user.username });
-		console.log(user);
 	
 		if (user === null) throw 'Error';
 	

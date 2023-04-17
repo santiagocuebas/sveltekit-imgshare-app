@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { serialize } from 'cookie';
-import { JWT, NODE_ENV } from '../config.js';
+import { JWT, NODE_ENV, DOMAIN } from '../config.js';
 import { User } from '../models/index.js';
 
 export const getSerializedCookie = ({ username, email, avatar, role }: User): string => {
@@ -15,8 +15,9 @@ export const getSerializedCookie = ({ username, email, avatar, role }: User): st
 	}, JWT);
 
 	return serialize('authenticate', token, {
+		domain: DOMAIN,
 		httpOnly: true,
-		maxAge: 1000 * 60 * 60 * 24 * 15,
+		maxAge: 60 * 60 * 24 * 15,
 		path: '/',
 		sameSite: 'lax',
 		secure: NODE_ENV === 'production'
