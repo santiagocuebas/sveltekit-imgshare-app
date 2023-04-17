@@ -1,7 +1,6 @@
 import { c as create_ssr_component, s as setContext, v as validate_component, m as missing_component, n as noop, a as safe_not_equal } from './chunks/index2-deb300cf.js';
 import { e as error, j as json, t as text, R as Redirect, H as HttpError, A as ActionFailure } from './chunks/index-1dce6fb5.js';
 import { s as set_public_env, p as public_env, a as set_private_env } from './chunks/shared-server-f2d06a89.js';
-import { parse as parse$1, serialize } from 'cookie';
 
 let base = "";
 let assets = base;
@@ -188,7 +187,7 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "1j2xik6"
+  version_hash: "evb915"
 };
 function get_hooks() {
   return import('./chunks/hooks.server-d4e06d95.js');
@@ -267,12 +266,10 @@ function method_not_allowed(mod, method) {
   });
 }
 function allowed_methods(mod) {
-  const allowed = [];
-  for (const method in ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]) {
-    if (method in mod)
-      allowed.push(method);
-  }
-  if (mod.GET || mod.HEAD)
+  const allowed = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"].filter(
+    (method) => method in mod
+  );
+  if ("GET" in mod || "HEAD" in mod)
     allowed.push("HEAD");
   return allowed;
 }
@@ -1440,7 +1437,7 @@ function sha256(data) {
   if (!key[0])
     precompute();
   const out = init.slice(0);
-  const array2 = encode(data);
+  const array2 = encode$1(data);
   for (let i = 0; i < array2.length; i += 16) {
     const w = array2.subarray(i, i + 16);
     let tmp;
@@ -1521,7 +1518,7 @@ function reverse_endianness(bytes) {
     bytes[i + 3] = a;
   }
 }
-function encode(str) {
+function encode$1(str) {
   const encoded = encoder$2.encode(str);
   const length = encoded.length * 8;
   const size = 512 * Math.ceil((length + 65) / 512);
@@ -2718,9 +2715,150 @@ function exec(match, params, matchers) {
     return;
   return result;
 }
+/*!
+ * cookie
+ * Copyright(c) 2012-2014 Roman Shtylman
+ * Copyright(c) 2015 Douglas Christopher Wilson
+ * MIT Licensed
+ */
+var parse_1 = parse$1;
+var serialize_1 = serialize;
+var __toString = Object.prototype.toString;
+var fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/;
+function parse$1(str, options2) {
+  if (typeof str !== "string") {
+    throw new TypeError("argument str must be a string");
+  }
+  var obj = {};
+  var opt = options2 || {};
+  var dec = opt.decode || decode;
+  var index = 0;
+  while (index < str.length) {
+    var eqIdx = str.indexOf("=", index);
+    if (eqIdx === -1) {
+      break;
+    }
+    var endIdx = str.indexOf(";", index);
+    if (endIdx === -1) {
+      endIdx = str.length;
+    } else if (endIdx < eqIdx) {
+      index = str.lastIndexOf(";", eqIdx - 1) + 1;
+      continue;
+    }
+    var key2 = str.slice(index, eqIdx).trim();
+    if (void 0 === obj[key2]) {
+      var val = str.slice(eqIdx + 1, endIdx).trim();
+      if (val.charCodeAt(0) === 34) {
+        val = val.slice(1, -1);
+      }
+      obj[key2] = tryDecode(val, dec);
+    }
+    index = endIdx + 1;
+  }
+  return obj;
+}
+function serialize(name, val, options2) {
+  var opt = options2 || {};
+  var enc = opt.encode || encode;
+  if (typeof enc !== "function") {
+    throw new TypeError("option encode is invalid");
+  }
+  if (!fieldContentRegExp.test(name)) {
+    throw new TypeError("argument name is invalid");
+  }
+  var value = enc(val);
+  if (value && !fieldContentRegExp.test(value)) {
+    throw new TypeError("argument val is invalid");
+  }
+  var str = name + "=" + value;
+  if (null != opt.maxAge) {
+    var maxAge = opt.maxAge - 0;
+    if (isNaN(maxAge) || !isFinite(maxAge)) {
+      throw new TypeError("option maxAge is invalid");
+    }
+    str += "; Max-Age=" + Math.floor(maxAge);
+  }
+  if (opt.domain) {
+    if (!fieldContentRegExp.test(opt.domain)) {
+      throw new TypeError("option domain is invalid");
+    }
+    str += "; Domain=" + opt.domain;
+  }
+  if (opt.path) {
+    if (!fieldContentRegExp.test(opt.path)) {
+      throw new TypeError("option path is invalid");
+    }
+    str += "; Path=" + opt.path;
+  }
+  if (opt.expires) {
+    var expires = opt.expires;
+    if (!isDate(expires) || isNaN(expires.valueOf())) {
+      throw new TypeError("option expires is invalid");
+    }
+    str += "; Expires=" + expires.toUTCString();
+  }
+  if (opt.httpOnly) {
+    str += "; HttpOnly";
+  }
+  if (opt.secure) {
+    str += "; Secure";
+  }
+  if (opt.priority) {
+    var priority = typeof opt.priority === "string" ? opt.priority.toLowerCase() : opt.priority;
+    switch (priority) {
+      case "low":
+        str += "; Priority=Low";
+        break;
+      case "medium":
+        str += "; Priority=Medium";
+        break;
+      case "high":
+        str += "; Priority=High";
+        break;
+      default:
+        throw new TypeError("option priority is invalid");
+    }
+  }
+  if (opt.sameSite) {
+    var sameSite = typeof opt.sameSite === "string" ? opt.sameSite.toLowerCase() : opt.sameSite;
+    switch (sameSite) {
+      case true:
+        str += "; SameSite=Strict";
+        break;
+      case "lax":
+        str += "; SameSite=Lax";
+        break;
+      case "strict":
+        str += "; SameSite=Strict";
+        break;
+      case "none":
+        str += "; SameSite=None";
+        break;
+      default:
+        throw new TypeError("option sameSite is invalid");
+    }
+  }
+  return str;
+}
+function decode(str) {
+  return str.indexOf("%") !== -1 ? decodeURIComponent(str) : str;
+}
+function encode(val) {
+  return encodeURIComponent(val);
+}
+function isDate(val) {
+  return __toString.call(val) === "[object Date]" || val instanceof Date;
+}
+function tryDecode(str, decode2) {
+  try {
+    return decode2(str);
+  } catch (e) {
+    return str;
+  }
+}
 function get_cookies(request, url, trailing_slash) {
   const header = request.headers.get("cookie") ?? "";
-  const initial_cookies = parse$1(header, { decode: (value) => value });
+  const initial_cookies = parse_1(header, { decode: (value) => value });
   const normalized_url = normalize_path(url.pathname, trailing_slash);
   const default_path = normalized_url.split("/").slice(0, -1).join("/") || "/";
   const new_cookies = {};
@@ -2744,7 +2882,7 @@ function get_cookies(request, url, trailing_slash) {
         return c.value;
       }
       const decoder = opts?.decode || decodeURIComponent;
-      const req_cookies = parse$1(header, { decode: decoder });
+      const req_cookies = parse_1(header, { decode: decoder });
       const cookie = req_cookies[name];
       return cookie;
     },
@@ -2753,7 +2891,7 @@ function get_cookies(request, url, trailing_slash) {
      */
     getAll(opts) {
       const decoder = opts?.decode || decodeURIComponent;
-      const cookies2 = parse$1(header, { decode: decoder });
+      const cookies2 = parse_1(header, { decode: decoder });
       for (const c of Object.values(new_cookies)) {
         if (domain_matches(url.hostname, c.options.domain) && path_matches(url.pathname, c.options.path)) {
           cookies2[c.name] = c.value;
@@ -2794,7 +2932,7 @@ function get_cookies(request, url, trailing_slash) {
      * @param {import('cookie').CookieSerializeOptions} opts
      */
     serialize(name, value, opts) {
-      return serialize(name, value, {
+      return serialize_1(name, value, {
         ...defaults,
         ...opts
       });
@@ -2815,7 +2953,7 @@ function get_cookies(request, url, trailing_slash) {
       combined_cookies[cookie.name] = encoder2(cookie.value);
     }
     if (header2) {
-      const parsed = parse$1(header2, { decode: (value) => value });
+      const parsed = parse_1(header2, { decode: (value) => value });
       for (const name in parsed) {
         combined_cookies[name] = parsed[name];
       }
@@ -2843,7 +2981,7 @@ function path_matches(path, constraint) {
 function add_cookies_to_headers(headers, cookies) {
   for (const new_cookie of cookies) {
     const { name, value, options: options2 } = new_cookie;
-    headers.append("set-cookie", serialize(name, value, options2));
+    headers.append("set-cookie", serialize_1(name, value, options2));
   }
 }
 var setCookieExports = {};
@@ -3420,13 +3558,19 @@ class Server {
     set_private_env(prv);
     set_public_env(pub);
     if (!this.#options.hooks) {
-      const module = await get_hooks();
-      this.#options.hooks = {
-        handle: module.handle || (({ event, resolve }) => resolve(event)),
-        // @ts-expect-error
-        handleError: module.handleError || (({ error: error2 }) => console.error(error2?.stack)),
-        handleFetch: module.handleFetch || (({ request, fetch: fetch2 }) => fetch2(request))
-      };
+      try {
+        const module = await get_hooks();
+        this.#options.hooks = {
+          handle: module.handle || (({ event, resolve }) => resolve(event)),
+          // @ts-expect-error
+          handleError: module.handleError || (({ error: error2 }) => console.error(error2?.stack)),
+          handleFetch: module.handleFetch || (({ request, fetch: fetch2 }) => fetch2(request))
+        };
+      } catch (error2) {
+        {
+          throw error2;
+        }
+      }
     }
   }
   /**

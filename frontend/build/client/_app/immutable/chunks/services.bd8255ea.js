@@ -1,0 +1,1 @@
+import{a}from"./axios.707ed124.js";function r(t){return a({method:t.method,url:t.action,data:t,withCredentials:!0}).then(e=>e.data)}function h(t,e){return a({method:"POST",url:t,data:{like:e},withCredentials:!0}).then(n=>n.data)}export{h as a,r as h};

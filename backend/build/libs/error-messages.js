@@ -1,7 +1,8 @@
 export const getErrorMessage = (errors) => {
     const message = {};
     for (const e of errors) {
-        message[e.param] = e.msg;
+        if (e.type === 'field')
+            message[e.path] = e.msg;
     }
     return message;
 };

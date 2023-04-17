@@ -1,1 +1,0 @@
-import{a as e}from"./axios.707ed124.js";async function d(t){return await e({method:t.method,url:t.action,data:t,withCredentials:!0}).then(a=>a.data)}async function r(t,a){return await e({method:"POST",url:t,data:{like:a},withCredentials:!0}).then(n=>n.data)}export{r as a,d as h};

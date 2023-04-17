@@ -12,7 +12,7 @@ export const handle = (async ({ event, resolve }) => {
     ) throw redirect(307, '/');
 
     try {
-      const decoded = jwt.verify(token, env.JWT) as jwt.JwtPayload;
+      const decoded = jwt.verify(token, env.JWT as string) as jwt.JwtPayload;
       event.locals.user = decoded.user;
     } catch {
       event.cookies.delete('authenticate');

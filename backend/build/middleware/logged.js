@@ -19,8 +19,11 @@ export const isValidToken = async (req, res, next) => {
 export const isNotValidToken = async (req, res, next) => {
     try {
         const token = req.cookies['authenticate'];
+        console.log(token);
         const decoded = jwt.verify(token, JWT);
+        console.log(decoded);
         const user = await User.findOneBy({ username: decoded.user.username });
+        console.log(user);
         if (user === null)
             throw 'Error';
         return res.json({ redirect: true, url: '/' + user.username });
