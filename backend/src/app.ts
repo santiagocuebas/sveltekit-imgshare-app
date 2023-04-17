@@ -3,14 +3,11 @@ import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import multer from 'multer';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
 import { ORIGIN } from './config.js';
 import * as routes from './routes/index.js';
 
 // Initializations
 const app = express();
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Middlewares
 app.use(morgan('dev'));
@@ -25,10 +22,10 @@ app.use(cors({
 }));
 
 // Uploads Directory
-app.use(multer({ dest: join(__dirname, '../uploads/temp') }).single('image'));
+app.use(multer({ dest: 'uploads/temp' }).single('image'));
 
 // Public Directory
-app.use('/uploads', express.static(join(__dirname, '../uploads')));
+app.use('/uploads', express.static('uploads'));
 
 // Express Routes
 app.use('/api/admin', routes.Admin);

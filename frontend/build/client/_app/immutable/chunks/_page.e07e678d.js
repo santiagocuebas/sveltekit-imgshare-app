@@ -1,0 +1,1 @@
+import{a as t}from"./axios.707ed124.js";import{D as e}from"./config.d6051678.js";const o=async()=>({images:await t.get(`${e}/api/gallery`).then(a=>a.data)}),n=Object.freeze(Object.defineProperty({__proto__:null,load:o},Symbol.toStringTag,{value:"Module"}));export{n as _,o as l};

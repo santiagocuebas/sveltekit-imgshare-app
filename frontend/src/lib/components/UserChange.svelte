@@ -23,7 +23,7 @@
 	}
 
 	async function deleteUser() {
-		if (role !== UserRole.ADMIN) {
+		if (role !== UserRole.ADMIN || myRole === UserRole.SUPER) {
 			alert = true;
 		}
 	}
