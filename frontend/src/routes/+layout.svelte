@@ -12,11 +12,8 @@
 	let pathname: string;
 	
 	async function changeVisibility(e: WheelEvent) {
-		if (e.deltaY <=  0) {
-			visibleFooter = true;
-		} else {
-			visibleFooter = false;
-		}
+		if (e.deltaY <=  0) visibleFooter = true;
+		else visibleFooter = false;
 	}
 
 	beforeUpdate(() => pathname = window.location.pathname);

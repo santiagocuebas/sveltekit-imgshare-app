@@ -44,7 +44,7 @@
 	async function handleLogout() {
 		const data = await axios({
 			method: 'POST',
-			url: '/api/logout',
+			url: DIR + '/api/auth/logout',
 			withCredentials: true
 		}).then(res => res.data);
 
