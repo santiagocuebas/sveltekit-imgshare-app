@@ -64,6 +64,7 @@
 		height: min-content;
 		background-color: #ffffff;
 		box-shadow: 0 2px 10px #666666;
+		container: imagebox / inline-size;
 	}
 
 	.image-edit {
@@ -173,6 +174,12 @@
 	@media (max-width: 1040px) {
 		.image-box {
 			grid-column: 1 / span 6;
+		}
+	}
+
+	@container imagebox (max-width: 768px) {
+		.image-content {
+			width: 100%;
 		}
 	}
 </style>
