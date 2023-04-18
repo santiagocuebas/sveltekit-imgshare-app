@@ -1,1 +1,0 @@
-import{a as o}from"./axios.707ed124.js";import{D as r}from"./config.d6051678.js";const s=async({url:a})=>{const e=a.searchParams.get("q");return{images:(await o.get(`${r}/api/search/${e}`).then(t=>t.data)).images}},m=Object.freeze(Object.defineProperty({__proto__:null,load:s},Symbol.toStringTag,{value:"Module"}));export{m as _,s as l};

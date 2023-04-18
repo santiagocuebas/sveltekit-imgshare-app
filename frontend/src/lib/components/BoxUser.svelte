@@ -41,19 +41,14 @@
 		}
 	];
 
-	async function handleLogout(e: Event) {
-		const element = e.currentTarget as HTMLElement;
-		const url = element.getAttribute('href') as string;
-
+	async function handleLogout() {
 		const data = await axios({
 			method: 'POST',
-			url,
+			url: '/api/logout',
 			withCredentials: true
 		}).then(res => res.data);
 
-		visible = false;
-
-		if (data.url) window.location.href = '/';
+		if (data.redirect) window.location.href = '/';
 	}
 </script>
 
@@ -79,7 +74,7 @@
 				<li>{link.name}</li>
 			</a>
 		{/each}
-			<a href='{DIR}/api/auth/logout' on:click|preventDefault={handleLogout}>
+			<a href='/logout' on:click|preventDefault={handleLogout}>
 				<i class='fa-solid fa-right-from-bracket'></i>
 				<li>Logout</li>
 			</a>
