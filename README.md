@@ -5,13 +5,13 @@ imgShare is a web application to share images, comments, and more.
 ![image](/docs/screenshot3.png)
 ![image](/docs/screenshot4.png)
 
-# Enviroment Variables
+## Enviroment Variables
 ### Client
-* `PORT`, the http client port, default is `4200`.
+* `PORT`, the http client port, default is `3000`.
 * `PUBLIC_DIR`, the http server port.
 * `JWT`, secret JWT key.
 ### Server
-* `PORT`, the http server port, default is `3000`.
+* `PORT`, the http server port, default is `4200`.
 * `DB_HOST`, the MySQL database host.
 * `DB_PORT`, the MySQL database port.
 * `DB_USER`, the MySQL database username.
@@ -22,19 +22,24 @@ imgShare is a web application to share images, comments, and more.
 * `NODE_ENV`, indicates if the cookie is secure.
 * `DOMAIN`, domain of the server cookie.
 
-# Installation
-git clone https://github.com/santiagocuebas/sveltekit-advanced-chat-app\
-cd backend\
-npm start\
-cd frontend\
+## Installation
+```
+git clone https://github.com/santiagocuebas/sveltekit-advanced-chat-app
+cd sveltekit-advanced-chat-app
+cd backend
+pnpm install
 npm start
+cd frontend
+pnpm install
+npm start
+```
 
-# Future Improvements
+## Future Improvements
 - [ ] Add Nodemailer for transactional emails.
 - [ ] Implement Tailwind.css
 - [ ] Update syntax a Svelte 5
 
-# Tools
+## Tools
 * Nodejs
 * MySQL
 * Express
