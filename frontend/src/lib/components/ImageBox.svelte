@@ -20,7 +20,11 @@
 <div class="image-box">
 	{#if user && (user?.username === image.author || user?.role !== UserRole.EDITOR)}
 		<div class="image-edit">
-			<i class="fa-solid fa-ellipsis" on:mousedown={() => visible = !visible}></i>
+			<i
+				class="fa-solid fa-ellipsis"
+				role="none"
+				on:mousedown={() => visible = !visible}
+			></i>
 			<slot></slot>
 		</div>
 	{/if}

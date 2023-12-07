@@ -32,7 +32,7 @@
 		{#if visible}
 			<ul use:clickOutside on:outclick={() => visible = false}>
 				{#each choiceText as text}
-					<li on:mousedown={handleSubmit}>
+					<li role="none" on:mousedown={handleSubmit}>
 						{text}
 					</li>
 				{/each}

@@ -20,7 +20,14 @@
 	</form>
 	{#if user}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<img id='nav-avatar' class="nav-avatar" src="{DIR}/uploads/avatars/{user?.avatar}" alt={user?.username} on:click>
+		<img
+			id='nav-avatar'
+			class="nav-avatar"
+			src="{DIR}/uploads/avatars/{user?.avatar}"
+			alt={user?.username}
+			role="none"
+			on:click
+		>
 		<slot></slot>
 	{:else}
 		<div class="nav-sign">

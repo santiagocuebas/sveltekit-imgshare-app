@@ -87,12 +87,12 @@
 			{#if visible}
 			<ul use:clickOutside on:outclick={() => visible = false}>
 				{#if (user.username === comment.author)}
-					<li on:mousedown={focusComment}>
+					<li role="none" on:mousedown={focusComment}>
 						<i class="fa-solid fa-pen"></i>
 						Edit
 					</li>
 				{/if}
-				<li on:mousedown={deleteComment}>
+				<li role="none" on:mousedown={deleteComment}>
 					<i class="fa-solid fa-square-minus"></i>
 					Delete
 				</li>

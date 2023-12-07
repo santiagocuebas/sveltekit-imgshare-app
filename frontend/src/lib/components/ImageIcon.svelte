@@ -69,7 +69,11 @@
 </script>
 
 <div>
-	<i class="fa-solid {selectIcon()} {check ? name : ''}" on:mousedown={id === 'fav' ? handleFavotite : handleLike}></i>
+	<i
+		class="fa-solid {selectIcon()} {check ? name : ''}"
+		role="none"
+		on:mousedown={id === 'fav' ? handleFavotite : handleLike}
+	></i>
 	{count}
 </div>
 

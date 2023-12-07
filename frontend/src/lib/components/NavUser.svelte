@@ -58,7 +58,7 @@
 		{#if visiblePublic}
 			<ul class="left" use:clickOutside on:outclick={() => visiblePublic = false}>
 				{#each choisePublic as choise}
-				<li on:mousedown={changePublic}>{choise}</li>
+				<li role="none" on:mousedown={changePublic}>{choise}</li>
 				{/each}
 			</ul>
 		{/if}
@@ -75,7 +75,7 @@
 		{#if visibleOrder}
 			<ul class="right" use:clickOutside on:outclick={() => visibleOrder = false}>
 				{#each choiseOrder as choise}
-					<li on:mousedown={changeOrder}>{choise}</li>
+					<li role="none" on:mousedown={changeOrder}>{choise}</li>
 				{/each}
 			</ul>
 		{/if}

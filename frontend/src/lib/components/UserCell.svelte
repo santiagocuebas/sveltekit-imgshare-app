@@ -6,7 +6,7 @@
 	export let user: IUserExtended;
 </script>
 
-<div class="user-cell" on:mousedown>
+<div class="user-cell" role="none" on:mousedown>
 	<img src="{DIR}/uploads/avatars/{user.avatar}" alt="">
 	<span></span>
 	<div>

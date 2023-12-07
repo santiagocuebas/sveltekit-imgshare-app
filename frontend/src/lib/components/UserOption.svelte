@@ -49,7 +49,13 @@
       {#each links as link}
         <p title="{link.url}">
           {link.title}
-          <i id={link.title} class="fa-solid fa-xmark" title='delete-link-{link.title}' on:mousedown={deleteLink}></i>
+          <i
+						id={link.title}
+						class="fa-solid fa-xmark"
+						title='delete-link-{link.title}'
+						role="none"
+						on:mousedown={deleteLink}
+					></i>
         </p>
       {/each}
     </div>
