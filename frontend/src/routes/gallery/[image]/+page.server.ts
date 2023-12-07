@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import axios from 'axios';
 import type { PageServerLoad } from './$types';
-import { DIR } from '$lib/config.js';
+// import { DIR } from '$lib/config.js';
 import type { IComment, IImage } from '$lib/global';
 
 export const load = (async ({ params: { image }, cookies }) => {
@@ -9,7 +9,7 @@ export const load = (async ({ params: { image }, cookies }) => {
 
 	const data = await axios({
 		method: 'GET',
-		url: `${DIR}/api/gallery/${image}`,
+		url: `http://localhost:4200/api/gallery/${image}`,
 		headers: { 'Cookie': `authenticate=${token}` }
 	})
 		.then(res => res.data)
