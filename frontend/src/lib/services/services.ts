@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export function handleRequest(form: HTMLFormElement) {
+export async function handleRequest(form: HTMLFormElement) {
 	return axios({
 		method: form.method,
 		url: form.action,
@@ -9,7 +9,7 @@ export function handleRequest(form: HTMLFormElement) {
 	}).then(res => res.data);
 }
 
-export function handleRegister(url: string, like: string) {
+export async function handleRegister(url: string, like: string) {
 	return axios({
 		method: 'POST',
 		url,

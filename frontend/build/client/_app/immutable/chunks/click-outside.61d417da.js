@@ -1,1 +1,0 @@
-function i(t){const e=t.previousElementSibling,c=n=>{!t.contains(n.target)&&!(e!=null&&e.contains(n.target))&&t.dispatchEvent(new CustomEvent("outclick"))};return document.addEventListener("click",c,!0),{destroy(){document.removeEventListener("click",c,!0)}}}export{i as c};
