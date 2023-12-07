@@ -13,7 +13,11 @@ export const load = (async ({ locals, params }) => {
 
 	const data = await axios
 		.post(`${DIR}/api/user/${locals.user.username}/upload`)
-		.then(res => res.data);
+		.then(res => res.data)
+		.catch(err => {
+			console.error(err.message);
+			return [];
+		});
 
 	return {
 		images: data.images as IImage[]

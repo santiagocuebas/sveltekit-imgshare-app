@@ -7,9 +7,7 @@
 	export let data: PageData;
 	let pathname: string;
 
-	beforeUpdate(() => {
-		if (window) pathname = window.location.pathname
-	});
+	beforeUpdate(() => pathname = location.pathname);
 </script>
 
 <div class="foreignuser-header">

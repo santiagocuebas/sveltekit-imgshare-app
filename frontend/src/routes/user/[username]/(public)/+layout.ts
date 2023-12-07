@@ -7,7 +7,11 @@ import { DIR } from '$lib/config.js';
 export const load = (async ({ params }) => {
 	const data = await axios
 		.get(`${DIR}/api/user/${params.username}/data`)
-		.then(res => res.data);
+		.then(res => res.data)
+		.catch(err => {
+			console.error(err.message);
+			return null;
+		});
 
 	if (data === null) throw redirect(307, '/');
 

@@ -5,8 +5,8 @@ import jwt from 'jsonwebtoken';
 export const prerrender = true;
  
 export const handle = (async ({ event, resolve }) => {
-  console.log(event.platform);
   const token = event.cookies.get('authenticate');
+  console.log(token);
   
   if (token) {
     if (event.url.pathname.startsWith('/signin') || event.url.pathname.startsWith('/signup')) {

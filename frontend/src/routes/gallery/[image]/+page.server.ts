@@ -11,7 +11,12 @@ export const load = (async ({ params: { image }, cookies }) => {
 		method: 'GET',
 		url: `${DIR}/api/gallery/${image}`,
 		headers: { 'Cookie': `authenticate=${token}` }
-	}).then(res => res.data);
+	})
+		.then(res => res.data)
+		.catch(err => {
+			console.error(err.message);
+			return null;
+		});
 
 	if (data === null) throw redirect(307, '/');
 

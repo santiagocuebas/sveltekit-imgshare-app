@@ -8,7 +8,11 @@ export const load = (async ({ url }) => {
 
 	const data = await axios
 		.get(`${DIR}/api/search/${searchParams}`)
-		.then(res => res.data);
+		.then(res => res.data)
+		.catch(err => {
+			console.error(err.message);
+			return [];
+		});
 
 	return {
 		images: data.images as IImage[]
