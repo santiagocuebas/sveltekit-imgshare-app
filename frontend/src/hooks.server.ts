@@ -1,8 +1,11 @@
 import { redirect, type Handle } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private'
 import jwt from 'jsonwebtoken';
+
+export const prerrender = true;
  
 export const handle = (async ({ event, resolve }) => {
+  console.log(event.platform);
   const token = event.cookies.get('authenticate');
   
   if (token) {
