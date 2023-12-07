@@ -32,7 +32,7 @@ router.post(
 			httpOnly: true,
 			maxAge: 0,
 			path: '/',
-			sameSite: 'lax',
+			sameSite: 'none',
 			secure: NODE_ENV === 'production'
 		}));
 
