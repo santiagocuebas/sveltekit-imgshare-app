@@ -16,7 +16,10 @@
 		else visibleFooter = false;
 	}
 
-	beforeUpdate(() => pathname = window.location.pathname);
+	beforeUpdate(() => {
+		console.log(window)
+		if (window) pathname = window.location.pathname
+	});
 </script>
 
 <Nav user={data.user} on:click={() => visible = !visible}>
