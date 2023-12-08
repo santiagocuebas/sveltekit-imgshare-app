@@ -15,7 +15,7 @@ export const load: PageServerLoad = (async ({ params: { image }, cookies }) => {
 		withCredentials: true
 	}).then(res => res.data)
 		.catch(err => {
-			console.error(err);
+			console.error(err?.cause);
 			return null;
 		});
 
