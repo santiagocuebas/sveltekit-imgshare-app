@@ -5,7 +5,6 @@
 
 [functions]
   directory = "functions"
-  node_bundler = "vite"
 
 [[redirects]]
   from = "/*"
