@@ -28,7 +28,7 @@
 	function selectClassName() {
 		if (isComment(object)) return 'grey'
 		return 'selected'
-	};
+	}
 
 	function countElements() {
 		if (isImage(object) && id === 'fav') return object.favorites.length;

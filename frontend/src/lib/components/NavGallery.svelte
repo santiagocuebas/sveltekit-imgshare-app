@@ -18,7 +18,7 @@
 		images = await axios
 			.get(`${DIR}/api/gallery/order/${selectText}`)
 			.then(res => res.data);
-	};
+	}
 </script>
 
 <div class="gallery-header">

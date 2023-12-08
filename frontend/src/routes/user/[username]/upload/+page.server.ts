@@ -1,10 +1,8 @@
+import type { PageServerLoad } from './$types';
+import type { IImage } from '$lib/server/types';
 import { redirect } from '@sveltejs/kit';
 import axios from 'axios';
-import type { PageServerLoad } from './$types';
-import { DIR } from '$lib/config.js';
-import type { IImage } from '$lib/global';
-
-export const prerender = true;
+import { DIR } from '$lib/server/config.js';
 
 export const load = (async ({ locals, params }) => {
 	if (!locals.user) {
@@ -17,8 +15,8 @@ export const load = (async ({ locals, params }) => {
 		.post(`${DIR}/api/user/${locals.user.username}/upload`)
 		.then(res => res.data)
 		.catch(err => {
-			console.error(err.message);
-			return [];
+			console.error(err);
+			return { images: [] };
 		});
 
 	return {

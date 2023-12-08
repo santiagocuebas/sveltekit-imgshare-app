@@ -28,13 +28,13 @@
 		publicText = this.innerText;
 
 		handleSubmit();
-	};
+	}
 
 	function changeOrder(this: HTMLElement) {
 		orderText = this.innerText;
 
 		handleSubmit();
-	};
+	}
 
 	async function handleSubmit() {
 		visiblePublic = false;

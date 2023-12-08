@@ -1,15 +1,13 @@
 import { redirect, type Handle } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private'
 import jwt from 'jsonwebtoken';
-
-export const prerrender = true;
  
 export const handle: Handle = (async ({ event, resolve }) => {
   const token = event.cookies.get('authenticate');
-  console.log(token);
   
   if (token) {
-    if (event.url.pathname.startsWith('/signin') || event.url.pathname.startsWith('/signup')) {
+    if (event.url.pathname.startsWith('/signin') ||
+      event.url.pathname.startsWith('/signup')) {
       throw redirect(307, '/');
     }
 
