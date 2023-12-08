@@ -4,6 +4,8 @@ import type { PageServerLoad } from './$types';
 import { DIR } from '$lib/config.js';
 import type { IImage } from '$lib/global';
 
+export const prerender = true;
+
 export const load = (async ({ locals, params }) => {
 	if (!locals.user) {
 		throw redirect(307, '/');

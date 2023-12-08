@@ -4,6 +4,8 @@ import type { PageServerLoad } from './$types';
 import { DIR } from '$lib/config.js';
 import type { IUserExtended } from '$lib/global';
 
+export const prerender = true;
+
 export const load = (async ({ locals, params, cookies }) => {
 	if (!locals.user) {
 		throw redirect(307, '/');

@@ -1,18 +1,21 @@
 import { redirect } from '@sveltejs/kit';
-import axios from 'axios';
+// import axios from 'axios';
 import type { PageServerLoad } from './$types';
 // import { DIR } from '$lib/config.js';
 import type { IComment, IImage } from '$lib/global';
 
-export const load = (async ({ params: { image }, cookies }) => {
-	const token = cookies.get('authenticate');
+export const prerender = true;
 
-	const data = await axios({
+export const load: PageServerLoad = (async ({ params: { image }, cookies }) => {
+	const token = cookies.get('authenticate');
+	console.log(token);
+
+	const data = await fetch(`http://localhost:4200/api/gallery/${image}`, {
 		method: 'GET',
-		url: `http://localhost:4200/api/gallery/${image}`,
-		headers: { 'Cookie': `authenticate=${token}` }
+		headers: { 'Cookie': `authenticate=${token}` },
+		credentials: 'include'
 	})
-		.then(res => res.data)
+		.then(res => res.json())
 		.catch(err => {
 			console.error(err.message);
 			return null;
@@ -25,4 +28,4 @@ export const load = (async ({ params: { image }, cookies }) => {
 		comments: data.comments as IComment[],
 		sidebar: data.sidebarImages as IImage[]
 	};
-}) satisfies PageServerLoad;
+});

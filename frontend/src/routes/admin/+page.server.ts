@@ -4,7 +4,9 @@ import type { PageServerLoad } from './$types';
 import { DIR } from '$lib/config.js';
 import type { IUserExtended } from '$lib/global';
 
-export const load = (async ({ locals, cookies }) => {
+export const prerender = true;
+
+export const load: PageServerLoad = (async ({ locals, cookies }) => {
 	if (locals.user?.role !== 'admin' && locals.user?.role !== 'superadmin') {
 		throw redirect(307, '/');
 	}
@@ -20,4 +22,4 @@ export const load = (async ({ locals, cookies }) => {
 	return {
 		users: data.users as IUserExtended[]
 	};
-}) satisfies PageServerLoad;
+});
