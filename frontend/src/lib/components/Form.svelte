@@ -8,6 +8,7 @@
 
 	async function handleSubmit(this: HTMLFormElement) {
 		const data = await handleRequest(this);
+		console.log(data);
 
 		if (data.redirect) {
 			window.location.href = data.url;
