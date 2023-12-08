@@ -5,6 +5,7 @@ import axios from 'axios';
 import { DIR } from '$lib/server/config.js';
 
 export const load: PageServerLoad = (async ({ params: { image }, cookies }) => {
+	console.log(image, DIR);
 	const token = cookies.get('authenticate');
 
 	const data = await axios({
