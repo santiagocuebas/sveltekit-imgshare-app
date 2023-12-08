@@ -5,7 +5,6 @@ import axios from 'axios';
 import { DIR } from '$lib/server/config.js';
 
 export const load: PageServerLoad = (async ({ params: { image }, cookies }) => {
-	console.log(image, DIR);
 	const token = cookies.get('authenticate');
 
 	const data = await axios({
@@ -15,7 +14,7 @@ export const load: PageServerLoad = (async ({ params: { image }, cookies }) => {
 		withCredentials: true
 	}).then(res => res.data)
 		.catch(err => {
-			console.error(err?.cause);
+			console.error(err?.request);
 			return null;
 		});
 
