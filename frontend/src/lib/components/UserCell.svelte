@@ -1,79 +1,61 @@
 <script lang="ts">
-	import { format } from "timeago.js";
 	import type { IUserExtended } from "$lib/global";
+	import { format } from "timeago.js";
 	import { DIR } from '$lib/config.js';
 
 	export let user: IUserExtended;
 </script>
 
-<div class="user-cell" role="none" on:mousedown>
-	<img src="{DIR}/uploads/avatars/{user.avatar}" alt="">
+<div class="user-cell" role="none" on:click>
+	<picture>
+		<img src="{DIR}/uploads/avatars/{user.avatar}" alt="">
+	</picture>
 	<span></span>
-	<div>
-		<h6>Username</h6>
-		<p>{user.username}</p>
-	</div>
-	<div>
-		<h6>Email</h6>
-		<p>{user.email}</p>
-	</div>
-	<div>
-		<h6>Role</h6>
-		<p>{user.role}</p>
-	</div>
-	<div>
-		<h6>Join</h6>
-		<p>{format(user.createdAt)}</p>
+	<div class="user-box">
+		<div>
+			<h4>Username</h4>
+			<p>{user.username}</p>
+		</div>
+		<div>
+			<h4>Email</h4>
+			<p>{user.email}</p>
+		</div>
+		<div>
+			<h4>Role</h4>
+			<p>{user.role}</p>
+		</div>
+		<div>
+			<h4>Join</h4>
+			<p>{format(user.createdAt)}</p>
+		</div>
 	</div>
 	<div class="user-white"></div>
 </div>
 
-<style>
+<style lang="postcss">
 	.user-cell {
-		display: grid;
-		position: relative;
-		grid-template-columns: 1fr 1px 1fr;
-		align-items: center;
-		grid-auto-rows: 1fr;
-		width: 100%;
-		height: 100%;
-		padding: 5px;
-		background-color: #dddddd;
-		column-gap: 5px;
+		@apply flex relative items-center justify-between w-[400px] h-[200px] p-2 bg-[#dddddd];
+
+		& picture {
+			@apply flex-none w-[180px] h-[180px];
+
+			& img {
+				box-shadow: 0 0 0 2px #000000;
+				@apply w-full h-full rounded-full object-cover;
+			}
+		}
+
+		& span {
+			@apply flex-none w-px h-full bg-[#999999];
+		}
 	}
 
-	.user-cell span {
-		grid-row: 1 / span 4;
-		width: 1px;
-		height: 97%;
-		background-color: #999999;
-	}
-
-	.user-cell img {
-		grid-row: 1 / span 4;
-		align-self: center;
-		justify-self: center;
-		width: 180px;
-		height: 180px;
-		border-radius: 50%;
-		box-shadow: 0 0 0 2px #000000;
-		object-fit: cover;
-	}
-	.user-cell p {
-		padding-left: 8px;
-		overflow: hidden;
-		text-overflow: ellipsis;
+	.user-box {
+		@apply flex flex-col w-full [&_p]:pl-2 [&_p]:truncate;
 	}
 
 	.user-white {
-		position: absolute;
-		width: 100%;
-		height: 100%;
 		border: 3px outset #cccccc;
-		cursor: pointer;
-	}
-
-	.user-white:hover {
-		background-color: #ffffff2f;
+		@apply absolute w-full h-full cursor-pointer hover:bg-white/20;
 	}
 </style>

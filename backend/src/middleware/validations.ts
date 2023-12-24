@@ -1,19 +1,14 @@
-import { Request, Response, NextFunction } from 'express';
-import {
-	Result,
-	ValidationError,
-	validationResult,
-	ValidationChain
-} from 'express-validator';
+import type { Request, Response, NextFunction } from 'express';
+import type { MessageData } from '../global.js';
+import { validationResult, type ValidationChain } from 'express-validator';
 import fs from 'fs-extra';
-import { MessageData } from '../global.js';
 import { getErrorMessage } from '../libs/index.js';
 
 export const validate = (validations: ValidationChain[]) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		await Promise.all(validations.map(validation => validation.run(req)));
 		
-		const errs: Result<ValidationError> = validationResult(req);
+		const errs = validationResult(req);
 
 		if (!errs.isEmpty()) {
 			if (req.file !== undefined) {

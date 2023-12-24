@@ -4,19 +4,13 @@
 	Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo?  Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo?  Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo? Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eaque ex alias officia corporis recusandae qui incidunt, facilis libero doloremque obcaecati perferendis ut excepturi aut beatae consequuntur dolorem expedita explicabo?
 </div>
 
-<style>
+<style lang="postcss">
 	h1 {
-		font-size: 60px;
+		@apply text-[60px];
 	}
 
 	div {
-		width: 60%;
-		min-width: 500px;
-		max-width: 800px;
-		padding: 20px;
-		border-radius: 12px;
-		background-color: #ffffff;
-		box-shadow: 0 2px 10px #666666;
-		text-align: center;
+		box-shadow: 0 0 4px #666666;
+		@apply w-3/5 min-w-[500px] max-w-[800px] p-5 rounded-xl bg-white text-center;
 	}
 </style>

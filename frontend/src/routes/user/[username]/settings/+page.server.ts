@@ -1,26 +1,21 @@
 import type { PageServerLoad } from './$types';
-import type { IUserExtended } from '$lib/server/types';
+import type { IUserExtended } from '$lib/global';
 import { redirect } from '@sveltejs/kit';
 import axios from 'axios';
-import { DIR } from '$lib/server/config.js';
+import { DIR } from '$lib/config.js';
 
-export const load = (async ({ locals, params, cookies }) => {
-	if (!locals.user) {
-		throw redirect(307, '/');
-	} else if (locals.user.username !== params.username) {
-		throw redirect(307, `/user/${locals.user.username}/settings`);
-	}
-
+export const load: PageServerLoad = (async ({ params, cookies }) => {
 	const token = cookies.get('authenticate');
+	let data: { extendedUser: IUserExtended | null } = { extendedUser: null };
 	
-	const data = await axios({
+	await axios({
 		method: 'POST',
-		url: `${DIR}/api/user/${locals.user.username}/settings`,
-		withCredentials: true,
+		url: `${DIR}/api/user/${params.username}/settings`,
 		headers: { 'Cookie': `authenticate=${token}` }
-	}).then(res => res.data);
+	}).then(res => data = res.data)
+		.catch(err => console.error(err.message));
+
+	if (!data.extendedUser) throw redirect(307, '/');
 	
-	return {
-		user: data.user as IUserExtended
-	};
-}) satisfies PageServerLoad;
+	return { user: data.extendedUser };
+});

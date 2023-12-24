@@ -1,5 +1,5 @@
+import type { IImage } from '../global.js';
 import { Entity, Column } from 'typeorm';
-import { IImage } from '../global.js';
 import { Content } from './abstract/Content.js';
 
 @Entity()

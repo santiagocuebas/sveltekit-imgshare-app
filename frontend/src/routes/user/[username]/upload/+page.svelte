@@ -1,16 +1,41 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+  import type { IKeys, ResponseData } from '$lib/global';
+  import { goto } from '$app/navigation';
 	import { DIR } from '$lib/config.js';
-	import Form from '$lib/components/Form.svelte';
-	import ErrorBox from '$lib/components/ErrorBox.svelte';
-	import BoxGallery from '$lib/components/BoxGallery.svelte';
-	import { handleImage } from '$lib/services/handle-image';
+  import { handleRequest } from '$lib/services/services';
+	import { ErrorBox, BoxGallery } from '$lib/components';
 
 	export let data: PageData;
-	let errors: any = {};
-	let visible = false;
+
+	const validExt = ['image/jpeg', 'image/png', 'image/gif'];
+	let errors: IKeys<string> | null = null;
+	let src = '/label-img.png';
+
+	function handleImage(this: HTMLInputElement) {
+		const reader = new FileReader();
+		const [file] = this.files ?? [];
+
+		reader.addEventListener('load', ({ target }) => {
+			src = target?.result as string ?? src;
+		}, false);
+
+		if (file && file.size < 2 * 1e7 && validExt.includes(file.type)) {
+			reader.readAsDataURL(file);
+		}
+	}
 	
-	const setErrors = (data: any) => errors = data;
+	async function handleSubmit(this: HTMLFormElement) {
+		const data: ResponseData = await handleRequest(this)
+			.catch(err => {
+				console.log(err.message);
+				return { redirect: true };
+			});
+
+		if (data.redirect) goto('/');
+		else if (data.url) goto('/gallery/' + data.url);
+		else if (data.errors) errors = data.errors;
+	}
 </script>
 
 <div>
@@ -18,20 +43,37 @@
 		<i class="fa-solid fa-image title-icon"></i>
 		Upload Image
 	</h2>
-	<Form action='{DIR}/api/image/upload' prefix='/gallery' bind:show={visible} errors={setErrors}>
-		{#if visible}
-			<ErrorBox on:click={() => visible = false} errors={errors} />
+	<form
+		action='{DIR}/api/image/upload'
+		method="POST"
+		on:submit={handleSubmit}
+	>
+		{#if errors}
+			<ErrorBox bind:errors={errors} on:click={() => errors = null} />
 		{/if}
 		<label>
 			<input type="file" name="image" on:change={handleImage}>
+			<img src={src} alt="">
 		</label>
-		<input class="upload-input" type="text" name="title" placeholder="Title" spellcheck="false" autocomplete="off">
-		<textarea class="upload-input" name="description" placeholder="Description" rows="3" spellcheck="false" autocomplete="off"></textarea>
+		<input
+			type="text"
+			name="title"
+			placeholder="Title"
+			spellcheck="false"
+			autocomplete="off"
+		>
+		<textarea
+			name="description"
+			placeholder="Description"
+			rows="5"
+			spellcheck="false"
+			autocomplete="off"
+		></textarea>
 		<button>
 			<i class="fa-solid fa-upload"></i>
 			Upload
 		</button>
-	</Form>
+	</form>
 </div>
 
 <div>
@@ -41,75 +83,52 @@
 	</h2>
 	<BoxGallery className='image-upload'>
 		{#each data.images as image}
-			<a href="/gallery/{image.id}">
-				<img src="{DIR}/uploads/{image.filename}" alt={image.title}>
-			</a>
+			<picture>
+				<a href="/gallery/{image.id}">
+					<img src="{DIR}/uploads/{image.filename}" alt={image.title}>
+				</a>
+			</picture>
 		{/each}
 	</BoxGallery>
 </div>
 
-<style>
+<style lang="postcss">
 	div {
-		display: flex;
-		flex-wrap: wrap;
-		width: 600px;
-		height: min-content;
-		background-color: #ffffff;
-		box-shadow: 0 2px 10px #666666;
+		box-shadow: 0 0 4px #666666;
+		@apply flex flex-col w-[600px] bg-white;
 	}
 
-	label {
-		width: 480px;
-		height: 270px;
-		margin: auto;
-		background-image: url('/label-img.png');
-		background-position: center;
-		background-repeat: no-repeat;
-		background-size: contain;
-		cursor: pointer;
+	form {
+		@apply flex flex-col h-max p-5 gap-y-5;
+		
+		& label {
+			@apply w-[360px] h-[360px] m-auto cursor-pointer;
+
+			& img {
+				@apply w-full h-full object-scale-down;
+			}
+		}
 	}
 
-	input[type='file'] {
-		display: none;
-	}
-
-	.upload-input {
-		width: 100%;
-		padding: 12px;
-		border: none;
+	input, textarea {
 		outline: 1px solid #bbbbbb;
-		border-radius: 4px;
-	}
+		@apply w-full p-3 rounded;
 
-	.upload-input:focus {
-		outline: 1px solid #5383d3;
+		&:focus {
+			outline: 1px solid #5383d3;
+		}
 	}
 
 	button {
-		margin-left: auto;
-		padding: 12px 20px;
-		background: #63c187;
-		border: none;
-		border-radius: 4px;
-		font-size: 18px;
-		font-weight: 600;
-		color: #ffffff;
-		cursor: pointer;
+		@apply ml-auto py-3 px-5 bg-[#63c187] rounded text-[18px] font-semibold text-white hover:bg-[#53b177];
 	}
 
-	button:hover {
-		background: #53b177;
-	}
+	picture {
+		box-shadow: 0 0 4px #666666;
+		@apply flex-none w-[180px] h-[180px];
 
-	a {
-		width: 180px;
-		height: 180px;
-		box-shadow: 0 0 1px 2px #666666;
-	}
-
-	img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
+		& img {
+			@apply w-full h-full object-cover;
+		}
 	}
 </style>

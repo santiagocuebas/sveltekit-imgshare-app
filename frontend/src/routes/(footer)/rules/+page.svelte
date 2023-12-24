@@ -1,6 +1,6 @@
 <h1>Rules</h1>
 
-<div class="rules-container">
+<div id="rules-container">
 	<div>
 		<h3>1. Lorem</h3>
 		Lorem ipsum, dolor sit amet consectetur adipisicing elit. Amet asperiores aut laudantium consequuntur sapiente magnam magni vitae animi nulla rerum beatae illo voluptate qui, cum odit odio. Minus, at tempore?
@@ -52,31 +52,24 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
 	h1 {
-		font-size: 60px;
+		@apply text-[60px];
 	}
 
-	.rules-container {
-		display: flex;
-		flex-wrap: wrap;
-		width: 60%;
-		min-width: 500px;
-		max-width: 800px;
-		border-radius: 12px;
-		background-color: #ffffff;
-		box-shadow: 0 2px 10px #666666;
-		text-align: justify;
-	}
+	#rules-container {
+		@apply flex flex-col w-3/5 min-w-[500px] max-w-[800px] rounded-xl bg-white text-justify;
 
-	.rules-container div {
-		width: 100%;
-		padding: 20px;
-	}
+		& div {
+			@apply w-full p-5;
+		}
 
-	.rules-container span {
-		width: 100%;
-		height: 1px;
-		background-color: #000000;
+		& h3 {
+			@apply font-bold leading-tight;
+		}
+
+		& span {
+			@apply w-full h-px bg-black;
+		}
 	}
 </style>

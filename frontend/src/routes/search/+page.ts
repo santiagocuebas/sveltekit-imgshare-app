@@ -1,20 +1,16 @@
-import axios from 'axios';
 import type { PageLoad } from './$types';
-import { DIR } from '$lib/config.js';
 import type { IImage } from '$lib/global';
+import axios from 'axios';
+import { DIR } from '$lib/config.js';
 
 export const load: PageLoad = (async ({ url }) => {
 	const searchParams = url.searchParams.get('q');
+	let data: { images: IImage[] } = { images: [] };
 
-	const data = await axios
+	await axios
 		.get(`${DIR}/api/search/${searchParams}`)
-		.then(res => res.data)
-		.catch(err => {
-			console.error(err.message);
-			return [];
-		});
+		.then(res => data = res.data)
+		.catch(err => console.error(err.message));
 
-	return {
-		images: data.images as IImage[]
-	};
+	return { images: data.images };
 });

@@ -1,11 +1,6 @@
-export function clickOutside(node: Element) {
-	const sibling = node.previousElementSibling;
-	
+export function clickOutside(node: Element) {	
 	const handleClick = (e: Event) => {
-		if (
-			!node.contains(e.target as HTMLElement) &&
-			!sibling?.contains(e.target as HTMLElement)
-		) {
+		if (!node.contains(e.target as HTMLElement)) {
 			node.dispatchEvent(new CustomEvent('outclick'));
 		}
 	};

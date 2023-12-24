@@ -1,83 +1,131 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import ImageBox from '$lib/components/ImageBox.svelte';
-	import Sidebar from '$lib/components/Sidebar.svelte';
-	import CommentsContainer from '$lib/components/CommentsContainer.svelte';
-	import Register from '$lib/components/Register.svelte';
-	import CommentForm from '$lib/components/CommentForm.svelte';
-  import CommentsBox from '$lib/components/CommentsBox.svelte';
-  import BoxGallery from "$lib/components/BoxGallery.svelte";
-  import Comment from '$lib/components/Comment.svelte';
-	import SideImage from '$lib/components/SideImage.svelte';
-	import ImageOptions from '$lib/components/ImageOptions.svelte';
-	import ImageIcon from '$lib/components/ImageIcon.svelte';
+  import { afterNavigate } from '$app/navigation';
+	import { afterUpdate, onMount } from 'svelte';
+	import { UserRole } from '$lib/enums';
+	import { image, user } from '$lib/stores';
+	import {
+		ImageBox,
+		Register,
+		CommentForm,
+		BoxGallery,
+		Comment,
+		SideImage,
+		ImageOptions
+	} from '$lib/components';
 	
 	export let data: PageData;
-	let visible = false;
+	
 	let description = false;
+	let isValidUser = false;
+
+	onMount(() => {
+		image.setImage(data.image);
+		isValidUser = $user !== null && ($user?.username === $image.author ||
+			$user?.role !== UserRole.EDITOR);
+	});
+
+	afterUpdate(() => {
+		isValidUser = $user !== null && ($user?.username === $image.author ||
+			$user?.role !== UserRole.EDITOR);
+	});
+
+	afterNavigate(() => image.setImage(data.image));
 </script>
 
-<div class="image-container">
-	<ImageBox image={data.image} user={data.user} bind:visible={visible} bind:description={description}>
-		{#if visible}
-			<ImageOptions
-				bind:image={data.image}
-				bind:visible={visible}
-				bind:description={description}
-			/>
-		{/if}
-		<div class="image-stats" slot='assessment'>
-			<ImageIcon bind:object={data.image} user={data.user} />
-			<ImageIcon bind:object={data.image} user={data.user} id='dislike' />
-			<ImageIcon bind:object={data.image} user={data.user} id='fav' />
+<div id="image-container">
+	<div id="image-box">
+		<ImageBox bind:description={description}>
+			{#if isValidUser}
+				<ImageOptions bind:description={description} />
+			{/if}
+			<h2 class="title">
+				<i class="fa-solid fa-image title-icon"></i>
+				{$image?.title}
+			</h2>
+		</ImageBox>
+	</div>
+	<div id="sidebar">
+		<div>
+			<h2 class="title">
+				<i class="fa-solid fa-images title-icon"></i>
+				Recent Uploads
+			</h2>
+			<BoxGallery className='image-sidebar'>
+				{#each data.sidebar as image}
+					<SideImage image={image} />
+				{/each}
+			</BoxGallery>
 		</div>
-	</ImageBox>
-	<Sidebar>
-		<BoxGallery className='image-sidebar'>
-			{#each data.sidebar as image}
-				<SideImage image={image} />
-			{/each}
-		</BoxGallery>
-	</Sidebar>
-	<CommentsContainer>
-		{#if data.user}
-			<CommentForm
-				imageId={data.image.id}
-				avatar={data.user.avatar}
-				bind:comments={data.comments}
-			/>
+	</div>
+	<div id="comment-container">
+		{#if $user}
+			<CommentForm bind:comments={data.comments} />
 			{:else}
 			<Register />
 		{/if}
-		<CommentsBox totalComments={data.comments.length}>
-			{#each data.comments as comment (comment.id)}
-				<Comment bind:comments={data.comments} bind:comment={comment} user={data.user}>
-					<ImageIcon bind:object={comment} user={data.user} />
-					<ImageIcon bind:object={comment} user={data.user} id='dislike' />
-				</Comment>
-			{/each}
-		</CommentsBox>
-	</CommentsContainer>
+		<div id="comments-container">
+			<h2 class="title">
+				<i class="fa-solid fa-message title-icon"></i>
+				{data.comments.length} Comments
+			</h2>
+			{#if data.comments.length}
+				<div>
+					{#each data.comments as comment (comment.id)}
+						<Comment bind:comments={data.comments} bind:comment={comment} />
+					{/each}
+				</div>
+			{/if}
+		</div>
+	</div>
 </div>
 
-<style>
-	.image-container {
-		display: grid;
-		grid-template-columns: repeat(6, minmax(85px, 1fr));
+<style lang="postcss">
+	#image-container {
+		grid-template-columns: repeat(3, minmax(170px, 1fr));
 		grid-auto-rows: min-content 1fr;
-		width: 90%;
-		min-width: 510px;
-		max-width: 1520px;
+		@apply grid w-[90%] min-w-[510px] max-w-[1520px];
 	}
-	
-	.image-stats {
-		display: flex;
-		align-items: center;
-		justify-content: flex-end;
-		height: 56px;
-		padding-right: 30px;
-		background-color: #5383d3;
-		color: #ffffff;
-		gap: 60px;
+
+	#image-box {
+		grid-column: 1 / span 2;
+		box-shadow: 0 0 4px #666666;
+		@apply flex flex-col bg-white;
+
+		@media (width < 1040px) {
+			grid-column: 1 / span 3;
+		}
+	}
+
+	#sidebar {
+		grid-column: 3 / span 1;
+		grid-row: 1 / span 2;
+		
+		& div {
+			box-shadow: 0 0 4px #666666;
+			@apply ml-5 bg-white;
+		}
+			
+		@media (max-width: 1040px) {
+			@apply hidden;
+		}
+	}
+
+	#comment-container {
+		grid-column: 1 / span 2;
+		@apply flex flex-wrap mt-5 gap-5;
+
+		@media (max-width: 1040px) {
+			grid-column: 1 / span 3;
+		}
+	}
+
+	#comments-container {
+		box-shadow: 0 0 4px #666666;
+		@apply w-full bg-white;
+
+		& div {
+			@apply flex flex-col p-2.5 gap-2.5;
+		}
 	}
 </style>

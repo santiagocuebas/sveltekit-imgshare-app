@@ -1,12 +1,12 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
   import axios from "axios";
-  import type { IImage } from "$lib/global.js";
 	import { DIR } from '$lib/config.js';
 	import { clickOutside } from "$lib/services/click-outside";
+  import { image } from "$lib/stores";
 
-	export let image: IImage;
-	export let visible: boolean;
 	export let description: boolean;
+	let visible: boolean;
 
 	const editDescription = () => {
 		visible = false;
@@ -18,11 +18,11 @@
 
 		await axios({
 			method: 'POST',
-			url: `${DIR}/api/image/${image.id}/public`,
+			url: `${DIR}/api/image/${$image.id}/public`,
 			withCredentials: true
-		});
+		}).catch(err => console.log(err.message));
 
-		image.isPublic = !image.isPublic;
+		image.changePublic(!$image.isPublic);
 	};
 
 	const deleteImage = async () => {
@@ -30,59 +30,51 @@
 
 		await axios({
 			method: 'DELETE',
-			url: `${DIR}/api/image/${image.id}`,
+			url: `${DIR}/api/image/${$image.id}`,
 			withCredentials: true
-		});
+		}).catch(err => console.log(err.message));
 
-		window.location.href = '/';
+		goto('/');
 	};
 </script>
 
-<ul use:clickOutside on:outclick={() => visible = false}>
-	<a href="#edit" on:click={editDescription}>
-		<li>Edit</li>
-		<i class="fa-solid fa-pen"></i>
-	</a>
-	<a href="#placeholder" on:click|preventDefault={changePublic}>
-		<li>Public</li>
-		{#if image.isPublic}
-			<i class="fa-solid fa-eye"></i>
-			{:else}
-			<i class="fa-solid fa-eye-slash"></i>
-		{/if}
-	</a>
-	<a href="#placeholder" on:click|preventDefault={deleteImage}>
-		<li>Delete</li>
-		<i class="fa-solid fa-delete-left"></i>
-	</a>
-</ul>
+<div id="image-edit">
+	<button on:click={() => visible = !visible}>
+		<i class="fa-solid fa-ellipsis"></i>
+	</button>
+	{#if visible}
+		<ul use:clickOutside on:outclick={() => setTimeout(() => visible = false)}>
+			<a href="#edit" on:click={editDescription}>
+				<li>Edit</li>
+				<i class="fa-solid fa-pen"></i>
+			</a>
+			<a href="#placeholder" on:click|preventDefault={changePublic}>
+				<li>Public</li>
+				<i class="fa-solid fa-{$image.isPublic ? 'eye' : 'eye-slash'}"></i>
+			</a>
+			<a href="#placeholder" on:click|preventDefault={deleteImage}>
+				<li>Delete</li>
+				<i class="fa-solid fa-delete-left"></i>
+			</a>
+		</ul>
+	{/if}
+</div>
 
-<style>
+<style lang="postcss">
+	#image-edit {
+		@apply flex relative justify-end items-start p-2.5 bg-[#444444];
+	}
+
+	button {
+		@apply ml-auto px-2 text-white hover:bg-[#606060];
+	}
+	
 	ul {
-		display: grid;
-		position: absolute;
-		width: 200px;
-		top: 0;
-		right: 0;
-		margin-top: 30px;
-		padding: 5px 0;
-		border-radius: 4px;
-		background-color: #444444;
-		box-shadow: 0 0 10px 2px #666666;
+		box-shadow: 0 0 2px #666666;
+		@apply flex absolute flex-col w-[200px] top-7 right-0 py-[5px] rounded bg-[#444444];
 	}
 
 	a {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 5px 20px;
-		font-weight: 700;
-		color: #ffffff;
-		cursor: pointer;
-	}
-
-	a:hover {
-		background-color: #ffffff;
-		color: #000000;
+		@apply flex justify-between items-center py-1 px-5 font-bold text-white cursor-pointer hover:bg-white hover:text-black;
 	}
 </style>

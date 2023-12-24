@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { FindOptionsWhere } from 'typeorm';
+import { orderGallery } from '../dictonary.js';
 import { UserRole } from '../enums.js';
-import { getOrderGallery, recentImages } from '../libs/index.js';
+import { recentImages } from '../libs/index.js';
 import { getDataToken } from '../middleware/logged.js';
 import { Image, Comment } from '../models/index.js';
 
@@ -23,20 +23,16 @@ router.get('/', async (_req, res) => {
 		}
 	});
 
-	return res.json(images);
+	return res.json({ images });
 });
 
 router.get('/:id', getDataToken, async (req, res) => {
-	let where: FindOptionsWhere<Image> | FindOptionsWhere<Image>[] = [];
-
-	if (req.user?.role !== UserRole.EDITOR) {
-		where = { id: req.params.id };
-	} else {
-		where = [
+	const where = (req.user?.role !== UserRole.EDITOR)
+		? { id: req.params.id }
+		: [
 			{ id: req.params.id, isPublic: true },
 			{ id: req.params.id, author: req.user?.username }
 		];
-	}
 
 	// Find image if exists
 	const image = await Image.findOne({ where });
@@ -60,12 +56,12 @@ router.get('/:id', getDataToken, async (req, res) => {
 		return res.json({ image, comments, sidebarImages });
 	}
 
-	return res.json(image);
+	return res.status(401).json(image);
 });
 
 router.get('/order/:order', async (req, res) => {
 	// Get order of image
-	const order = getOrderGallery(req.params.order);
+	const order = orderGallery[req.params.order] ?? orderGallery.NEWEST;
 	
 	// Find images by order
 	const images = await Image.find({
@@ -82,7 +78,7 @@ router.get('/order/:order', async (req, res) => {
 		}
 	});
 
-	return res.json(images);
+	return res.json({ images });
 });
 
 export default router;

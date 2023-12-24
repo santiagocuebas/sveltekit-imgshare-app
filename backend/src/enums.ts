@@ -5,6 +5,11 @@ export enum UserRole {
   SUPER = 'superadmin'
 }
 
+export enum Score {
+  LIKE = 'like',
+  DISLIKE = 'dislike'
+}
+
 export enum OrderGallery {
   NEWEST = 'NEWEST',
   OLDEST = 'OLDEST',

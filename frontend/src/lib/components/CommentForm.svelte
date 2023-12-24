@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { DIR } from '$lib/config.js';
   import type { IComment } from '$lib/global';
+	import { DIR } from '$lib/config.js';
 	import { handleRequest } from "$lib/services/services.js";
+  import { image, user } from '$lib/stores';
 
-	export let imageId: string;
-	export let avatar: string;
 	export let comments: IComment[];
 
 	let input = '';
@@ -18,7 +17,8 @@
 	};
 
 	async function handleSubmit(this: HTMLFormElement) {
-		const data = await handleRequest(this);
+		const data = await handleRequest(this)
+			.catch(() => { return { comment: null } });
 
 		if (data.comment) {
 			comments = [data.comment, ...comments];
@@ -33,15 +33,30 @@
 		<i class="fa-regular fa-copy title-icon"></i>
 		Post
 	</h2>
-	<form action="{DIR}/api/image/{imageId}/comment" method="POST" on:submit|preventDefault={handleSubmit}>
-		<img src="{DIR}/uploads/avatars/{avatar}" alt={imageId}>
-		<input type="text" name="comment" placeholder="Send a comment..." autocomplete="off" spellcheck="false" bind:value={input} bind:this={inputElement} on:focus={() => visible = true}>
+	<form
+		action="{DIR}/api/image/{$image.id}/comment"
+		method="POST"
+		on:submit|preventDefault={handleSubmit}
+	>
+		<picture>
+			<img src="{DIR}/uploads/avatars/{$user?.avatar}" alt={$image.id}>
+		</picture>
+		<input
+			type="text"
+			name="comment"
+			placeholder="Send a comment..."
+			autocomplete="off"
+			spellcheck="false"
+			bind:value={input}
+			bind:this={inputElement}
+			on:focus={() => visible = true}
+		>
 		{#if visible}
 			<span>
 				<button on:click={() => changeVisibility(false)}>
 					Cancel
 				</button>
-				<button class="blue {input.length > 0 ? '' : 'disabled'}" disabled={!(input.length > 0)}>
+				<button class="blue" disabled={!input.length}>
 					Comment
 				</button>
 			</span>
@@ -49,74 +64,50 @@
 	</form>
 </div>
 
-<style>
+<style lang="postcss">
 	div {
-		width: 100%;
-		background-color: #ffffff;
-		box-shadow: 0 2px 10px #666666;
+		box-shadow: 0 0 4px #666666;
+		@apply w-full bg-white;
 	}
 
 	form {
-		display: grid;
 		grid-template-columns: 40px 1fr;
 		grid-auto-rows: min-content;
-		padding: 10px;
-		gap: 10px;
+		@apply grid p-2.5 gap-2.5;
+	}
+
+	picture {
+		grid-row: 1 / span 2;
+		@apply w-10 h-10;
 	}
 
 	img {
-		grid-row: 1 / span 2;
-		width: 40px;
-		height: 40px;
-		border-radius: 50%;
-		box-shadow: 0 0 1px 1px #666666;
-		object-fit: cover;
+		box-shadow: 0 0 2px #666666;
+		@apply w-full h-full rounded-full object-cover;
 	}
 
 	input {
-		width: 100%;
-		height: min-content;
-		padding: 4px 0;
-		border: none;
-		outline: none;
 		border-bottom: 1px solid #888888;
-	}
+		@apply w-full py-1;
 
-	input:focus {
-		border-bottom: 2px solid #333333;
+		&:focus {
+			border-bottom: 2px solid #333333;
+		}
 	}
 
 	span {
-		display: flex;
-		margin-left: auto;
-		gap: 10px;
-	}
+		@apply flex ml-auto gap-2.5;
 
-	button {
-		width: 100px;
-		height: 40px;
-		border: none;
-		background-color: #ffffff;
-		font-weight: 700;
-		cursor: pointer;
-	}
+		& button {
+			@apply w-[100px] h-10 bg-white font-bold hover:bg-[#dddddd];
 
-	button:hover {
-		background-color: #dddddd;
-	}
+			&[disabled] {
+				@apply bg-[#dddddd] text-[#888888] cursor-auto;
+			}
 
-	.blue {
-		background-color: #5383d3;
-		color: #ffffff;
-	}
-
-	.blue:hover {
-		background-color: #4373c3;
-	}
-
-	.disabled {
-		background-color: #dddddd;
-		color: #888888;
-		cursor: auto;
+			&.blue {
+				@apply bg-[#5383d3] text-white hover:bg-[#4373c3];
+			}
+		}
 	}
 </style>

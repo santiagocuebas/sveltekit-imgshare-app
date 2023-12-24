@@ -1,7 +1,7 @@
+import type { Direction } from '../global.js';
 import fs from 'fs-extra';
 import { extname, resolve } from 'path';
-import { Direction } from '../global.js';
-import { UserRole } from '../enums.js';
+import { Score, UserRole } from '../enums.js';
 import { catchLike, getId } from '../libs/index.js';
 import { Image, Comment } from '../models/index.js';
 
@@ -27,7 +27,7 @@ export const postUpload: Direction = async (req, res) => {
 		favorites: []
 	}).save();
 
-	return res.json({ url: '/' + image.id });
+	return res.json({ url: image.id });
 };
 
 export const postPublic: Direction = async (req, res) => {
@@ -60,19 +60,19 @@ export const postDescription: Direction = async (req, res) => {
 
 export const postLike: Direction = async (req, res) => {
 	const { username } = req.user;
+	const { like } = req.body;
+	const scores = Object.values(Score);
+
 	const image = await Image.findOneBy({ id: req.params.imageId });
 
 	// Update like and dislike
-	if (image !== null) {
-		if (req.body.like === 'like') {
-			const [ actLike, actDislike ] = catchLike(image.likes, image.dislikes, username);
-			image.likes = actLike;
-			image.dislikes = actDislike;
-		} else if (req.body.like === 'dislike') {
-			const [ actDislike, actLike ] = catchLike(image.dislikes, image.likes, username);
-			image.likes = actLike;
-			image.dislikes = actDislike;
-		}
+	if (image !== null && scores.includes(like)) {
+		const [ actLike, actDislike ] = (like === Score.LIKE)
+			? catchLike(image.likes, image.dislikes, username)
+			: catchLike(image.dislikes, image.likes, username);
+		
+		image.likes = (like === Score.LIKE) ? actLike : actDislike;
+		image.dislikes = (like === Score.LIKE) ? actDislike : actLike;
 
 		await image.save();
 
@@ -88,15 +88,13 @@ export const postFavorite: Direction = async (req, res) => {
 
 	// Update favorite
 	if (image !== null) {
-		if (image.favorites.includes(username)) {
-			image.favorites = image.favorites.filter(item => item !== username);
-		} else {
-			image.favorites = [username, ...image.favorites];
-		}
+		image.favorites = (image.favorites.includes(username))
+			? image.favorites.filter(item => item !== username)
+			: [username, ...image.favorites];
 
 		await image.save();
 
-		return res.json({ favorites: image.favorites });
+		return res.json({ favorite: image.favorites });
 	}
 
 	return res.json(image);

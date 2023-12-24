@@ -17,39 +17,17 @@
 	</a>
 </footer>
 
-<style>
+<style lang="postcss">
 	footer {
-		display: flex;
-		position: fixed;
-		align-items: center;
-		width: 100%;
-		min-width: 510px;
-		height: 48px;
-		bottom: 0;
-		padding: 0 10px;
-		background-color: #5383d3;
 		box-shadow: 0 0 10px #666666;
-		font-weight: 700;
-		color: #ffffff;
-		z-index: 100;
+		@apply flex fixed items-center w-full min-w-[510px] h-12 bottom-0 px-2.5 bg-[#5383d3] font-bold text-white z-[100];
 	}
 
 	div {
-		min-width: max-content;
-		margin: 0 10px;
-		font-size: 20px;
+		@apply min-w-max mx-2.5 text-[20px];
 	}
 
 	a {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 64px;
-		height: 100%;
-		color: #ffffff;
-	}
-
-	a:hover {
-		background-color: #6393e3;
+		@apply flex items-center justify-center w-16 h-full text-white hover:bg-[#6393e3];
 	}
 </style>

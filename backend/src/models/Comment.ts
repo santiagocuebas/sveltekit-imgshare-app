@@ -1,6 +1,6 @@
+import type { IComment } from '../global.js';
 import { Entity, Column } from 'typeorm';
 import { Content } from './abstract/Content.js';
-import { IComment } from '../global.js';
 
 @Entity()
 export class Comment extends Content implements IComment {

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import axios from "axios";
 	import type { IUserExtended } from "$lib/global";
+	import axios from "axios";
 	import { DIR } from '$lib/config.js';
 
 	export let users: IUserExtended[];
@@ -28,44 +28,26 @@
 	</form>
 </nav>
 
-<style>
+<style lang="postcss">
 	nav {
-		display: flex;
-		justify-content: center;
-		width: 100%;
-		min-width: 800px;
-		height: 50px;
 		border: 3px outset #5383d3;
-		background-color: #5383d3;
+		@apply flex justify-center w-full min-w-[800px] h-[50px] bg-[#5383d3];
 	}
 
 	form {
-		display: grid;
 		grid-template-columns: 50px 1fr 50px;
-		align-items: center;
-		justify-items: center;
-		width: 100%;
-		max-width: 800px;
+		@apply grid items-center justify-center w-full max-w-[800px];
 	}
 
 	i {
-		font-size: 20px;
-		color: #ffffff;
+		@apply text-[20px] text-white;
 	}
 
 	input {
-		width: 100%;
-		padding: 8px 15px;
-		border: none;
-		outline: none;
-		border-radius: 15px;
+		@apply w-full py-2 px-4 rounded-2xl;
 	}
 
 	button {
-		width: 90%;
-		height: 90%;
-		border: none;
-		background-color: #5383d3;
-		cursor: pointer;
+		@apply w-[90%] h-[90%] bg-[#5383d3];
 	}
 </style>

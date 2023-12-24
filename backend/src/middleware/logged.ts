@@ -1,37 +1,26 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import { JWT } from '../config.js';
+import type { Direction } from '../global.js';
 import { UserRole } from '../enums.js';
-import { Direction } from '../global.js';
-import { User } from '../models/index.js';
+import { decodedToken } from '../libs/index.js';
+import { User } from '../models/User.js';
 
 export const isValidToken: Direction = async (req, res, next) => {
-	try {
-		const token = req.cookies['authenticate'];
-		const decoded = jwt.verify(token, JWT) as JwtPayload;
-		const user = await User.findOneBy({ username: decoded.user.username });
+	const token = req.cookies['authenticate'];
+	const user = await decodedToken(token).catch(() => null);
 
-		if (user === null) throw 'Error';
+	if (user === null) return res.status(401).json({ redirect: true });
 
-		req.user = user;
+	req.user = user;
 
-		return next();
-	} catch {
-		return res.json({ redirect: true, url: '/' });
-	}
+	return next();
 };
 
 export const isNotValidToken: Direction = async (req, res, next) => {
-	try {
-		const token = req.cookies['authenticate'] as string;
-		const decoded = jwt.verify(token, JWT) as JwtPayload;
-		const user = await User.findOneBy({ username: decoded.user.username });
-	
-		if (user === null) throw 'Error';
-	
-		return res.json({ redirect: true, url: '/' + user.username });
-	} catch {
-		return next();
-	}
+	const token = req.cookies['authenticate'];
+	const user = await decodedToken(token).catch(() => null);
+
+	if (user === null) return next();
+
+	return res.status(401).json({ redirect: true });
 };
 
 export const isAdminToken: Direction = async (req, res, next) => {
@@ -39,32 +28,31 @@ export const isAdminToken: Direction = async (req, res, next) => {
 		return next();
 	}
 
-	return res.json({ redirect: true, url: '/' });
+	return res.status(401).json();
 };
 
 export const isValidUser: Direction = async (req, res, next) => {
 	const user = await User.findOneBy({ username: req.params.username });
 
-	if (user && req.user.username !== user.username && user.role !== UserRole.SUPER && (user.role !== UserRole.ADMIN || req.user.role === UserRole.SUPER)) {
+	if (
+		user !== null &&
+		req.user.username !== user.username &&
+		user.role !== UserRole.SUPER &&
+		(user.role !== UserRole.ADMIN || req.user.role === UserRole.SUPER)
+	) {
 		req.foreignUser = user;
 		
 		return next();
 	}
 
-	return res.json({ change: false });
+	return res.status(401).json({ change: false });
 };
 
 export const getDataToken: Direction = async (req, _res, next) => {
-	try {
-		const token = req.cookies['authenticate'];
-		const decoded = jwt.verify(token, JWT) as JwtPayload;
-		const user = await User.findOneBy({ username: decoded.user.username });
+	const token = req.cookies['authenticate'];
+	const user = await decodedToken(token).catch(() => null);
 
-		if (user === null) throw 'Error';
+	if (user !== null) req.user = user;
 
-		req.user = user as User;
-		return next();
-	} catch {
-		return next();
-	}
+	return next();
 };

@@ -1,25 +1,18 @@
 import type { PageServerLoad } from './$types';
-import type { IImage } from '$lib/server/types';
+import type { IImage } from '$lib/global';
 import { redirect } from '@sveltejs/kit';
 import axios from 'axios';
-import { DIR } from '$lib/server/config.js';
+import { DIR } from '$lib/config.js';
 
-export const load = (async ({ locals, params }) => {
-	if (!locals.user) {
-		throw redirect(307, '/');
-	} else if (locals.user.username !== params.username) {
-		throw redirect(307, `/user/${locals.user.username}/upload`);
-	}
+export const load = (async ({ params }) => {
+	let data: { images: IImage[] | null } = { images: null };
 
-	const data = await axios
-		.post(`${DIR}/api/user/${locals.user.username}/upload`)
-		.then(res => res.data)
-		.catch(err => {
-			console.error(err);
-			return { images: [] };
-		});
+	await axios
+		.post(`${DIR}/api/user/${params.username}/upload`)
+		.then(res => data = res.data)
+		.catch(err => console.error(err.message));
 
-	return {
-		images: data.images as IImage[]
-	};
+	if (!data.images) throw redirect(307, '/');
+
+	return { images: data.images };
 }) satisfies PageServerLoad;

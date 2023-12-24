@@ -1,5 +1,5 @@
+import type { MessageData } from '../global.js';
 import { ValidationError } from 'express-validator';
-import { MessageData } from '../global.js';
 
 export const getErrorMessage = (errors: ValidationError[]): MessageData => {
 	const message: MessageData = {};

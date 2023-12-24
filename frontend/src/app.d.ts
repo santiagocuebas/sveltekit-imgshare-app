@@ -10,7 +10,7 @@ declare namespace App {
 declare global {
 	namespace App {
 		interface Locals {
-			user: IUser;
+			user: IUser | undefined;
 		}
 	}
 }

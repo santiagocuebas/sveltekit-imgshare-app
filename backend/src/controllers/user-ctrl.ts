@@ -1,7 +1,7 @@
+import type { Direction } from '../global.js';
 import { Like } from 'typeorm';
 import { ShowValues, UserRole } from '../enums.js';
-import { Direction } from '../global.js';
-import { getOrderGallery } from '../libs/index.js';
+import { orderGallery } from '../dictonary.js';
 import { User, Image, Comment } from '../models/index.js';
 
 export const getUserData: Direction = async (req, res) => {
@@ -77,7 +77,7 @@ export const getUserData: Direction = async (req, res) => {
 		return res.json({ images, comments, favorites, foreignUser });
 	}
 
-	return res.json(foreignUser);
+	return res.status(401).json(foreignUser);
 };
 
 export const getImages: Direction = async (req, res) => {
@@ -85,10 +85,14 @@ export const getImages: Direction = async (req, res) => {
 	const user = await User.findOneBy({ username });
 		
 	if (user) {
-		const order = getOrderGallery(sort);
+		const order = orderGallery[sort] ?? orderGallery.NEWEST;
 		let isPublicImage: boolean | undefined = true;
 
-		if (req.user && (req.user.username === username || req.user.role === UserRole.ADMIN || req.user.role === UserRole.SUPER)) {
+		if (
+			req.user?.username === username ||
+			req.user?.role === UserRole.ADMIN ||
+			req.user?.role === UserRole.SUPER
+		) {
 			if (isPublic === ShowValues.PUBLIC) isPublicImage = true;
 			else if (isPublic === ShowValues.PRIVATE) isPublicImage = false;
 			else isPublicImage = undefined;
@@ -109,7 +113,7 @@ export const getImages: Direction = async (req, res) => {
 			}
 		});
 	
-		return res.json(images);
+		return res.json({ images });
 	}
 
 	return res.json(user);

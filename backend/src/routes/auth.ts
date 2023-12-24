@@ -1,12 +1,32 @@
 import { Router } from 'express';
 import { serialize } from 'cookie';
+import { DOMAIN, NODE_ENV } from '../config.js';
 import { authCtrl } from '../controllers/index.js';
-import { isValidToken, isNotValidToken } from '../middleware/logged.js';
+import {
+	isValidToken,
+	isNotValidToken,
+	getDataToken
+} from '../middleware/logged.js';
 import { validate } from '../middleware/validations.js';
 import * as array from '../validators/arrays-validators.js';
-import { DOMAIN, NODE_ENV } from '../config.js';
 
 const router = Router();
+
+router.get(
+	'/',
+	getDataToken,
+	(req, res) => {
+		const partialUser = req.user
+			? {
+				username: req.user.username,
+				avatar: req.user.avatar,
+				email: req.user.email,
+				role: req.user.role
+			} : undefined;
+
+		return res.json({ user: partialUser });
+	}
+);
 
 router.post(
 	'/signup',
@@ -36,7 +56,7 @@ router.post(
 			secure: NODE_ENV === 'production'
 		}));
 
-		return res.json({ redirect: '/' });
+		return res.json({ redirect: true });
 	}
 );
 

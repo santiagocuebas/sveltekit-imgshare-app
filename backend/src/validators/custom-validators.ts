@@ -1,9 +1,9 @@
-import { CustomValidator } from 'express-validator';
+import type { CustomValidator } from 'express-validator';
+import type { ILink } from '../global.js';
 import { extname } from 'path';
-import { ILink } from '../global.js';
 import { Ext } from '../enums.js';
-import { User } from '../models/index.js';
 import { matchPassword } from '../libs/index.js';
+import { User } from '../models/index.js';
 
 export const isValidUsername: CustomValidator = async (username: string): Promise<boolean> => {
 	const user: User | null = await User.findOneBy({ username });

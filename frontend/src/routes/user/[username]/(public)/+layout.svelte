@@ -1,144 +1,115 @@
 <script lang="ts">
-  import { UserRole } from '$lib/enums';
-	import { DIR } from '$lib/config.js';
-  import { beforeUpdate } from 'svelte';
 	import type { PageData } from './$types';
+  import { beforeUpdate } from 'svelte';
+	import { DIR } from '$lib/config.js';
+  import { LinksOptions, UserRole } from '$lib/enums';
+  import { user } from '$lib/stores';
 	
 	export let data: PageData;
+
 	let pathname: string;
+
+	$: ({ avatar, username } = data.foreignUser);
 
 	beforeUpdate(() => pathname = location.pathname);
 </script>
 
-<div class="foreignuser-header">
-	<div class="foreignuser-head">
-		<img src="{DIR}/uploads/avatars/{data.foreignUser.avatar}" alt={data.foreignUser.username}>
-		<div class="foreignuser-options">
-			<h1>{data.foreignUser.username}</h1>
-			{#if data.user?.username === data.foreignUser.username}
-			<i class="fa-solid fa-arrow-up-from-bracket"></i>
-			<a href="/user/{data.user?.username}/upload">UPLOAD</a>
-			<p>&#x25CF;</p>
-			<i class="fa-solid fa-gear"></i>
-			<a href="/user/{data.user?.username}/settings">SETTINGS</a>
-				{#if data.user?.role === UserRole.ADMIN || data.user?.role === UserRole.SUPER}
+<div id="foreign-head">
+	<picture>
+		<img src="{DIR}/uploads/avatars/{avatar}" alt={username}>
+	</picture>
+	<div id="foreign-options">
+			<h1>{username}</h1>
+			<div>
+				{#if $user?.username === username}
+					<i class="fa-solid fa-arrow-up-from-bracket"></i>
+					<a href="/user/{$user?.username}/upload">
+						UPLOAD
+					</a>
 					<p>&#x25CF;</p>
-					<i class="fa-solid fa-user"></i>
-					<a href="/admin">ADMIN</a>
+					<i class="fa-solid fa-gear"></i>
+					<a href="/user/{username}/settings">
+						SETTINGS
+					</a>
+					{#if $user?.role === UserRole.ADMIN || $user?.role === UserRole.SUPER}
+						<p>&#x25CF;</p>
+						<i class="fa-solid fa-user"></i>
+						<a href="/admin">ADMIN</a>
+					{/if}
 				{/if}
-			{/if}
-		</div>
-		<div class="foreignuser-links">
-			<a class={pathname?.includes('/post') || pathname === `/user/${data.foreignUser.username}` ? 'selected' : ''} href="/user/{data.foreignUser.username}/post">POST</a>
-			<a class={pathname?.includes('/favorite') ? 'selected' : ''} href="/user/{data.foreignUser.username}/favorite">FAVORITE</a>
-			<a class={pathname?.includes('/comment') ? 'selected' : ''} href="/user/{data.foreignUser.username}/comment">COMMENT</a>
-			<a class={pathname?.includes('/about') ? 'selected' : ''} href="/user/{data.foreignUser.username}/about">ABOUT</a>
-		</div>
+			</div>
+	</div>
+	<div id="foreign-links">
+		{#each Object.values(LinksOptions) as text}
+			<a
+				class:selected={pathname?.includes('/' + text) ||
+					(text === LinksOptions.POST && pathname === `/user/${username}`)}
+				href="/user/{username}/{text}"
+			>{text.toUpperCase()}</a>
+		{/each}
 	</div>
 </div>
 <slot></slot>
 
-<style>
-	.foreignuser-header {
-		display: flex;
-		width: 100%;
-		margin-top: -20px;
-		background-color: #5383d3;
+<style lang="postcss">
+	#foreign-head {
+		@apply flex relative items-center justify-center w-full min-w-[510px] -mt-5 py-5 px-[10%] bg-[#5383d3] gap-x-5;
+
+		@media (width < 1632px) {
+			@apply px-[5%];
+		}
+
+		@media (width < 768px) {
+			@apply px-5;
+		}
 	}
 
-	.foreignuser-head {
-		display: grid;
-		grid-template-columns: 120px 1fr;
-		grid-auto-rows: 20px min-content;
-		width: 90%;
-		min-width: 510px;
-		max-width: 1520px;
-		margin: auto;
-		padding: 10px 0;
-		column-gap: 10px;
+	picture {
+		@apply flex-none w-[120px] h-[120px];
+
+		& img {
+			box-shadow: 0 0 4px #555555;
+			@apply w-full h-full rounded-full object-cover;
+		}
 	}
 
-	.foreignuser-header img {
-		grid-row: 2 / span 1;
-		width: 120px;
-		height: 120px;
-		border-radius: 50%;
-		box-shadow: 0 0 6px 2px #555555;
-		object-fit: cover;
-		object-position: center;
+	#foreign-options {
+		@apply flex flex-col flex-1 justify-center gap-y-1;
+
+		& h1 {
+			@apply w-full font-bold text-[40px];
+		}
+
+		& div {
+			@apply flex gap-x-1.5;
+		}
+
+		& a, i, p {
+			@apply flex-none font-bold text-white;
+		}
 	}
 
-	.foreignuser-options {
-		grid-row: 2 / span 1;
-		display: flex;
-		flex-wrap: wrap;
-		align-self: center;
-		align-items: center;
-		column-gap: 10px;
-	}
+	#foreign-links {
+		@apply self-end flex absolute bottom-2.5 gap-x-1;
 
-	.foreignuser-options h1 {
-		width: 100%;
-		font-size: 40px;
-	}
+		& a {
+			@apply font-medium text-white [&.selected]:font-bold;
 
-	.foreignuser-options a, i, p {
-		height: min-content;
-		font-weight: 700;
-		color: #ffffff;
-	}
-
-	.foreignuser-links {
-		grid-row: 3 / span 1;
-		grid-column: 1 / span 2;
-		justify-self: center;
-	}
-
-	.foreignuser-links a {
-		font-weight: 600;
-		color: #ffffff;
-	}
-
-	.selected {
-		border-bottom: 2px solid #ffffff;
-		font-weight: 700;
+			&.selected {
+				border-bottom: 3px solid #ffffff;
+			}
+		}
 	}
 
 	:global(.user-message) {
-		display: flex;
-		align-content: space-evenly;
-		justify-content: center;
-		flex-wrap: wrap;
-		width: 240px;
-		height: 240px;
-		left: 0;
-		right: 0;
-		margin: 0 auto;
-		font-size: 20px;
-		font-weight: 700;
-	}
+		@apply flex flex-col justify-evenly w-60 h-60 mx-auto text-[20px] font-bold;
 
-	:global(.user-column) {
-		grid-column: 1 / span 6;
-	}
+		& p {
+			@apply text-center break-words;
+		}
 
-	:global(.user-message p) {
-		height: min-content;
-		overflow-wrap: break-word;
-		text-align: center;
-	}
-
-	:global(.user-message a) {
-		width: max-content;
-		height: min-content;
-		padding: 8px 16px;
-		border: none;
-		border-radius: 6px;
-		background-color: #5383d3;
-		font-size: 20px;
-		font-weight: 700;
-		color: #ffffff;
-		cursor: pointer;
+		& a {
+			@apply py-2 px-4 rounded-md bg-[#5383d3] text-[20px] font-bold text-white cursor-pointer;
+		}
 	}
 </style>
-

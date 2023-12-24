@@ -1,24 +1,31 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-  import BoxGallery from '$lib/components/BoxGallery.svelte';
-  import Gallery from '$lib/components/Gallery.svelte';
-  import CommentUser from '$lib/components/CommentUser.svelte';
-  import NavUser from '$lib/components/NavUser.svelte';
+  import { beforeUpdate } from 'svelte';
+	import { format } from "timeago.js";
+  import { InnerText } from '$lib/enums';
+	import { BoxGallery, Gallery, NavUser } from '$lib/components';
 	
 	export let data: PageData;
+
+	let origin = '';
+
+	beforeUpdate(() => origin = location.origin);
 </script>
 
-<Gallery className='gallery-user'>
-	<NavUser
-		innerText='COMMENTS'
-		username={data.foreignUser.username}
-		author={data.user?.username}
-		bind:images={data.images}
-	/>
+<Gallery>
+	<NavUser text={InnerText.COMMENTS} username={data.foreignUser.username} />
 	<BoxGallery className='image-row'>
 		{#if data.comments.length > 0}
 			{#each data.comments as comment}
-				<CommentUser comment={comment} />
+				<div class="comment-container">
+					<a href="/gallery/{comment.imageId}">
+						{origin}/gallery/{comment.imageId}
+					</a>
+					<div class="comment-content">
+						{comment.comment}
+					</div>
+					<p>{format(comment.createdAt)}</p>
+				</div>
 			{/each}
 		{:else}
 			<div class="user-message">
@@ -27,3 +34,22 @@
 		{/if}
 	</BoxGallery>
 </Gallery>
+
+<style lang="postcss">
+	.comment-container {
+		@apply flex flex-col w-[90%] min-w-[490px] max-w-[600px] mx-auto p-2.5 rounded-xl bg-[#eeeeee] gap-2;
+
+		& a {
+			@apply font-bold;
+		}
+		
+		& .comment-content {
+			scrollbar-width: none;
+			@apply w-full max-h-[120px] overflow-scroll break-words;
+		}
+
+		& p {
+			@apply ml-auto;
+		}
+	}
+</style>

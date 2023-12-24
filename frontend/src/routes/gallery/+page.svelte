@@ -1,19 +1,24 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import Logo from '$lib/components/Logo.svelte';
-	import Gallery from '$lib/components/Gallery.svelte';
-	import NavGallery from '$lib/components/NavGallery.svelte';
-	import BoxGallery from '$lib/components/BoxGallery.svelte';
-	import Image from '$lib/components/Image.svelte';
+	import { images } from '$lib/stores';
+	import {
+		Logo,
+		Gallery,
+		NavGallery,
+		BoxGallery,
+		Image
+	} from '$lib/components';
 	
 	export let data: PageData;
+
+	images.setImages(data.images);
 </script>
 
 <Logo />
 <Gallery>
-	<NavGallery bind:images={data.images} />
-	<BoxGallery className='image-cell'>
-		{#each data.images as image}
+	<NavGallery />
+	<BoxGallery>
+		{#each $images as image}
 			<Image image={image} />
 		{/each}
 	</BoxGallery>

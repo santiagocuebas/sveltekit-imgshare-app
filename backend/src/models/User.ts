@@ -1,3 +1,4 @@
+import type { IUser } from '../global.js';
 import {
 	Entity,
 	BaseEntity,
@@ -5,7 +6,6 @@ import {
 	PrimaryColumn,
 	CreateDateColumn
 } from 'typeorm';
-import { IUser } from '../global.js';
 import { UserRole } from '../enums.js';
 
 @Entity()

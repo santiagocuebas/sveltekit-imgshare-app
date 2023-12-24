@@ -1,41 +1,33 @@
 <script lang="ts">
-  export let className: string;
+  export let className: string = '';
 </script>
 
-<div class={className} data-sveltekit-preload-data='off'>
+<div class={className} data-sveltekit-preload-data='tap'>
   <slot></slot>
 </div>
 
-<style>
+<style lang="postcss">
 	div {
-    display: grid;
-    justify-content: center;
-    width: 100%;
-    min-width: 510px;
-    height: 100%;
-    padding: 10px;
-    gap: 10px;
+    @apply flex flex-wrap content-start justify-center h-full p-2.5 gap-2.5;
+
+    &.image-sidebar {
+      @apply p-0 gap-0;
+    }
+
+    &.image-row {
+      @apply flex-col justify-start content-center;
+    }
+
+    &.image-user {
+      @apply justify-start p-0 gap-0;
+    }
+
+    &.image-upload {
+      @apply flex-row flex-nowrap justify-evenly gap-0;
+    }
 	}
 
-  .image-cell {
-    grid-template-columns: repeat(auto-fill, 240px);
-    grid-auto-rows: 240px;
-  }
-
-  .image-row {
-    grid-template-columns: repeat(auto-fill, 100%);
-    grid-auto-rows: min-content;
-  }
-
-  .image-sidebar {
-    grid-template-columns: repeat(auto-fill, 100%);
-    grid-auto-rows: min-content;
-    min-width: 0;
-    padding: 0;
-    gap: 0;
-  }
-
-  .image-upload {
+  .image-uploaded {
     grid-template-columns: repeat(3, 200px);
     grid-auto-rows: 200px;
     align-items: center;

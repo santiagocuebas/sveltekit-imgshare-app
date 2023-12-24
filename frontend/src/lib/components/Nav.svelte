@@ -1,44 +1,37 @@
 <script lang="ts">
-  import type { IUser } from '$lib/global.js';
-	import { DIR } from '$lib/config.js';
+	import { afterUpdate } from 'svelte';
 	import { clickOutside } from '$lib/services/click-outside';
+  import { user } from '$lib/stores/user-store';
 
-	export let user: IUser;
 	let visible = false;
+	let isValidUser = false;
+	
+	afterUpdate(() => isValidUser = $user !== null);
 </script>
 
 <nav>
-	<a class="nav-logo" href="/">
-		<img class="nav-tiny-logo" src="/tiny-logo.png" alt="">
-		<img class="nav-main-logo" src="/imgshare-logo.png" alt="">
+	<a id="avatar" href="/">
+		<img class="tiny-logo" src="/tiny-logo.png" alt="">
+		<img class="main-logo" src="/imgshare-logo.png" alt="">
 	</a>
 	<form action="/search">
 		<input type="search" name="q" placeholder="Search">
-		<button class="nav-button">
+		<button>
 			<i class="fa-solid fa-magnifying-glass"></i>
 		</button>
 	</form>
-	{#if user}
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<img
-			id='nav-avatar'
-			class="nav-avatar"
-			src="{DIR}/uploads/avatars/{user?.avatar}"
-			alt={user?.username}
-			role="none"
-			on:click
-		>
+	{#if isValidUser}
 		<slot></slot>
 	{:else}
-		<div class="nav-sign">
-			<a class="nav-signin" href="/signin">Signin</a>
-			<a class="nav-signup" href="/signup">Signup</a>
+		<div>
+			<a href="/signin">Signin</a>
+			<a class="signup" href="/signup">Signup</a>
 			<button on:click={() => visible = !visible}>
-				<i class='fa-solid fa-caret-down'></i>
+				<i class='fa-solid fa-caret-down fa-xl'></i>
 			</button>
 		</div>
 		{#if visible}
-			<ul class="nav-sign-list" use:clickOutside on:outclick={() => visible = false}>
+			<ul use:clickOutside on:outclick={() => visible = false}>
 				<a href="/signin" on:click={() => visible = false}>
 					<i class="fa-solid fa-right-to-bracket"></i>
 					<li>Signin</li>
@@ -52,175 +45,73 @@
 	{/if}
 </nav>
 
-<style>
+<style lang="postcss">
 	nav {
-		display: flex;
-		position: fixed;
-		align-items: center;
-		justify-content: space-between;
-		min-width: 510px;
-		width: 100%;
-		height: 56px;
-		margin-top: -56px;
-		padding: 0 20px;
-		background-color: #5383d3;
-		box-shadow: 0 0 10px #666666;
-		gap: 20px;
-		z-index: 100;
-	}
+		box-shadow: 0 0 4px #666666;
+		@apply flex fixed items-center justify-between w-full min-w-[510px] h-14 -mt-14 px-5 bg-[#5383d3] gap-5 z-[100];
 
-	.nav-logo {
-		width: 160px;
-		min-width: 160px;
-		height: 40px;
-	}
+		& #avatar {
+			@apply flex-none w-40 h-10;
 
-	.nav-tiny-logo {
-		display: none;
-	}
-
-	img {
-		height: 100%;
-	}
-
-	form {
-		display: flex;
-		width: 65%;
-		min-width: 320px;
-		max-width: 700px;
-		height: min-content;
-		outline: 1px solid #cccccc;
-		background-color: #cccccc;
-		gap: 1px;
-	}
-
-	input {
-		width: 100%;
-		padding: 10px 16px;
-		border: none;
-		outline: none;
-	}
-
-	.nav-button {
-		width: 64px;
-		min-width: 64px;
-		padding: 10px 0;
-		border: none;
-		background-color: #e8e8e8;
-		cursor: pointer;
-	}
-
-	.nav-button:hover {
-		background-color: #d8d8d8;
-	}
-
-	.nav-sign {
-		display: flex;
-		align-items: center;
-		height: fit-content;
-		gap: 15px;
-	}
-
-	.nav-sign button {
-		display: none;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100%;
-		border: none;
-		border-radius: 50%;
-		background-color: #ffffff;
-		color: #5383d3;
-		cursor: pointer;
-	}
-
-	.nav-sign i {
-		font-size: 24px;
-	}
-
-	.nav-signin, .nav-signup {
-		font-size: 18px;
-		font-weight: 700;
-		color: #ffffff;
-	}
-
-	.nav-signup {
-		padding: 9px 14px;
-		background: #3cb85b;
-	}
-
-	.nav-avatar {
-		width: 40px;
-		min-width: 40px;
-		height: 40px;
-		border-radius: 50%;
-		box-shadow: 0 0 5px 1px #666666;
-		object-fit: cover;
-		object-position: center;
-		cursor: pointer;
-	}
-
-	.nav-sign-list {
-		position: absolute;
-		align-self: start;
-		top: 50px;
-		right: 20px;
-		padding: 5px 0;
-		border-radius: 4px;
-		background-color: #ffffff;
-		box-shadow: 0 0 6px #666666;
-		z-index: 100;
-	}
-
-	.nav-sign-list a {
-		display: flex;
-		align-items: center;
-		padding: 5px 20px;
-		font-weight: 700;
-		gap: 20px;
-	}
-
-	.nav-sign-list a:nth-child(1):hover {
-		background-color: #5383d3;
-		color: #ffffff;
-	}
-
-	.nav-sign-list a:nth-child(2):hover {
-		background-color: #3cb85b;
-		color: #ffffff;
-	}
-
-	@media (max-width: 1040px) {
-		.nav-logo {
-			width: 40px;
-			min-width: 40px;
-			height: 40px;
+			& img {
+				@apply h-full [&.tiny-logo]:hidden;
+			}
 		}
 
-		.nav-main-logo {
-			display: none;
+		& form {
+			outline: 1px solid #cccccc;
+			@apply flex w-2/3 min-w-[320px] max-w-[700px] bg-[#cccccc] gap-x-px;
+
+			& input {
+				@apply w-full py-2.5 px-4;
+			}
+
+			& button {
+				@apply flex-none w-16 py-2.5 bg-[#e8e8e8] hover:bg-[#d8d8d8];
+			}
 		}
 
-		.nav-tiny-logo {
-			display: inline-block;
+		& div {
+			@apply flex items-center h-fit gap-4;
+
+			& a {
+				@apply text-[18px] font-bold text-white;
+
+				&.signup {
+					@apply py-2.5 px-[14px] bg-[#3cb85b];
+				}
+			}
+
+			& button {
+				@apply hidden items-center justify-center w-full h-full rounded-full bg-white text-[#5383d3] cursor-pointer;
+			}
 		}
 
-		.nav-sign {
-			width: 40px;
-			min-width: 40px;
-			height: 40px;
+		& ul {
+			box-shadow: 0 0 4px #666666;
+			@apply self-start absolute top-[50px] right-5 py-1.5 rounded bg-white z-[100];
+
+			& a {
+				@apply flex items-center py-1.5 px-5 font-bold gap-5 hover:bg-[#5383d3] hover:text-white;
+			}
+
+			& a:nth-child(2):hover {
+				@apply bg-[#3cb85b];
+			}
 		}
 
-		.nav-signin {
-			display: none;
-		}
+		@media (width < 1040px) {
+			& #avatar {
+				@apply w-10 h-10;
 
-		.nav-signup {
-			display: none;
-		}
+				& img {
+					@apply [&.main-logo]:hidden [&.tiny-logo]:inline-block;
+				}
+			}
 
-		.nav-sign button {
-			display: flex;
+			& div {
+				@apply flex-none w-10 h-10 [&_a]:hidden [&_button]:flex;
+			}
 		}
 	}
 </style>

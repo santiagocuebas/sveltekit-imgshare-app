@@ -1,4 +1,4 @@
-import { Direction } from '../global.js';
+import type { Direction } from '../global.js';
 import { encryptPassword, getSerializedCookie } from '../libs/index.js';
 import { User } from '../models/index.js';
 
@@ -16,8 +16,15 @@ export const postSignup: Direction = async (req, res) => {
 	const token = getSerializedCookie(user);
 
 	res.set('Set-Cookie', token);
+
+	const partialUser = {
+		username: user.username,
+		avatar: user.avatar,
+		email: user.email,
+		role: user.role
+	};
 	
-	return res.json({ url: '/' + user.username  });
+	return res.json({ user: partialUser });
 };
 
 export const postSignin: Direction = async (req, res) => {
@@ -34,5 +41,12 @@ export const postSignin: Direction = async (req, res) => {
 
 	res.set('Set-Cookie', token);
 
-	return res.json({ url: '/' + user.username });
+	const partialUser = {
+		username: user.username,
+		avatar: user.avatar,
+		email: user.email,
+		role: user.role
+	};
+
+	return res.json({ user: partialUser });
 };

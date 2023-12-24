@@ -25,7 +25,10 @@ router.post(
 	isValidToken,
 	(req, res) => {
 		req.user.password = '';
-		return res.json({ user: req.user });
+
+		if (req.user.username !== req.params.username) return res.status(401).json();
+
+		return res.json({ extendedUser: req.user });
 	}
 );
 

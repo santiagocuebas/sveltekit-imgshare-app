@@ -1,136 +1,122 @@
 <script lang="ts">
-  import axios from 'axios';
 	import type { PageData } from './$types';
-  import type { IUserExtended } from '$lib/global';
+  import axios from 'axios';
 	import { DIR } from '$lib/config.js';
-	import Gallery from '$lib/components/Gallery.svelte';
-  import BoxGallery from '$lib/components/BoxGallery.svelte';
-  import UserCell from '$lib/components/UserCell.svelte';
-	import UserData from '$lib/components/UserData.svelte';
-	import UserOption from '$lib/components/UserOption.svelte';
-	import UserChange from '$lib/components/UserChange.svelte';
-  import NavAdmin from '$lib/components/NavAdmin.svelte';
-  import AlertUser from '$lib/components/AlertUser.svelte';
-  import UserMessage from '$lib/components/UserMessage.svelte';
+	import { ClassName, TextData } from '$lib/dictionary.js';
+	import { selectUser } from '$lib/stores';
+	import {
+		Gallery,
+		BoxGallery,
+		UserCell,
+		NavAdmin,
+		UserBox
+	} from '$lib/components';
 	
 	export let data: PageData;
 
-	let selectUser: IUserExtended | null = null;
 	let alert = false;
-	let className: string;
-	let text: string;
 	let show = false;
+	let text: string;
 
 	function showBox(value: boolean) {
-		if (value) {
-			className = 'fa-solid fa-check';
-			text = 'The changes have been applied successfully';
-		} else {
-			className = 'fa-solid fa-xmark';
-			text = 'An error occurred while trying to apply the changes';
-		}
-
+		text = (value) ? 'accept' : 'error';
 		show = true;
-
 		setTimeout(() => show = false, 3000);
 	}
 
 	let deleteUser = async () => {
-		const username = selectUser?.username;
+		const username = $selectUser?.username;
 		alert = false;
-		selectUser = null;
+		selectUser.resetUser();
 
 		const resData = await axios({
 			method: 'DELETE',
 			url: `${DIR}/api/admin/${username}`,
 			withCredentials: true
-		}).then(res => res.data);
+		}).then(res => res.data)
+			.catch(err => {
+				console.log(err.message);
+				return { change: false };
+			});
 
-		if (resData.change) data.users= data.users.filter((user: IUserExtended) => user.username !== username);
+		if (resData.change) {
+			data.users = data.users.filter(user => user.username !== username);
+		}
 
 		showBox(resData.change);
 	};
 </script>
 
 {#if show}
-	<UserMessage className={className} text={text} />	
+	<div id="user-message">
+		<i class='fa-solid {ClassName[text]}'></i>
+		<p>{TextData[text]}</p>
+	</div>
 {/if}
 
 {#if alert}
-	<AlertUser on:click={() => alert = false} bind:deleteUser={deleteUser} />
+	<div id="alert-container">
+		<div>
+			<p>Are you sure want delete this user?</p>
+			<button on:click={() => alert = false}>
+				Cancel
+			</button>
+			<button class="blue" on:click={deleteUser}>
+				Accept
+			</button>
+		</div>
+	</div>
 {/if}
 
-{#if selectUser}
-	<div class="user-box">
-		<UserData bind:user={selectUser} />
-		<div class="user-box-line"></div>
-		<UserOption bind:user={selectUser} showBox={showBox} />
-		<div class="user-box-line"></div>
-		<UserChange
-			username={selectUser.username}
-			bind:role={selectUser.role}
-			bind:myRole={data.user.role}
-			bind:alert={alert}
-			showBox={showBox}
-		/>
-		<button class="close-user" on:click|preventDefault={() => selectUser = null}>
-			<i class="fa-solid fa-xmark"></i>
-		</button>
+{#if $selectUser}
+	<div id="container-user">
+		<UserBox bind:show={show} bind:alert={alert} bind:text={text} />
 	</div>
 {/if}
 
 <Gallery className='gallery-users'>
 	<NavAdmin bind:users={data.users} />
-	<BoxGallery className='image-cell-user'>
+	<BoxGallery className='image-user'>
 		{#each data.users as user (user.username)}
-			<UserCell on:mousedown={() => selectUser = user} user={user} />
+			<UserCell user={user} on:click={() => selectUser.setUser(user)} />
 		{/each}
 	</BoxGallery>
 </Gallery>
 
-<style>
-	.user-box {
-		display: grid;
-		position: relative;
-		grid-template-columns: 1fr 1px 1fr 1px 1fr;
-		grid-auto-rows: min-content;
-		justify-self: center;
-		width: 800px;
-		padding: 10px;
-		border: 3px solid #999999;
-		background-color: #ffffff;
-		gap: 10px;
+<style lang="postcss">
+	#alert-container {
+		@apply grid fixed justify-center w-screen h-screen top-0 bg-black/70 z-[1000];
+
+		& div {
+			@apply flex flex-wrap justify-evenly w-min h-min mt-32 py-5 px-12 bg-white gap-y-2.5;
+		}
+
+		& p {
+			@apply w-max text-center font-medium;
+		}
+
+		& button {
+			box-shadow: 0 0 0 1px #666666;
+			@apply w-[100px] py-2 rounded-xl bg-[#c23838] font-medium text-white
+			[&.blue]:bg-[#384dc2];
+		}
 	}
 
-	.user-box-line {
-		align-self: center;
-		width: 1px;
-		height: 100%;
-		background-color: #999999;
+	#user-message {
+    box-shadow: 0 0 4px #444444;
+		@apply flex fixed justify-around items-center w-[400px] h-[200px] left-auto right-auto bottom-20 bg-white z-[500];
+
+		& i {
+			outline: 2px solid #000000;
+			@apply flex place-content-center w-[180px] h-[180px] rounded-full text-[160px] [&.fa-check]:bg-[#97f09e] [&.fa-check]:text-[#0b7c14] [&.fa-xmark]:bg-[#f09797] [&.fa-xmark]:text-[#7c0b0b];
+		}
+
+		& p {
+			@apply w-[180px] text-center font-bold;
+		}
 	}
 
-	.close-user {
-		display: none;
-		position: absolute;
-		align-items: center;
-		justify-content: center;
-		top: 20px;
-		right: 20px;
-		width: 40px;
-		height: 40px;
-		border: none;
-		box-shadow: 0 0 5px 1px #000000;
-		border-radius: 50%;
-		background-color: #df403b;
-		color: #ffffff;
-		cursor: pointer;
-	}
-
-	.close-user i {
-		font-size: 20px;
-	}
-
-	:global(.user-box:hover > .close-user) {
-		display: flex;
+	#container-user {
+		@apply p-2.5;
 	}
 </style>

@@ -1,97 +1,78 @@
 <script lang="ts">
+	import type { LayoutServerData } from './$types';
 	import { beforeUpdate } from 'svelte';
-  import type { LayoutServerData } from './$types';
-	import Nav from '$lib/components/Nav.svelte';
-	import BoxUser from '$lib/components/BoxUser.svelte';
-  import Footer from '$lib/components/Footer.svelte';
+	import { user } from '$lib/stores/index';
+	import { Nav, BoxUser, Footer } from '$lib/components';
+	import '../app.css';
 
 	export let data: LayoutServerData;
 
-	let visible = false;
 	let visibleFooter = true;
 	let pathname: string;
+
+	if (data.user) user.setUser(data.user);
 	
 	async function changeVisibility(e: WheelEvent) {
-		if (e.deltaY <=  0) visibleFooter = true;
-		else visibleFooter = false;
+		visibleFooter = (e.deltaY <=  0) ? true : false;
 	}
 
 	beforeUpdate(() => pathname = location.pathname);
 </script>
 
-<Nav user={data.user} on:click={() => visible = !visible}>
-	{#if visible}
-		<BoxUser user={data.user} bind:visible={visible} />
-	{/if}
+<Nav>
+	<BoxUser />
 </Nav>
-<div class="main-container" on:wheel={changeVisibility}>
+<main on:wheel={changeVisibility}>
 	<slot></slot>
-</div>
+</main>
 {#if visibleFooter && (pathname === '/' || pathname?.includes('/gallery'))}
-<Footer />
+	<Footer />
 {/if}
 
-<style>
+<style lang="postcss">
 	:global(*) {
-  	box-sizing: border-box;
-		margin: 0;
-		padding: 0;
-		font-size: 16px;
 		font-family: 'Quicksand', Helvetica, sans-serif;
+		@apply box-border text-[16px] leading-none;
 	}
 
 	:global(textarea) {
-		resize: none;
+		@apply resize-none;
+	}
+
+	:global(input, textarea) {
+		border: none;
+		outline: none;
+	}
+
+	:global(input:focus, textarea:focus) {
+		border: none;
+		outline: none;
+	}
+
+	:global(input[type='file']) {
+		@apply hidden;
 	}
 
 	:global(a) {
-		background-color: transparent;
-		color: #000;
 		text-decoration: none;
-	}
-
-	:global(img) {
-		border-style: none;
-  	max-width: 100%;
-	}
-
-	:global(button, input, optgroup, select, textarea) {
-		font-family: inherit;
-  	font-size: 100%;
-  	line-height: 1.15;
+		@apply bg-transparent text-black;
 	}
 
 	:global(ul) {
 		list-style-type: none;
 	}
 
-	:global(.main-container) {
-		display: grid;
-		position: relative;
-		justify-items: center;
-		align-items: flex-start;
-		grid-auto-rows: min-content;
-		width: 100%;
-		min-width: 510px;
+	main {
+		grid-auto-rows: min-content 1fr;
 		min-height: calc(100vh - 56px);
-		margin-top: 56px;
-		padding: 20px 0;
-		background: #ecedf2;
-		row-gap: 20px;
+		@apply grid relative items-start justify-items-center w-full min-w-[510px] mt-14 py-5 bg-[#ecedf2] gap-y-5 leading-tight;
 	}
 
 	:global(.title) {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 8px;
-    background-color: #5383d3;
-    font-size: 32px;
-    color: #ffffff;
-    gap: 8px;
-  }
+		@apply flex items-center w-full p-2 bg-[#5383d3] truncate text-[32px] font-bold text-white leading-tight gap-2;
+	}
 
 	:global(.title-icon) {
-    font-size: 32px;
-  }
+		@apply text-[32px];
+	}
 </style>

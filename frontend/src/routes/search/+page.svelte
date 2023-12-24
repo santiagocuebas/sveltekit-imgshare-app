@@ -1,19 +1,28 @@
 <script lang="ts">
-  import BoxGallery from '$lib/components/BoxGallery.svelte';
-	import Gallery from '$lib/components/Gallery.svelte';
-	import NavGallery from '$lib/components/NavGallery.svelte';
-	import Logo from '$lib/components/Logo.svelte';
-	import Image from '$lib/components/Image.svelte';
 	import type { PageData } from './$types';
+  import { onMount } from 'svelte';
+    import { afterNavigate } from '$app/navigation';
+	import { images } from '$lib/stores';
+	import {
+		Logo,
+		Gallery,
+		NavGallery,
+		BoxGallery,
+		Image
+	} from '$lib/components';
 	
 	export let data: PageData;
+
+	onMount(() => images.setImages(data.images));
+
+	afterNavigate(() => images.setImages(data.images))
 </script>
 
 <Logo />
 <Gallery>
-	<NavGallery bind:images={data.images} visibleBox={false} />
-	<BoxGallery className='image-cell'>
-		{#each data.images as image}
+	<NavGallery visibleBox={false} />
+	<BoxGallery>
+		{#each $images as image}
 			<Image image={image} />
 		{/each}
 	</BoxGallery>

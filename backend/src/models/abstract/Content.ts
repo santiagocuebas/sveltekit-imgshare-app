@@ -1,3 +1,4 @@
+import type { IContent } from '../../global.js';
 import {
 	BaseEntity,
 	Column,
@@ -5,7 +6,6 @@ import {
 	Entity,
 	PrimaryColumn
 } from 'typeorm';
-import { IContent } from '../../global.js';
 
 @Entity()
 export abstract class Content extends BaseEntity implements IContent {

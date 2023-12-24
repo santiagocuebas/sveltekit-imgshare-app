@@ -1,15 +1,16 @@
 <script lang="ts">
+	import type { IComment, ResponseData } from "$lib/global.js";
 	import axios from "axios";
 	import { format } from "timeago.js";
-	import type { IComment, IUser } from "$lib/global.js";
 	import { DIR } from '$lib/config.js';
 	import { UserRole } from "$lib/enums.js";
 	import { clickOutside } from "$lib/services/click-outside";
-	import { handleRequest } from "$lib/services/services";
+	import { handleRegister, handleRequest } from "$lib/services/services";
+	import { user } from '$lib/stores';
 
 	export let comment: IComment;
 	export let comments: IComment[];
-	export let user: IUser;
+
 	let input: HTMLElement;
 	let visible = false;
 	let editable = false;
@@ -32,9 +33,22 @@
 		comment.edit = true;
 		comment.comment = description;
 
-		handleRequest(this);
+		handleRequest(this).catch(err => console.error(err.message));
 	}
 
+	async function handleLike(type: string) {
+		if ($user) {
+			const url = `${DIR}/api/comment/${comment.id}/like`;
+			const data: ResponseData | undefined = await handleRegister(url, type)
+				.catch(() => undefined);
+
+			if (data) {
+				comment.likes = data.likes;
+				comment.dislikes = data.dislikes;
+			}
+		}
+	}
+	
 	async function deleteComment() {
 		visible = false;
 		comments = comments.filter(({ id }) => id !== comment.id);
@@ -43,56 +57,84 @@
 			method: 'DELETE', 
 			url: `${DIR}/api/comment/${comment.id}`,
 			withCredentials: true
-		});
+		}).catch(err => console.error(err.message));
 	}
 </script>
 
 <div class="comment">
-	<a class="comment-avatar" href="/user/{comment.author}">
-		<img src="{DIR}/uploads/avatars/{comment.avatar}" alt={comment.author}>
-	</a>
-	<div class="comment-author">
+	<picture class="avatar-comment">
+		<a href="/user/{comment.author}">
+			<img src="{DIR}/uploads/avatars/{comment.avatar}" alt={comment.author}>
+		</a>
+	</picture>
+	<div class="author-comment">
 		<a href="/user/{comment.author}">{comment.author}</a>
 		&#x25CF;
 		<p>{format(comment.createdAt)}</p>
 		{#if comment.edit}
-			<p class="grey">(edit)</p>
+			<p class="disabled">(edit)</p>
 		{/if}
 	</div>
 	{#if editable}
-		<form class="comment-form" action="{DIR}/api/comment/{comment.id}/edit" method="POST" on:submit|preventDefault={editComment}>
-			<input type="text" name="comment" spellcheck="false" autocomplete="off" maxlength="4200" bind:value={description} bind:this={input}>
+		<form
+			class="form-comment"
+			action="{DIR}/api/comment/{comment.id}/edit"
+			method="POST"
+			on:submit|preventDefault={editComment}
+		>
+			<input
+				type="text"
+				name="comment"
+				spellcheck="false"
+				autocomplete="off"
+				maxlength="4200"
+				bind:value={description}
+				bind:this={input}
+			>
 			<button class="red" on:click|preventDefault={cancelComment}>
 				<i class="fa-solid fa-cancel"></i>
 				Cancel
 			</button>
-			<button class="{description.length > 0 ? '' : 'disabled'}" disabled={!(description.length > 0)}>
+			<button disabled={!description.length}>
 				<i class="fa-solid fa-check"></i>
 				Done
 			</button>
 		</form>
 		{:else}
-		<div class="comment-content">
+		<div class="content-comment">
 			{comment.comment}
 		</div>
 	{/if}
-	<div>
-		<slot></slot>
+	<div class="stats-comment">
+		<button on:click={() => handleLike('like')}>
+			<i
+				class="fa-solid fa-thumbs-up"
+				class:selected={comment.likes.includes($user?.username ?? '')}
+			></i>
+			{comment.likes.length}
+		</button>
+		<button on:click={() => handleLike('dislike')}>
+			<i
+				class="fa-solid fa-thumbs-up"
+				class:selected={comment.dislikes.includes($user?.username ?? '')}
+			></i>
+			{comment.dislikes.length}
+		</button>
 	</div>
-	<div class="comment-options">
-		{#if user && (user.username === comment.author || user.username === comment.receiver || user.role !== UserRole.EDITOR)}
-			<button class="comment-button" on:click={() => visible = !visible}>
+	<div class="options-comment">
+		{#if $user && ($user.username === comment.author || $user.username === comment.receiver || $user.role !== UserRole.EDITOR)}
+			<button on:click={() => visible = !visible}>
 				<i class="fa-solid fa-ellipsis-vertical fa-lg"></i>
 			</button>
 			{#if visible}
-			<ul use:clickOutside on:outclick={() => visible = false}>
-				{#if (user.username === comment.author)}
-					<li role="none" on:mousedown={focusComment}>
+			<ul use:clickOutside on:outclick={() => setTimeout(() => visible = false)}>
+				{#if ($user.username === comment.author)}
+					<li role="none" on:click={focusComment}>
 						<i class="fa-solid fa-pen"></i>
 						Edit
 					</li>
 				{/if}
-				<li role="none" on:mousedown={deleteComment}>
+				<li role="none" on:click={deleteComment}>
 					<i class="fa-solid fa-square-minus"></i>
 					Delete
 				</li>
@@ -102,142 +144,76 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
 	.comment {
-		display: grid;
-		position: relative;
 		grid-template-columns: 40px 1fr 40px;
 		grid-auto-rows: min-content;
-		padding-bottom: 10px;
 		border-bottom: 2px solid #333333;
-		column-gap: 10px;
-		row-gap: 5px;
+		@apply grid relative pb-2.5 gap-x-2.5 gap-y-1.5;
+
+		&:hover .options-comment > button {
+			@apply block;
+		}
 	}
 
-	.comment-avatar {
+	.avatar-comment {
 		grid-row: 1 / span 3;
-		width: 40px;
-		height: 40px;
+		@apply w-10 h-10;
+
+		& img {
+			box-shadow: 0 0 2px #666666;
+			@apply w-full h-full rounded-full object-cover;
+		}
+	}
+	
+	.author-comment {
+		@apply flex w-full gap-1 [&_a]:font-semibold [&_.disabled]:text-[#777777];
 	}
 
-	.comment-avatar img {
-		width: 100%;
-		height: 100%;
-		border-radius: 50%;
-		box-shadow: 0 0 1px 1px #666666;
-		object-fit: cover;
+	.form-comment {
+		@apply flex flex-wrap justify-end gap-2.5;
+
+		& input {
+			border-bottom: 1px solid #888888;
+			@apply w-full py-1;
+		}
+
+		& button {
+			@apply flex items-center justify-evenly w-[100px] py-1.5 rounded bg-[#383be6] font-semibold text-white [&.red]:bg-[#e93e3e];
+
+			&[disabled] {
+				@apply bg-[#dddddd] text-[#888888] cursor-auto;
+			}
+		}
 	}
 
-	.comment div {
-		display: flex;
-		gap: 5px;
+	.content-comment {
+		@apply w-full min-h-[35px] break-words;
 	}
 
-	.comment-author a {
-		font-weight: 700;
+	.stats-comment {
+		@apply flex gap-1.5;
+
+		& button {
+			@apply flex items-center gap-1.5 [&_.selected]:text-[#777777];
+		}
 	}
 
-	.comment-content {
-		width: 100%;
-		min-height: 35px;
-		overflow-wrap: anywhere;
-	}
-
-	.comment-form {
-		display: flex;
-		justify-content: flex-end;
-		flex-wrap: wrap;
-		gap: 10px;
-	}
-
-	.comment-form input {
-		width: 100%;
-		padding: 4px 0;
-		border: none;
-		border-bottom: 1px solid #888888;
-		outline: none;
-	}
-
-	.comment-form button {
-		display: flex;
-		justify-content: space-evenly;
-		align-items: center;
-		width: 100px;
-		padding: 6px 0;
-		border: none;
-		border-radius: 3px;
-		background-color: #383be6;
-		font-weight: 600;
-		color: #ffffff;
-		cursor: pointer;
-	}
-
-	.comment-form .red {
-		background-color: #e93e3e;
-	}
-
-	.comment-form .disabled {
-		background-color: #dddddd;
-		color: #888888;
-		cursor: auto;
-	}
-
-	i {
-		cursor: pointer;
-	}
-
-	.comment-options {
+	.options-comment {
 		grid-column: 3 / span 1;
 		grid-row: 1 / span 3;
-	}
 
-	.comment-button {
-		display: none;
-		width: 40px;
-		height: 40px;
-		margin-left: auto;
-		border: none;
-		border-radius: 50%;
-		background-color: #ffffff;
-		cursor: pointer;
-	}
+		& button {
+			@apply hidden w-10 h-10 ml-auto rounded-full bg-white hover:bg-[#cccccc];
+		}
 
-	.comment-button:hover {
-		background-color: #cccccc;
-	}
+		& ul {
+			box-shadow: 0 0 1px 2px #666666;
+			@apply flex absolute flex-col right-0 top-10 py-1.5 rounded bg-white z-[200];
+		}
 
-	.comment:hover .comment-options > button {
-		display: block;
-	}
-
-	.comment-options ul {
-		display: grid;
-		position: absolute;
-		right: 0;
-		margin-top: 40px;
-		padding: 5px 0;
-		border-radius: 4px;
-		background-color: #ffffff;
-		box-shadow: 0 0 1px 2px #666666;
-		z-index: 200;
-	}
-
-	.comment-options li {
-		display: flex;
-		align-items: center;
-		justify-content: start;
-		width: 180px;
-		padding: 5px 20px;
-		font-weight: 700;
-		cursor: pointer;
-		gap: 20px;
-	}
-
-	.comment-options li:hover {
-		background-color: #cccccc;
-	}
-
-	.grey {
-		color: #777777;
+		& li {
+			@apply flex items-center justify-start w-[180px] py-1 px-5 font-semibold cursor-pointer gap-5 hover:bg-[#cccccc];
+		}
 	}
 </style>

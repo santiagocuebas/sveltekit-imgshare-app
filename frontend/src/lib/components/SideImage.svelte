@@ -1,59 +1,47 @@
 <script lang="ts">
-  import { format } from "timeago.js";
-  import type { IImage } from "$lib/global.js";
+	import type { IImage } from "$lib/global.js";
+	import { format } from "timeago.js";
 	import { DIR } from '$lib/config.js';
 
-  export let image: IImage;
+	export let image: IImage;
 </script>
 
 <a href="/gallery/{image.id}" title="{image.title}">
-  <img src="{DIR}/uploads/{image.filename}" alt={image.title}>
-  <h2>{image.title}</h2>
-  <p>{image.author}</p>
-  <div>
-    {image.views} views &#x25CF; {format(image.createdAt)}
-  </div>
+	<picture>
+		<img src="{DIR}/uploads/{image.filename}" alt={image.title}>
+	</picture>
+	<h2>{image.title}</h2>
+	<p>{image.author}</p>
+	<div>
+		{image.views} views &#x25CF; {format(image.createdAt)}
+	</div>
 </a>
 
-<style>
-  a {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    grid-auto-rows: min-content;
-    align-items: center;
-    padding: 10px;
-    column-gap: 10px;
-    row-gap: 5px;
-  }
+<style lang="postcss">
+	a {
+		grid-template-columns: 80px 1fr;
+		grid-auto-rows: min-content min-content 1fr;
+		@apply grid items-center w-full p-2.5 gap-x-2.5 hover:bg-[#dddddd];
+	}
 
-  a:hover {
-    background-color: #dddddd;
-  }
+	picture {
+		grid-row: 1 / span 3;
+		@apply w-20 h-20;
 
-  img {
-    grid-row: 1 / span 3;
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-  }
+		& img {
+			@apply w-full h-full object-cover;
+		}
+	}
+	
+	h2 {
+		@apply truncate text-[20px] font-semibold leading-tight;
+	}
 
-  h2 {
-    align-self: flex-start;
-    font-size: 20px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+	p {
+		@apply truncate font-medium leading-tight;
+	}
 
-  p {
-    align-self: flex-start;
-    text-overflow: ellipsis;
-    font-weight: 600;
-  }
-
-  div {
-    align-self: flex-end;
-    justify-self: end;
-    text-overflow: ellipsis;
-    color: #555555;
-  }
+	div {
+		@apply self-end justify-self-end truncate text-[#666666] leading-tight;
+	}
 </style>

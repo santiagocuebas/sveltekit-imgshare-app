@@ -11,6 +11,10 @@ declare global {
 	}
 }
 
+export interface IKeys<T> {
+	[index: string]: T;
+}
+
 export interface IUser {
 	username: string;
 	email: string;

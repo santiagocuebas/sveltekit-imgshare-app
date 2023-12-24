@@ -1,6 +1,6 @@
+import type { Direction, ILink } from '../global.js';
 import fs from 'fs-extra';
 import { extname, resolve } from 'path';
-import { Direction, ILink } from '../global.js';
 import {
 	encryptPassword,
 	deleteUserComments,

@@ -6,7 +6,9 @@
 </script>
 
 <a href='/gallery/{image.id}' title="{image.title}">
-  <img src="{DIR}/uploads/{image.filename}" alt={image.title} loading="lazy">
+  <picture>
+    <img src="{DIR}/uploads/{image.filename}" alt={image.title} loading="lazy">
+  </picture>
   <div>
     <h2>{image.title}</h2>
     <p>
@@ -28,36 +30,25 @@
   </div>
 </a>
 
-<style>
+<style lang="postcss">
   a {
-    display: flex;
-    position: relative;
-    box-shadow: 0 0 1px 2px #888888;
+    box-shadow: 0 0 4px #888888;
+    @apply flex flex-none relative;
+  }
+
+  picture {
+    @apply w-60 h-60;
   }
 
   img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    @apply w-full h-full object-cover;
   }
 
   div {
-    display: flex;
-    position: absolute;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    align-self: flex-end;
-    width: 100%;
-    height: min-content;
-    padding: 10px;
-    background-color: #dddddd;
-    gap: 10px;
+    @apply self-end flex absolute flex-wrap justify-between w-full p-2.5 bg-[#dddddd] gap-2.5;
   }
 
   h2 {
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 20px;
+    @apply w-full overflow-hidden text-ellipsis text-[20px] font-semibold leading-tight;
   }
 </style>

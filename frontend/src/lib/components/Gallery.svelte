@@ -6,38 +6,25 @@
 	<slot></slot>
 </div>
 
-<style>
+<style lang="postcss">
 	div {
-		display: grid;
-		grid-auto-rows: min-content;
-		width: 90%;
-		min-width: 510px;
-		max-width: 1510px;
-		min-height: 765px;
-		background-color: #ffffff;
-		box-shadow: 0 2px 10px #888888;
-	}
-
-	.gallery-user {
-		min-height: 675px;
+		box-shadow: 0 0 4px #888888;
+		@apply flex flex-col w-[90%] min-w-[510px] max-w-[1510px] h-full bg-white;
 	}
 
 	.gallery-users {
-		width: 1600px;
-		max-width: 1600px;
-		min-height: 850px;
-		background-color: #dddddd;
-	}
+		@apply w-[1600px] max-w-[1600px] h-[850px] bg-[#dddddd];
 
-	@media (max-width: 1600px) {
-		.gallery-users {
-			width: 1200px;
+		@media (width < 1600px) {
+			& {
+				@apply w-[1200px];
+			}
 		}
-	}
 
-	@media (max-width: 1200px) {
-		.gallery-users {
-			width: 800px;
+		@media (width < 1200px) {
+			& {
+				@apply w-[800px];
+			}
 		}
 	}
 </style>

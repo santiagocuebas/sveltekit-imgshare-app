@@ -20,7 +20,12 @@ export const postRole: Direction = async (req, res) => {
 	const roles: string[] = Object.values(UserRole);
 
 	// Update user role
-	if (roles.includes(role) && role !== UserRole.SUPER && (req.user.role === UserRole.SUPER || (req.user.role === UserRole.ADMIN && role !== UserRole.ADMIN))) {
+	if (
+		roles.includes(role) &&
+		role !== UserRole.SUPER &&
+		(req.user.role === UserRole.SUPER ||
+		(req.user.role === UserRole.ADMIN && role !== UserRole.ADMIN))
+	) {
 		req.foreignUser.role = role;
 		await req.foreignUser.save();
 	}
