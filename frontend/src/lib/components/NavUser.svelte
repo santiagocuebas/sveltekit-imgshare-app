@@ -87,7 +87,7 @@
 
 <style lang="postcss">
 	#nav-user {
-		@apply flex relative items-center justify-between w-full py-1.5 px-3 bg-[#5383d3] font-bold text-white leading-tight gap-2;
+		@apply flex relative items-center justify-between w-full py-2 px-3 bg-[#5383d3] font-bold text-white leading-tight gap-2;
 
 		& div {
 			@apply flex gap-x-1.5;

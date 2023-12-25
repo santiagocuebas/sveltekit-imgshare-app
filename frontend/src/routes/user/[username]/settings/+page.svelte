@@ -220,7 +220,7 @@
 
 		& h1 {
 			border-bottom: 2px solid #333333;
-			@apply p-5 text-[40px] font-medium;
+			@apply p-5 text-[40px] font-medium leading-tight;
 		}
 
 		& span {
@@ -239,11 +239,7 @@
 			@apply flex items-center justify-between text-[32px];
 
 			& button {
-				@apply py-2 px-2.5 rounded-full bg-white leading-none hover:bg-[#dddddd];
-
-				& i {
-					@apply text-[32px] font-light;
-				}
+				@apply py-2 px-2.5 rounded-full bg-white leading-none hover:bg-[#dddddd] [&_i]:text-[32px] [&_i]:font-light;
 			}
 		}
 
