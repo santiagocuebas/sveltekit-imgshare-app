@@ -7,6 +7,8 @@
 
 	export let data: LayoutServerData;
 
+	console.log(data);
+
 	let visibleFooter = true;
 	let pathname: string;
 
