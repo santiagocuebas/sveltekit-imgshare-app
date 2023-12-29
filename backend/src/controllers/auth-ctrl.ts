@@ -20,6 +20,8 @@ export const postSignup: Direction = async (req, res) => {
 	const partialUser = {
 		username: user.username,
 		avatar: user.avatar,
+		description: user.description,
+		links: user.links,
 		email: user.email,
 		role: user.role
 	};
@@ -44,6 +46,8 @@ export const postSignin: Direction = async (req, res) => {
 	const partialUser = {
 		username: user.username,
 		avatar: user.avatar,
+		description: user.description,
+		links: user.links,
 		email: user.email,
 		role: user.role
 	};

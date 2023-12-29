@@ -20,16 +20,11 @@ export const SelectIcon: IKeys<string> = {
 	about: 'fa-file'
 };
 
-export const TypeObject: IKeys<string> = {
-	image: 'selected',
-	comment: 'grey'
-};
-
 export const SettingText: IKeys<string> = {
 	avatar: 'Set Avatar',
 	description: 'Set Description',
 	password: 'Change Password',
-	links: 'Register Link',
+	link: 'Register Link',
 	deleteuser: 'Delete User'
 };
 
@@ -37,6 +32,6 @@ export const ButtonText: IKeys<string> = {
 	avatar: 'Send',
 	description: 'Accept',
 	password: 'Send',
-	links: 'Send',
+	link: 'Send',
 	deleteuser: 'Delete User'
 };

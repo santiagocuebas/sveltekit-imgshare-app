@@ -112,6 +112,7 @@
 						spellcheck="false"
 						autocomplete="off"
 						maxlength="4200"
+						rows="6"
 						value={$user?.description} 
 						on:focus={() => visibility = true}
 					></textarea>
@@ -177,23 +178,64 @@
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-auto-rows: min-content;
 		border: 3px solid #999999;
-		@apply grid relative justify-self-center w-[800px] bg-white gap-x-2.5;
+		@apply grid relative justify-self-center w-[800px] p-2 bg-white gap-x-2;
 
 		&:hover > #user-button {
 			@apply flex;
 		}
+
+		h3 {
+			@apply w-full font-bold;
+		}
 	}
 
 	#user-data {
-		@apply grid content-between;
+		@apply flex flex-col gap-y-2 [&_i]:text-[#1a5ef0] [&_i:hover]:text-[#be1af0];
 
 		& img {
 			box-shadow: 0 0 1px #666666;
-			@apply justify-self-center w-60 h-60 rounded-full object-cover [&_h3]:font-bold [&_i]:text-[#1a5ef0];
+			@apply justify-self-center w-60 h-60 rounded-full object-cover;
 		}
 
 		& p {
 			@apply pl-2 break-words;
+		}
+	}
+
+	#user-option {
+		@apply flex flex-col justify-between h-full gap-y-2;
+
+		& div {
+			@apply flex flex-col h-full gap-y-1;
+		}
+
+		& form {
+			@apply flex flex-wrap content-between justify-end h-full gap-x-1;
+
+			& textarea {
+				box-shadow: 0 0 0 1px #bbbbbb;
+				@apply w-full p-1.5 rounded-md cursor-pointer;
+			}
+
+			& button {
+				@apply w-[72px] py-1 rounded-sm bg-[#db1818] font-bold text-white [&.blue]:bg-[#4464f3];
+			}
+		}
+
+		& ul {
+			scrollbar-width: thin;
+			scrollbar-color: #5383d3 #ffffff;
+			overscroll-behavior: contain;
+			@apply flex flex-col h-full overflow-y-auto break-words gap-2;
+
+			& li {
+				border-bottom: 1px solid #bbbbbb;
+				@apply flex justify-between w-full p-1.5;
+			}
+
+			& button {
+				@apply flex items-center justify-center w-5 h-5 rounded-full bg-[#df403b] text-white;
+			}
 		}
 	}
 	
@@ -202,10 +244,6 @@
 
 		& div {
 			@apply flex flex-wrap gap-1.5;
-		}
-
-		& h3 {
-			@apply w-full font-bold;
 		}
 
 		& select {
@@ -218,13 +256,13 @@
 		}
 
 		& button {
-			box-shadow: 0 0 4px #666666;
+			box-shadow: 0 0 2px #666666;
 			@apply m-auto py-2 px-6 rounded-full bg-[#df403b] text-[20px] font-bold text-white hover:bg-[#ef504b];
 		}
 	}
 	
 	#user-button {
-		box-shadow: 0 0 5px #000000;
+		box-shadow: 0 0 2px #000000;
 		@apply hidden absolute items-center justify-center w-10 h-10 top-5 right-5 rounded-full bg-[#df403b] text-white cursor-pointer;
 	}
 </style>

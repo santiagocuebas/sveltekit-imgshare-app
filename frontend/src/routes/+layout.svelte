@@ -1,33 +1,34 @@
 <script lang="ts">
 	import type { LayoutServerData } from './$types';
+  import type { RawUser } from '$lib/global';
 	import { beforeUpdate } from 'svelte';
 	import { user } from '$lib/stores/index';
 	import { Nav, BoxUser, Footer } from '$lib/components';
 	import '../app.css';
 
-	export let data: LayoutServerData;
+	export let data: LayoutServerData & { user: RawUser & { links: string } };
 
-	console.log(data);
-
-	let visibleFooter = true;
+	let visible = true;
 	let pathname: string;
 
 	if (data.user) user.setUser(data.user);
 	
 	async function changeVisibility(e: WheelEvent) {
-		visibleFooter = (e.deltaY <=  0) ? true : false;
+		visible = (e.deltaY <=  0) ? true : false;
 	}
 
 	beforeUpdate(() => pathname = location.pathname);
 </script>
 
+<svelte:window on:wheel={changeVisibility} />
+
 <Nav>
 	<BoxUser />
 </Nav>
-<main on:wheel={changeVisibility}>
+<main>
 	<slot></slot>
 </main>
-{#if visibleFooter && (pathname === '/' || pathname?.includes('/gallery'))}
+{#if visible && (pathname === '/' || pathname?.includes('/gallery'))}
 	<Footer />
 {/if}
 

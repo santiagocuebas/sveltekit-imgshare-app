@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-  import { afterNavigate } from '$app/navigation';
-	import { afterUpdate, onMount } from 'svelte';
+	import type { PageServerData } from './$types';
+  import type { ResponseImage } from '$lib/global';
+	import { afterUpdate } from 'svelte';
 	import { UserRole } from '$lib/enums';
-	import { image, user } from '$lib/stores';
+	import { user } from '$lib/stores';
 	import {
 		ImageBox,
 		Register,
@@ -14,35 +14,25 @@
 		ImageOptions
 	} from '$lib/components';
 	
-	export let data: PageData;
+	export let data: PageServerData & ResponseImage;
 	
 	let description = false;
 	let isValidUser = false;
 
-	onMount(() => {
-		image.setImage(data.image);
-		isValidUser = $user !== null && ($user?.username === $image.author ||
-			$user?.role !== UserRole.EDITOR);
-	});
+	$: ({ image, comments, sidebarImages } = data);
 
 	afterUpdate(() => {
-		isValidUser = $user !== null && ($user?.username === $image.author ||
+		isValidUser = $user !== null && ($user?.username === image.author ||
 			$user?.role !== UserRole.EDITOR);
 	});
-
-	afterNavigate(() => image.setImage(data.image));
 </script>
 
 <div id="image-container">
 	<div id="image-box">
-		<ImageBox bind:description={description}>
+		<ImageBox bind:image={image} bind:description={description}>
 			{#if isValidUser}
-				<ImageOptions bind:description={description} />
+				<ImageOptions bind:image={image} bind:description={description} />
 			{/if}
-			<h2 class="title">
-				<i class="fa-solid fa-image title-icon"></i>
-				{$image?.title}
-			</h2>
 		</ImageBox>
 	</div>
 	<div id="sidebar">
@@ -52,7 +42,7 @@
 				Recent Uploads
 			</h2>
 			<BoxGallery className='image-sidebar'>
-				{#each data.sidebar as image}
+				{#each sidebarImages ?? [] as image}
 					<SideImage image={image} />
 				{/each}
 			</BoxGallery>
@@ -60,19 +50,19 @@
 	</div>
 	<div id="comment-container">
 		{#if $user}
-			<CommentForm bind:comments={data.comments} />
+			<CommentForm bind:comments={comments} />
 			{:else}
 			<Register />
 		{/if}
 		<div id="comments-container">
 			<h2 class="title">
 				<i class="fa-solid fa-message title-icon"></i>
-				{data.comments.length} Comments
+				{comments.length} Comments
 			</h2>
-			{#if data.comments.length}
+			{#if comments.length}
 				<div>
-					{#each data.comments as comment (comment.id)}
-						<Comment bind:comments={data.comments} bind:comment={comment} />
+					{#each comments as comment (comment.id)}
+						<Comment bind:comments={comments} bind:comment={comment} />
 					{/each}
 				</div>
 			{/if}

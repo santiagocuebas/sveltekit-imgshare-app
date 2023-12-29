@@ -1,26 +1,22 @@
 <script lang="ts">
-	import type { PageData } from "./$types";
-  import type { ILink, IMessage, ResponseData } from "$lib/global.js";
+  import type { ILink, IMessage, IUser, ResponseSettings } from "$lib/global.js";
   import axios from "axios";
 	import { DIR } from '$lib/config.js';
   import { ButtonText, SettingText } from "$lib/dictionary";
-	import { Settings } from '$lib/enums.js';
-	import { handleRequest } from "$lib/services/services";
+	import { Settings, ValidExt } from '$lib/enums.js';
+	import {
+		handleRequest,
+		setSettingsProps,
+		isDisabledButton
+	} from "$lib/services";
+  import { user } from "$lib/stores";
 	import { BoxSettings, Alert } from "$lib/components";
-	
-	export let data: PageData;
 
-	const validExt = ['image/jpeg', 'image/png', 'image/gif'];
-	let links: ILink[] = [];
 	let settingChoise = '';
-	let visible = false;
 	let alert = false;
-	let title: string;
-	let url: string;
-	let className: string;
-	let message: string | IMessage;
-
-	$: ({ username, avatar, description } = data.user);
+	let message: string | IMessage | null;
+	let settingsProps = setSettingsProps($user as IUser);
+	let isDisabled = isDisabledButton($user as IUser);
 
 	const setSettingChoice = (value: string) => {
 		return settingChoise !== value ? value : '';
@@ -30,69 +26,67 @@
 		e.preventDefault();
 		alert = true;
 	};
-	
-  const handleDelete = async () => {
-    const data: ResponseData = await axios({
-      method: 'DELETE',
-      url: `${DIR}/api/settings/deletelink`,
-      withCredentials: true,
-      data: { title, url }
-    }).then(res => res.data);
-
-    if (data.change) links = links.filter(link => link.title !== title);
-  };
 
 	function handleImage(this: HTMLInputElement) {
 		const reader = new FileReader();
 		const [file] = this.files ?? [];
+		const validExt: string[] = Object.values(ValidExt);
 
 		reader.addEventListener('load', ({ target }) => {
-			avatar = target?.result as string ?? avatar;
+			settingsProps.avatar = target?.result as string;
 		}, false);
 
 		if (file && file.size < 2 * 1e7 && validExt.includes(file.type)) {
 			reader.readAsDataURL(file);
 		}
 	}
-
-	async function handleSubmit(this: HTMLFormElement) {
-		const data = await handleRequest(this)
+	
+  const handleDelete = async (link: ILink) => {
+		const data: ResponseSettings = await axios({
+      method: 'DELETE',
+      url: `${DIR}/api/settings/deletelink`,
+      withCredentials: true,
+      data: link
+    }).then(res => res.data)
 			.catch(err => {
 				console.log(err.message);
-				return { class: 'error-settings', message: 'Logged Error' };
+				return { class: 'error-settings', message: { log: 'Logged Error' } };
 			});
 
-		if (data.class === 'success-settings') {
-			if (this.id === Settings.AVATAR) {
-				const navAvatar = document.getElementById('nav-avatar') as HTMLImageElement;
-				navAvatar.src = `${DIR}/uploads/avatars/${data.filename}`;
-			} else if (this.id === Settings.PASSWORD) {
-				for (const child of this.children as any) {
-					child.value = '';
-				}
-			} else if (this.id === Settings.LINKS) {
-				links = [...links, { title, url }];
-				title = '';
-				url = '';
+		if (typeof data.message === 'string') user.removeLink(link);
+
+		message = data.message;
+
+		if (typeof message === 'string') setTimeout(() => message = null, 3000);
+  };
+
+	async function handleSubmit(this: HTMLFormElement) {
+		const data: ResponseSettings = await handleRequest(this)
+			.catch(err => {
+				console.log(err.message);
+				return { class: 'error-settings', message: { log: 'Logged Error' } };
+			});
+
+		if (typeof data.message === 'string') {
+			if (this.id === Settings.AVATAR) user.changeAvatar(data.filename);
+			else if (this.id === Settings.DESCRIPTION) {
+				user.changeDescription(settingsProps.description);
+			} else if (this.id === Settings.LINKS) user.addLink(settingsProps.link);
+
+			if ($user) {
+				settingsProps = setSettingsProps($user);
+				isDisabled = isDisabledButton($user);
 			}
 		}
 
-		className = data.class;
 		message = data.message;
-		visible = true;
 
-		if (data.class === 'success-settings') {
-			setTimeout(() => visible = false, 3000);
-		}
+		if (typeof message === 'string') setTimeout(() => message = null, 3000);
 	}
 </script>
 
-{#if visible}
-	<BoxSettings
-		className={className}
-		message={message}
-		on:click={() => visible = false}
-	/>
+{#if message}
+	<BoxSettings message={message} on:click={() => message = null} />
 {/if}
 
 {#if alert}
@@ -125,7 +119,7 @@
 							</div>
 							<label class="settings-avatar">
 								<input type="file" name="image" on:change={handleImage}>
-								<img src="{DIR}/uploads/avatars/{avatar}" alt={username}>
+								<img src={settingsProps.avatar} alt={$user?.username}>
 							</label>
 						{/if}
 						{#if value === Settings.DESCRIPTION}
@@ -137,7 +131,7 @@
 								rows="5"
 								spellcheck="false"
 								autocomplete="off"
-								bind:value={description}
+								bind:value={settingsProps.description}
 							></textarea>
 						{/if}
 						{#if value === Settings.PASSWORD}
@@ -148,6 +142,8 @@
 								type="password"
 								name="actPassword"
 								placeholder="Actual Password"
+								autocomplete="off"
+								bind:value={settingsProps.password.old}
 							>
 							<label for="newPassword">
 								Enter the new password:
@@ -156,6 +152,8 @@
 								type="password"
 								name="password"
 								placeholder="New Password"
+								autocomplete="off"
+								bind:value={settingsProps.password.new}
 							>
 							<label for="confirmPassword">
 								Confirm the new password:
@@ -164,6 +162,8 @@
 								type="password"
 								name="confirmPassword"
 								placeholder="Confirm Password"
+								autocomplete="off"
+								bind:value={settingsProps.password.confirm}
 							>
 						{/if}
 						{#if value === Settings.LINKS}
@@ -174,7 +174,7 @@
 								type="text"
 								name="title"
 								placeholder="Title"
-								bind:value={title}
+								bind:value={settingsProps.link.title}
 							>
 							<label for="url">
 								Enter the URL:
@@ -184,21 +184,22 @@
 								name="url"
 								placeholder="URL"
 								maxlength="4000"
-								bind:value={url}
+								bind:value={settingsProps.link.url}
 							>
 						{/if}
 						<button
 							class:delete-user={value === Settings.DELETE}
+							disabled={!(isDisabled[value](settingsProps[value]))}
 							on:click={value === Settings.DELETE ? handleClick : () => {}}
 						>{ButtonText[value]}</button>
 					</form>
 				{/if}
-				{#if value === Settings.LINKS && settingChoise === Settings.LINKS && links.length}
+				{#if value === Settings.LINKS && settingChoise === Settings.LINKS && $user?.links.length}
 					<ul>
-						{#each links as { title, url } (title)}
-							<li title={url}>
-								{title}
-								<button on:click|preventDefault={handleDelete}>
+						{#each $user.links as link (link.title)}
+							<li title={link.url}>
+								{link.title}
+								<button on:click|preventDefault={() => handleDelete(link)}>
 									<i class="fa-solid fa-xmark fa-lg"></i>
 								</button>
 							</li>
@@ -251,7 +252,7 @@
 				@apply w-[300px] h-[300px] m-auto rounded-full cursor-pointer;
 
 				& img {
-					@apply w-full h-full object-cover;
+					@apply w-full h-full rounded-full object-cover;
 				}
 			}
 
@@ -265,6 +266,10 @@
 
 				&.delete-user {
 					@apply flex-none m-auto my-1.5 py-3 px-6 bg-[#c91a1a] hover:bg-[#b90a0a];
+				}
+
+				&[disabled] {
+					@apply bg-[#dddddd] text-[#666666] cursor-auto;
 				}
 			}
 		}

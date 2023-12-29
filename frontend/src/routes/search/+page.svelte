@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-  import { onMount } from 'svelte';
-    import { afterNavigate } from '$app/navigation';
+  import type { IImage } from '$lib/global';
+	import { onMount } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
 	import { images } from '$lib/stores';
 	import {
 		Logo,
@@ -11,7 +12,7 @@
 		Image
 	} from '$lib/components';
 	
-	export let data: PageData;
+	export let data: PageData & { images: IImage[] };
 
 	onMount(() => images.setImages(data.images));
 

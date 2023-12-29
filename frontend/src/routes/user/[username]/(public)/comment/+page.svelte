@@ -1,13 +1,16 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+  import type { ResponseForeign } from '$lib/global';
   import { beforeUpdate } from 'svelte';
 	import { format } from "timeago.js";
   import { InnerText } from '$lib/enums';
 	import { BoxGallery, Gallery, NavUser } from '$lib/components';
 	
-	export let data: PageData;
+	export let data: PageData & ResponseForeign;
 
 	let origin = '';
+
+	$: comments = data.comments;
 
 	beforeUpdate(() => origin = location.origin);
 </script>
@@ -15,8 +18,8 @@
 <Gallery>
 	<NavUser text={InnerText.COMMENTS} username={data.foreignUser.username} />
 	<BoxGallery className='image-row'>
-		{#if data.comments.length > 0}
-			{#each data.comments as comment}
+		{#if comments.length > 0}
+			{#each comments as comment}
 				<div class="comment-container">
 					<a href="/gallery/{comment.imageId}">
 						{origin}/gallery/{comment.imageId}

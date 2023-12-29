@@ -1,24 +1,27 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+  import type { ResponseForeign } from '$lib/global';
 	import { format } from 'timeago.js';
   import { InnerText } from '$lib/enums';
   import { BoxGallery, Gallery, NavUser } from '$lib/components';
 	
-	export let data: PageData;
+	export let data: PageData & ResponseForeign;
+
+	$: foreign = data.foreignUser; 
 </script>
 
 <Gallery>
-	<NavUser text={InnerText.ABOUT} username={data.foreignUser.username} />
+	<NavUser text={InnerText.ABOUT} username={foreign.username} />
 	<BoxGallery>
 		<div id="about-container">
 			<div class="about-box">
 				<h2>Description</h2>
-				<p>{@html data.foreignUser.description}</p>
+				<p>{@html foreign.description}</p>
 			</div>
 			<div class="about-box">
 				<h2>Links</h2>
 				<ul>
-				{#each data.foreignUser.links as link (link.title)}
+				{#each foreign.links as link (link.title)}
 					<li>
 						<a href="{link.url}" target="_blank" rel="noreferrer">
 							{link.title}
@@ -29,8 +32,8 @@
 			</div>
 			<div class="about-statistics">
 				<h2>Statistics</h2>
-				<p>Join {format(data.foreignUser.createdAt)}</p>
-				<p>{data.foreignUser.totalViews} views</p>
+				<p>Join {format(foreign.createdAt)}</p>
+				<p>{foreign.totalViews} views</p>
 			</div>
 		</div>
 	</BoxGallery>
@@ -52,7 +55,7 @@
 		@apply flex flex-col w-[90%] mt-5 mx-auto py-2.5 gap-2.5;
 
 		& ul {
-			@apply flex flex-col;
+			@apply flex flex-wrap;
 		}
 
 		& li {

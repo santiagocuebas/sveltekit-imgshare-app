@@ -1,11 +1,12 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+  import type { ResponseForeign } from '$lib/global';
   import { beforeUpdate } from 'svelte';
 	import { DIR } from '$lib/config.js';
   import { LinksOptions, UserRole } from '$lib/enums';
   import { user } from '$lib/stores';
 	
-	export let data: PageData;
+	export let data: PageData & ResponseForeign;
 
 	let pathname: string;
 
@@ -98,18 +99,6 @@
 			&.selected {
 				border-bottom: 3px solid #ffffff;
 			}
-		}
-	}
-
-	:global(.user-message) {
-		@apply flex flex-col justify-evenly w-60 h-60 mx-auto text-[20px] font-bold;
-
-		& p {
-			@apply text-center break-words;
-		}
-
-		& a {
-			@apply py-2 px-4 rounded-md bg-[#5383d3] text-[20px] font-bold text-white cursor-pointer;
 		}
 	}
 </style>

@@ -21,7 +21,7 @@
 </script>
 
 <div class="alert-absolute">
-	<div class="alert-container">
+	<div>
 		<p>Are you sure want delete this user?</p>
 		<button on:click={() => alert = false}>
 			Cancel
@@ -34,11 +34,11 @@
 
 <style lang="postcss">
 	.alert-absolute {
-		@apply flex fixed justify-center w-screen h-screen top-0 bg-[#000000bb] z-[1000];
-	}
+		@apply flex fixed justify-center w-screen min-w-[510px] h-screen top-0 bg-[#000000bb] z-[1000];
 
-	.alert-container {
-		@apply flex flex-col justify-around w-fit h-min mt-[100px] p-5 bg-white;
+		& div {
+			@apply flex justify-around flex-wrap w-fit max-w-[600px] h-min mt-32 p-5 bg-white rounded-xl;
+		}
 	}
 
 	p {

@@ -1,20 +1,21 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-  import type { IKeys, ResponseData } from '$lib/global';
+  import type { IImage, IKeys, ResponseData } from '$lib/global';
   import { goto } from '$app/navigation';
 	import { DIR } from '$lib/config.js';
+  import { ValidExt } from '$lib/enums';
   import { handleRequest } from '$lib/services/services';
 	import { ErrorBox, BoxGallery } from '$lib/components';
 
-	export let data: PageData;
+	export let data: PageData & { images: IImage[] };
 
-	const validExt = ['image/jpeg', 'image/png', 'image/gif'];
 	let errors: IKeys<string> | null = null;
 	let src = '/label-img.png';
 
 	function handleImage(this: HTMLInputElement) {
 		const reader = new FileReader();
 		const [file] = this.files ?? [];
+		const validExt: string[] = Object.values(ValidExt);
 
 		reader.addEventListener('load', ({ target }) => {
 			src = target?.result as string ?? src;

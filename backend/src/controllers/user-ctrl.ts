@@ -8,20 +8,19 @@ export const getUserData: Direction = async (req, res) => {
 	const { username } = req.params;
 
 	// Find user
-	const foreignUser = await User.findOne({
+	const user = await User.findOne({
 		where: { username },
 		select: {
 			username: true,
 			email: true,
 			avatar: true,
 			description: true,
-			totalViews: true,
 			links: true,
 			createdAt: true
 		}
 	});
 
-	if (foreignUser !== null) {
+	if (user !== null) {
 		// Get images of user
 		const images = await Image.find({
 			where: { author: username, isPublic: true },
@@ -45,7 +44,7 @@ export const getUserData: Direction = async (req, res) => {
 		});
 
 		// Get favorites images of user
-		let favorites = await Image.find({
+		const favorites = await Image.find({
 			where: { favorites: Like(`%${username}%`), isPublic: true },
 			order: { createdAt: 'DESC' },
 			select: {
@@ -59,25 +58,20 @@ export const getUserData: Direction = async (req, res) => {
 				totalComments: true
 			}
 		});
-
-		favorites = favorites.filter((image: Image) => image.favorites.includes(username));
-
-		// Update total views
-		foreignUser.totalViews = 0;
-
-		for (const image of images) {
-			foreignUser.totalViews += image.views;
-		}
-
-		await foreignUser.save();
-
-		// Patch links
-		foreignUser.links = JSON.parse(foreignUser.links);
 	
-		return res.json({ images, comments, favorites, foreignUser });
+		return res.json({
+			images,
+			comments,
+			favorites: favorites.filter(image => image.favorites.includes(username)),
+			foreignUser: {
+				...user,
+				links: JSON.parse(user.links),
+				totalViews: images.reduce((value, image) => value + Number(image.views), 0)
+			}
+		});
 	}
 
-	return res.status(401).json(foreignUser);
+	return res.status(401).json(user);
 };
 
 export const getImages: Direction = async (req, res) => {

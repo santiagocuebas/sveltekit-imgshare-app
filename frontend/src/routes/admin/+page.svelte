@@ -1,5 +1,7 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageServerData } from './$types';
+  import type { IUserExtended } from '$lib/global';
+  import { afterNavigate } from '$app/navigation';
   import axios from 'axios';
 	import { DIR } from '$lib/config.js';
 	import { ClassName, TextData } from '$lib/dictionary.js';
@@ -12,17 +14,11 @@
 		UserBox
 	} from '$lib/components';
 	
-	export let data: PageData;
+	export let data: PageServerData & { users: IUserExtended[] };
 
 	let alert = false;
 	let show = false;
 	let text: string;
-
-	function showBox(value: boolean) {
-		text = (value) ? 'accept' : 'error';
-		show = true;
-		setTimeout(() => show = false, 3000);
-	}
 
 	let deleteUser = async () => {
 		const username = $selectUser?.username;
@@ -39,12 +35,17 @@
 				return { change: false };
 			});
 
-		if (resData.change) {
-			data.users = data.users.filter(user => user.username !== username);
-		}
+		data.users = (resData.change)
+			? data.users.filter(user => user.username !== username)
+			: data.users;
 
-		showBox(resData.change);
+		text = (resData.change) ? 'accept' : 'error';
+		show = true;
+
+		setTimeout(() => show = false, 3000);
 	};
+
+	afterNavigate(() => selectUser.resetUser());
 </script>
 
 {#if show}
@@ -69,9 +70,7 @@
 {/if}
 
 {#if $selectUser}
-	<div id="container-user">
-		<UserBox bind:show={show} bind:alert={alert} bind:text={text} />
-	</div>
+	<UserBox bind:show={show} bind:alert={alert} bind:text={text} />
 {/if}
 
 <Gallery className='gallery-users'>
@@ -114,9 +113,5 @@
 		& p {
 			@apply w-[180px] text-center font-bold;
 		}
-	}
-
-	#container-user {
-		@apply p-2.5;
 	}
 </style>

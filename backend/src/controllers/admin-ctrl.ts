@@ -51,7 +51,10 @@ export const deleteUser: Direction = async (req, res) => {
 
 	// Delete avatar
 	if (user.avatar !== 'default.png') {
-		await fs.unlink(`uploads/avatars/${user.avatar}`);
+		await fs.unlink(`uploads/avatars/${user.avatar}`)
+			.catch(err => {
+				console.error('An error occurred while trying to delete the image', err?.message);
+			});
 	}
 
 	// Delete all images and comments of user and filters all their ratings

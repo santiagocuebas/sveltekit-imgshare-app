@@ -39,7 +39,7 @@
 		on:submit|preventDefault={handleSubmit}
 	>
 		<picture>
-			<img src="{DIR}/uploads/avatars/{$user?.avatar}" alt={$image.id}>
+			<img src={$user?.avatar} alt={$image.id}>
 		</picture>
 		<input
 			type="text"

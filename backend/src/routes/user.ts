@@ -24,11 +24,9 @@ router.post(
 	'/:username/settings',
 	isValidToken,
 	(req, res) => {
-		req.user.password = '';
-
 		if (req.user.username !== req.params.username) return res.status(401).json();
 
-		return res.json({ extendedUser: req.user });
+		return res.json({ });
 	}
 );
 

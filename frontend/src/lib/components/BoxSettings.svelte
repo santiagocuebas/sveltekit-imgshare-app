@@ -1,11 +1,10 @@
 <script lang="ts">
 	import type { IMessage } from "$lib/global.js";
 
-	export let className: string;
 	export let message: string | IMessage;
 </script>
 
-<div class={className}>
+<div class:errors={typeof message !== 'string'}>
 	{#if typeof message !== 'string'}
 		<p>Have been found the next errors:</p>
 		<ul>
@@ -25,15 +24,11 @@
 
 <style lang="postcss">
 	div {
+		box-shadow: 0 0 0 3px #0f8015;
 		scrollbar-width: none;
-		@apply flex fixed flex-col w-[250px] h-fit min-h-[250px] bottom-2.5 right-2.5 p-2.5 rounded-2xl overflow-hidden font-semibold gap-y-2.5 [&_p]:font-bold;
+		@apply flex fixed flex-col w-[250px] h-fit min-h-[250px] bottom-2.5 right-2.5 p-2.5 rounded-2xl bg-[#bef8c1] overflow-hidden font-semibold gap-y-2.5 [&_p]:font-bold;
 
-		&.success-settings {
-			box-shadow: 0 0 0 3px #0f8015;
-			@apply bg-[#bef8c1];
-		}
-
-		&.errors-settings {
+		&.errors {
 			box-shadow: 0 0 0 3px #800f0f;
 			@apply bg-[#f5bfbf];
 		}
@@ -44,10 +39,10 @@
 	}
 
 	i {
-		@apply text-[150px] [&.fa-xmark]:text-[#800f0f] [&.fa-check]:text-[#0f8015];
+		@apply self-center text-[150px] [&.fa-xmark]:text-[#800f0f] [&.fa-check]:text-[#0f8015];
 	}
 
 	button {
-		@apply absolute top-2.5 right-2.5 bg-inherit [&_.fa-xmark]:p-1.5 [&_.fa-xmark]:text-[#000000];
+		@apply absolute top-2 right-2 bg-inherit [&_.fa-xmark]:p-1.5 [&_.fa-xmark]:text-[#000000] [&_i]:text-[16px] z-[2000];
 	}
 </style>

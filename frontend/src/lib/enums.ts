@@ -31,10 +31,16 @@ export enum OrderText {
   VIEWED = 'viewed'
 }
 
+export enum ValidExt {
+  PNG = 'image/png',
+  JPEG = 'image/jpeg',
+  GIF = 'image/gif'
+}
+
 export enum Settings {
   AVATAR = 'avatar',
   DESCRIPTION = 'description',
   PASSWORD = 'password',
-  LINKS = 'links',
+  LINKS = 'link',
   DELETE = 'deleteuser'
 }

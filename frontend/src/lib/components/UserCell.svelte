@@ -46,16 +46,20 @@
 		}
 
 		& span {
-			@apply flex-none w-px h-full bg-[#999999];
+			@apply flex-none w-px h-full bg-[#666666];
 		}
 	}
 
 	.user-box {
-		@apply flex flex-col w-full [&_p]:pl-2 [&_p]:truncate;
+		@apply flex flex-col justify-around w-[180px] h-full [&_h4]:font-bold;
+
+		& p {
+			@apply pl-2 leading-tight truncate;
+		}
 	}
 
 	.user-white {
 		border: 3px outset #cccccc;
-		@apply absolute w-full h-full cursor-pointer hover:bg-white/20;
+		@apply absolute w-full h-full left-0 cursor-pointer hover:bg-white/20;
 	}
 </style>

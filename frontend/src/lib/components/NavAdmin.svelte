@@ -20,8 +20,15 @@
 
 <nav>
 	<form action="{DIR}/api/admin/{searchedUser}" method="GET" on:submit|preventDefault={handleSubmit}>
-		<i class="fa-solid fa-user"></i>
-		<input type="text" name="username" placeholder="Search User" bind:value={searchedUser}>
+		<div>
+			<i class="fa-solid fa-user"></i>
+		</div>
+		<input
+			type="text"
+			name="username"
+			placeholder="Search User"
+			bind:value={searchedUser}
+		>
 		<button>
 			<i class="fa-solid fa-magnifying-glass"></i>
 		</button>
@@ -39,15 +46,11 @@
 		@apply grid items-center justify-center w-full max-w-[800px];
 	}
 
-	i {
-		@apply text-[20px] text-white;
-	}
-
 	input {
 		@apply w-full py-2 px-4 rounded-2xl;
 	}
 
-	button {
-		@apply w-[90%] h-[90%] bg-[#5383d3];
+	button, div {
+		@apply flex items-center justify-center w-[90%] h-[90%] bg-[#5383d3] text-white [&_i]:text-[20px];
 	}
 </style>

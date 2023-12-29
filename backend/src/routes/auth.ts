@@ -9,6 +9,7 @@ import {
 } from '../middleware/logged.js';
 import { validate } from '../middleware/validations.js';
 import * as array from '../validators/arrays-validators.js';
+import { matchPassword } from '../libs/bcrypt.js';
 
 const router = Router();
 
@@ -20,11 +21,27 @@ router.get(
 			? {
 				username: req.user.username,
 				avatar: req.user.avatar,
+				description: req.user.description,
+				links: req.user.links,
 				email: req.user.email,
 				role: req.user.role
 			} : undefined;
 
+		console.log(partialUser);
+
 		return res.json({ user: partialUser });
+	}
+);
+
+router.post(
+	'/password',
+	isValidToken,
+	async (req, res) => {
+		const { password } = req.body;
+
+		const match = await matchPassword(password, req.user.password);
+
+		return res.json(match);
 	}
 );
 

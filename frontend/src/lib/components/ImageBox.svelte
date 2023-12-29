@@ -1,10 +1,12 @@
 <script lang="ts">
-	import type { ResponseData } from '$lib/global';
+	import type { IImage } from '$lib/global';
 	import { format } from 'timeago.js';
 	import { DIR } from '$lib/config.js';
+  import { catchLike } from '$lib/services/catch-likes';
 	import { handleRegister, handleRequest } from '$lib/services/services';
-	import { image, user } from '$lib/stores';
+	import { user } from '$lib/stores';
 
+	export let image: IImage;
 	export let description: boolean;
 
 	async function changeDescription(this: HTMLFormElement) {
@@ -15,49 +17,56 @@
 	
 	async function handleLike(type: string) {
 		if ($user) {
-			const url = `${DIR}/api/image/${$image.id}/like`;
-			const data: ResponseData = await handleRegister(url, type)
-				.catch(() => undefined);
-
-			if (data) image.changeLikes(data.likes, data.dislikes);
+			const [ actLike, actDislike ] = (type === 'like')
+				? catchLike(image.likes, image.dislikes, $user.username)
+				: catchLike(image.dislikes, image.likes, $user.username);
+		
+			image.likes = (type === 'like') ? actLike : actDislike;
+			image.dislikes = (type === 'like') ? actDislike : actLike;
+			
+			handleRegister(`${DIR}/api/image/${image.id}/like`, type);
 		}
 	}
 
 	async function handleFavotite(type: string) {
 		if ($user) {
-			const url = `${DIR}/api/image/${$image.id}/favorite`;
-			const data: ResponseData = await handleRegister(url, type)
-				.catch(() => undefined);
+			image.favorites = (image.favorites.includes($user.username))
+				? image.favorites.filter(username => username !== $user?.username)
+				: [$user.username, ...image.favorites];
 
-			if (data) image.changeFavorite(data.favorite);
+			handleRegister(`${DIR}/api/image/${image.id}/favorite`, type);
 		}
 	}
 </script>
 
 <slot />
+<h2 class="title">
+	<i class="fa-solid fa-image title-icon"></i>
+	{image.title}
+</h2>
 <div id="image-author">
 	<picture>
-		<a href="/user/{$image?.author}">
+		<a href="/user/{image.author}">
 			<img
-				src="{DIR}/uploads/avatars/{$image?.avatar ?? 'default.png'}"
-				alt="{$image?.author}"
+				src="{DIR}/uploads/avatars/{image.avatar ?? 'default.png'}"
+				alt="{image.author}"
 			>
 		</a>
 	</picture>
 	<div>
-		<a href="/user/{$image?.author}">
-			{$image?.author}
+		<a href="/user/{image.author}">
+			{image.author}
 		</a>
-		<p>{$image?.views} views &#x25CF; {format($image?.createdAt)}</p>
+		<p>{image.views} views &#x25CF; {format(image.createdAt)}</p>
 	</div>
 </div>
 <picture id="image-content">
-	<img src="{DIR}/uploads/{$image?.filename}" alt="{$image?.title}">
+	<img src="{DIR}/uploads/{image.filename}" alt="{image.title}">
 </picture>
 <div id="image-description">
 	{#if description}
 		<form
-			action="{DIR}/api/image/{$image.id}/description"
+			action="{DIR}/api/image/{image.id}/description"
 			method="POST"
 			on:submit|preventDefault={changeDescription}
 		>
@@ -68,7 +77,7 @@
 				spellcheck="false"
 				autocomplete="off"
 				maxlength="4200"
-				bind:value={$image.description}
+				bind:value={image.description}
 			></textarea>
 			<button on:click|preventDefault={() => description = false}>
 				Cancel
@@ -78,30 +87,30 @@
 			</button>
 		</form>
 		{:else}
-		{@html $image.description}
+		{@html image.description}
 	{/if}
 </div>
 <div id="image-stats">
 	<button on:click={() => handleLike('like')}>
 		<i
 			class="fa-solid fa-thumbs-up"
-			class:selected={$image.likes?.includes($user?.username ?? '')}
+			class:selected={image.likes.includes($user?.username ?? '')}
 		></i>
-		{$image.likes?.length}
+		{image.likes.length}
 	</button>
 	<button on:click={() => handleLike('dislike')}>
 		<i
 			class="fa-solid fa-thumbs-down"
-			class:selected={$image.dislikes?.includes($user?.username ?? '')}
+			class:selected={image.dislikes.includes($user?.username ?? '')}
 		></i>
-		{$image.dislikes?.length}
+		{image.dislikes.length}
 	</button>
 	<button on:click={() => handleFavotite('favorite')}>
 		<i
 			class="fa-solid fa-star"
-			class:selected={$image.favorites?.includes($user?.username ?? '')}
+			class:selected={image.favorites.includes($user?.username ?? '')}
 		></i>
-		{$image.favorites?.length}
+		{image.favorites.length}
 	</button>
 </div>
 
@@ -115,7 +124,7 @@
 
 		& img {
 			box-shadow: 0 0 2px #666666;
-			@apply w-full h-full rounded-full object-scale-down;
+			@apply w-full h-full rounded-full object-cover;
 		}
 
 		& div {

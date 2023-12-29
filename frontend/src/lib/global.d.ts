@@ -1,16 +1,22 @@
+import { Settings } from './enums.js';
+
 export interface IKeys<T> {
 	[index: string]: T;
 }
 
-export interface IUser {
-  username: string;
-	email: string;
+export interface RawUser {
+	username: string;
   avatar: string;
+  description: string;
+	email: string;
   role: string;
 }
 
-export interface IUserExtended extends IUser {
-	description: string;
+export interface IUser extends RawUser {
+  links: ILink[];
+}
+
+export interface IUserExtended extends RawUser {
 	links: ILink[];
 	createdAt: Date;
 }
@@ -76,14 +82,36 @@ export interface ResponseData {
 }
 
 export interface ResponseForeign {
-	foreignUser: IUserForeign | null;
+	foreignUser: IUserForeign;
 	images: IImage[];
 	comments: IComment[];
 	favorites: IImage[];
 }
 
 export interface ResponseImage {
-	image: IImage | null;
+	image: IImage;
 	comments: IComment[];
 	sidebarImages: IImage[];
+}
+
+export interface ResponseSettings {
+	message: string | IKeys<string>;
+	filename: string;
+}
+
+export interface SettingsProps {
+	[index: string]: string | IKeys<string> | ILink;
+	avatar: string;
+	description: string;
+	password: IKeys<string>;
+	link: ILink;
+}
+
+export interface DisabledButton {
+	[index: string]: ((value: string) => boolean) | ((pass: IKeys<string>) => boolean) | ((value: ILink) => boolean);
+	avatar: (value: any) => boolean;
+	description: (value: any) => boolean;
+	password: (pass: any) => boolean;
+	link: (value: any) => boolean;
+	deleteuser: () => boolean;
 }

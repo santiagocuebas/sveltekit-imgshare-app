@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+  import type { IImage } from '$lib/global';
 	import { images } from '$lib/stores';
 	import {
 		Logo,
@@ -9,7 +10,7 @@
 		Image
 	} from '$lib/components';
 	
-	export let data: PageData;
+	export let data: PageData & { images: IImage[] };
 
 	images.setImages(data.images);
 </script>

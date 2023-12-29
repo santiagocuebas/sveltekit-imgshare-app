@@ -1,21 +1,20 @@
 import type { PageServerLoad } from './$types';
-import type { IUserExtended } from '$lib/global';
 import { redirect } from '@sveltejs/kit';
 import axios from 'axios';
 import { DIR } from '$lib/config.js';
 
 export const load: PageServerLoad = (async ({ cookies }) => {
 	const token = cookies.get('authenticate');
-	let data: { users: IUserExtended[] | null } = { users: null };
-	
-	await axios({
+	const config = {
 		method: 'GET',
 		url: `${DIR}/api/admin`,
 		headers: { 'Cookie': `authenticate=${token}` }
-	}).then(res => data = res.data)
-		.catch(err => console.error(err.message));
-
-	if (!data.users) throw redirect(307, '/');
-
-	return { users: data.users };
+	};
+	
+	return axios(config)
+		.then(res => res.data)
+		.catch(err => {
+			console.error(err.message);
+			throw redirect(307, '/');
+		});
 });

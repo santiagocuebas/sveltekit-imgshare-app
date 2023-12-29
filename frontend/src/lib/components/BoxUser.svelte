@@ -56,12 +56,8 @@
 	}
 </script>
 
-<button id='nav-avatar' on:click={() => visible = !visible}>
-	<img
-		class="nav-avatar"
-		src="{DIR}/uploads/avatars/{$user?.avatar}"
-		alt={$user?.username}
-	>
+<button on:click={() => visible = !visible}>
+	<img src={$user?.avatar} alt={$user?.username}>
 </button>
 {#if visible}
 	<div
@@ -70,7 +66,7 @@
 		on:outclick={setTimeout(() => visible = false)}
 	>
 		<div class="user-header">
-			<img src="{DIR}/uploads/avatars/{$user?.avatar}" alt="{$user?.username}">
+			<img src={$user?.avatar} alt="{$user?.username}">
 			<div>
 				<h3>{$user?.username}</h3>
 				<p>{$user?.email}</p>

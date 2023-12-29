@@ -1,10 +1,11 @@
 <script lang="ts">
+	import type { IImage } from "$lib/global";
 	import { goto } from "$app/navigation";
   import axios from "axios";
 	import { DIR } from '$lib/config.js';
 	import { clickOutside } from "$lib/services/click-outside";
-  import { image } from "$lib/stores";
 
+	export let image: IImage;
 	export let description: boolean;
 	let visible: boolean;
 
@@ -15,14 +16,13 @@
 
 	const changePublic = async () => {
 		visible = false;
+		image.isPublic = !image.isPublic;
 
 		await axios({
 			method: 'POST',
-			url: `${DIR}/api/image/${$image.id}/public`,
+			url: `${DIR}/api/image/${image.id}/public`,
 			withCredentials: true
 		}).catch(err => console.log(err.message));
-
-		image.changePublic(!$image.isPublic);
 	};
 
 	const deleteImage = async () => {
@@ -30,7 +30,7 @@
 
 		await axios({
 			method: 'DELETE',
-			url: `${DIR}/api/image/${$image.id}`,
+			url: `${DIR}/api/image/${image.id}`,
 			withCredentials: true
 		}).catch(err => console.log(err.message));
 
@@ -50,7 +50,7 @@
 			</a>
 			<a href="#placeholder" on:click|preventDefault={changePublic}>
 				<li>Public</li>
-				<i class="fa-solid fa-{$image.isPublic ? 'eye' : 'eye-slash'}"></i>
+				<i class="fa-solid fa-{image.isPublic ? 'eye' : 'eye-slash'}"></i>
 			</a>
 			<a href="#placeholder" on:click|preventDefault={deleteImage}>
 				<li>Delete</li>

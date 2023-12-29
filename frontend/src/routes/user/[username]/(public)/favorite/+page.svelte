@@ -1,10 +1,11 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+  import type { ResponseForeign } from '$lib/global';
   import { InnerText } from '$lib/enums';
-  import { images } from '$lib/stores/index';
+  import { images } from '$lib/stores';
   import { BoxGallery, Gallery, Image, NavUser } from '$lib/components';
 	
-	export let data: PageData;
+	export let data: PageData & ResponseForeign;
 
 	images.setImages(data.favorites);
 </script>

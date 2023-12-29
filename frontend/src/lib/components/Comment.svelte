@@ -1,9 +1,10 @@
 <script lang="ts">
-	import type { IComment, ResponseData } from "$lib/global.js";
+	import type { IComment } from "$lib/global.js";
 	import axios from "axios";
 	import { format } from "timeago.js";
 	import { DIR } from '$lib/config.js';
 	import { UserRole } from "$lib/enums.js";
+  import { catchLike } from "$lib/services/catch-likes";
 	import { clickOutside } from "$lib/services/click-outside";
 	import { handleRegister, handleRequest } from "$lib/services/services";
 	import { user } from '$lib/stores';
@@ -38,14 +39,15 @@
 
 	async function handleLike(type: string) {
 		if ($user) {
-			const url = `${DIR}/api/comment/${comment.id}/like`;
-			const data: ResponseData | undefined = await handleRegister(url, type)
-				.catch(() => undefined);
+			const [ actLike, actDislike ] = (type === 'like')
+				? catchLike(comment.likes, comment.dislikes, $user.username)
+				: catchLike(comment.dislikes, comment.likes, $user.username);
 
-			if (data) {
-				comment.likes = data.likes;
-				comment.dislikes = data.dislikes;
-			}
+			comment.likes = (type === 'like') ? actLike : actDislike;
+			comment.dislikes = (type === 'like') ? actDislike : actLike;
+
+			const url = `${DIR}/api/comment/${comment.id}/like`;
+			handleRegister(url, type);
 		}
 	}
 	
