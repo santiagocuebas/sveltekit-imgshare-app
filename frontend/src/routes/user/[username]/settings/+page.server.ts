@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import axios from 'axios';
-import { DIR } from '$lib/config.js';
+import { DIR } from '$lib/server/config.js';
 
 export const load: PageServerLoad = (async ({ params, cookies }) => {
 	const token = cookies.get('authenticate');

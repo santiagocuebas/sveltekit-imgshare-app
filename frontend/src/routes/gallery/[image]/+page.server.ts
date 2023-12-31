@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import { DIR } from '$lib/config.js';
+import { DIR } from '$lib/server/config.js';
 import axios from 'axios';
 
 export const load: PageServerLoad = (async ({ params: { image }, cookies }) => {

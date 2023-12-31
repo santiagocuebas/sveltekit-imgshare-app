@@ -1,6 +1,6 @@
 import adapter from '@sveltejs/adapter-netlify';
 import sveltePreprocess from 'svelte-preprocess';
-import { vitePreprocess } from '@sveltejs/kit/vite';
+import { sveltekit } from '@sveltejs/kit/vite';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -12,7 +12,7 @@ const config = {
 	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
 	// for more information about preprocessors
 	preprocess: [
-		vitePreprocess(),
+		sveltekit(),
 		sveltePreprocess({
 			postcss: {
 				configFilePath: postcssConfig
