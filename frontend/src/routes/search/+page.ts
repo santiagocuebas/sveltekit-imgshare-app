@@ -1,15 +1,13 @@
 import type { PageLoad } from './$types';
-import axios from 'axios';
-import { DIR } from '$lib/config.js';
+import axios from '$lib/services/axios';
 
-export const load: PageLoad = (async ({ url }) => {
+export const load = (async ({ url }) => {
 	const searchParams = url.searchParams.get('q');
 
-	return axios
-		.get(`${DIR}/api/search/${searchParams}`)
+	return axios({ url: '/search/' + searchParams })
 		.then(res => res.data)
 		.catch(err => {
 			console.error(err.message);
 			return { images: [] };
 		});
-});
+}) satisfies PageLoad;

@@ -1,6 +1,13 @@
 <script lang="ts">
-  import type { ILink, IMessage, IUser, ResponseSettings } from "$lib/global.js";
-  import axios from "axios";
+  import type {
+		ILink,
+		IKeys,
+		ResponseSettings,
+		SettingsProps,
+		DisabledButton
+	} from "$lib/global.js";
+  import { onMount } from "svelte";
+  import axios from "$lib/axios";
 	import { DIR } from '$lib/config.js';
   import { ButtonText, SettingText } from "$lib/dictionary";
 	import { Settings, ValidExt } from '$lib/enums.js';
@@ -14,9 +21,9 @@
 
 	let settingChoise = '';
 	let alert = false;
-	let message: string | IMessage | null;
-	let settingsProps = setSettingsProps($user as IUser);
-	let isDisabled = isDisabledButton($user as IUser);
+	let message: string | IKeys<string> | null;
+	let settingsProps: SettingsProps;
+	let isDisabled: DisabledButton;
 
 	const setSettingChoice = (value: string) => {
 		return settingChoise !== value ? value : '';
@@ -83,6 +90,13 @@
 
 		if (typeof message === 'string') setTimeout(() => message = null, 3000);
 	}
+
+	onMount(() => {
+		if ($user) {
+			settingsProps = setSettingsProps($user);
+			isDisabled = isDisabledButton($user);
+		}
+	});
 </script>
 
 {#if message}

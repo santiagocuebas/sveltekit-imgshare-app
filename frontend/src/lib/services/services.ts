@@ -1,11 +1,10 @@
-import axios from "axios";
+import axios from "$lib/axios";
 
 export async function handleRequest(form: HTMLFormElement) {
 	return axios({
 		method: form.method,
 		url: form.action,
-		data: form,
-		withCredentials: true
+		data: form
 	}).then(res => res.data);
 }
 
@@ -14,6 +13,5 @@ export async function handleRegister(url: string, like: string) {
 		method: 'POST',
 		url,
 		data: { like },
-		withCredentials: true
 	}).then(res => res.data);
 }

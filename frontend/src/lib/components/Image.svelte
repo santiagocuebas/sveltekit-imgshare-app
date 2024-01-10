@@ -13,7 +13,7 @@
     <h2>{image.title}</h2>
     <p>
       <i class="fa-solid fa-message"></i>
-      {image.totalComments}
+      {image.totalComments.length}
     </p>
     <p>
       <i class="fa-solid fa-thumbs-up"></i>

@@ -9,16 +9,22 @@ router.get('/:username/data', userCtrl.getUserData);
 
 router.get('/:username/:isPublic/:sort', getDataToken, userCtrl.getImages);
 
-router.post('/:username/upload', async (req, res) => {
-	const recentImages = await Image.find({
-		where: { author: req.params.username },
-		order: { createdAt: 'DESC' },
-		select: { id: true, filename: true },
-		take: 3
-	});
+router.post(
+	'/:username/upload',
+	isValidToken,
+	async (req, res) => {
+		if (req.user.username !== req.params.username) return res.status(401).json();
+		
+		const recentImages = await Image.find({
+			where: { author: req.params.username },
+			order: { createdAt: 'DESC' },
+			select: { id: true, filename: true },
+			take: 3
+		});
 
-	return res.json({ images: recentImages });
-});
+		return res.json({ images: recentImages });
+	}
+);
 
 router.post(
 	'/:username/settings',

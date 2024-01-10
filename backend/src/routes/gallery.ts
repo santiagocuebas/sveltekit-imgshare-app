@@ -1,7 +1,7 @@
+import type { FindOptionsWhere } from 'typeorm';
 import { Router } from 'express';
 import { orderGallery } from '../dictonary.js';
 import { UserRole } from '../enums.js';
-import { recentImages } from '../libs/index.js';
 import { getDataToken } from '../middleware/logged.js';
 import { Image, Comment } from '../models/index.js';
 
@@ -27,12 +27,13 @@ router.get('/', async (_req, res) => {
 });
 
 router.get('/:id', getDataToken, async (req, res) => {
-	const where = (req.user?.role !== UserRole.EDITOR)
-		? { id: req.params.id }
-		: [
-			{ id: req.params.id, isPublic: true },
-			{ id: req.params.id, author: req.user?.username }
-		];
+	let where: FindOptionsWhere<Image> = { id: req.params.id, isPublic: true };
+
+	if (req.user?.role && req.user?.role !== UserRole.EDITOR) {
+		where = { id: req.params.id };
+	} else if (req.user?.username) {
+		where = { id: req.params.id, author: req.user?.username };
+	}
 
 	// Find image if exists
 	const image = await Image.findOne({ where });
@@ -40,9 +41,6 @@ router.get('/:id', getDataToken, async (req, res) => {
 	if (image !== null) {
 		// Increment views
 		image.views++;
-		// Updated total comment 
-		image.totalComments = await Comment.countBy({ imageId: image.id });
-		await image.save();
 		
 		// Get comments of images
 		const comments = await Comment.find({
@@ -51,12 +49,39 @@ router.get('/:id', getDataToken, async (req, res) => {
 		});
 
 		// Get recent images
-		const sidebarImages = await recentImages();
+		const sidebarImages = await Image.find({
+			select: {
+				id: true,
+				filename: true,
+				title: true,
+				author: true,
+				views: true,
+				createdAt: true
+			},
+			where: { isPublic: true },
+			order: { createdAt: 'DESC' },
+			take: 20
+		});
 
 		return res.json({ image, comments, sidebarImages });
 	}
 
 	return res.status(401).json(image);
+});
+
+router.post('/views/:id', async (req, res) => {
+	// Find image if exists
+	const image = await Image.findOne({
+		where: { id: req.params.id }
+	});
+
+	if (image !== null) {
+		// Increment views
+		image.views++;
+		await image.save();
+	}
+
+	return res.json({});
 });
 
 router.get('/order/:order', async (req, res) => {

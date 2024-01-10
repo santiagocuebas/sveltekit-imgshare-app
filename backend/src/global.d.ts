@@ -11,6 +11,8 @@ declare global {
 	}
 }
 
+export type Direction = (req: Request, res: Response, next: NextFunction) => void;
+
 export interface IKeys<T> {
 	[index: string]: T;
 }
@@ -42,7 +44,7 @@ export interface IImage extends IContent {
 	description: string;
 	isPublic: boolean;
 	views: number;
-	totalComments: number;
+	totalComments: string[];
 	favorites: string[];
 }
 
@@ -57,10 +59,4 @@ export interface IComment extends IContent {
 export interface ILink {
 	title: string,
 	url: string
-}
-
-export type Direction = (req: Request, res: Response, next: NextFunction) => void;
-
-export interface MessageData {
-	[index: string]: string;
 }

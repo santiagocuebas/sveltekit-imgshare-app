@@ -6,13 +6,11 @@
 	
 	export let data: PageData & ResponseData;
 
-	$: ({ username } = data.foreignUser);
-
 	images.setImages(data.images);
 </script>
 
 <Gallery>
-	<NavUser username={username} />
+	<NavUser username={data.foreignUser.username} />
 	<BoxGallery>
 		{#if $images.length}
 			{#each $images as image}

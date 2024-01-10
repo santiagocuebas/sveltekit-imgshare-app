@@ -24,7 +24,8 @@ export const postUpload: Direction = async (req, res) => {
 		description: req.body.description,
 		likes: [],
 		dislikes: [],
-		favorites: []
+		favorites: [],
+		totalComments: []
 	}).save();
 
 	return res.json({ url: image.id });
@@ -105,7 +106,12 @@ export const postComment: Direction = async (req, res) => {
 	const image = await Image.findOneBy({ id: req.params.imageId });
 
 	// Create a new comment if the image exists
-	if (image !== null && typeof comment === 'string' && comment.length > 0 && comment.length < 4200) {
+	if (
+		image !== null &&
+		typeof comment === 'string' &&
+		comment.length > 0 &&
+		comment.length <= 4200
+	) {
 		const newComment = await Comment.create({
 			id: await getId('Comment', 16),
 			imageId: image.id,
@@ -119,8 +125,7 @@ export const postComment: Direction = async (req, res) => {
 		}).save();
 		
 		// Update total comments
-		image.totalComments++;
-
+		image.totalComments = [newComment.id, ...image.totalComments];
 		await image.save();
 		
 		return res.json({ comment: newComment });

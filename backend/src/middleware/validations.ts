@@ -1,5 +1,4 @@
 import type { Request, Response, NextFunction } from 'express';
-import type { MessageData } from '../global.js';
 import { validationResult, type ValidationChain } from 'express-validator';
 import fs from 'fs-extra';
 import { getErrorMessage } from '../libs/index.js';
@@ -15,13 +14,10 @@ export const validate = (validations: ValidationChain[]) => {
 				fs.unlink(req.file.path);
 			}
 			
-			const errors: MessageData = getErrorMessage(errs.array());
+			const errors = getErrorMessage(errs.array());
 
 			if (req.baseUrl === '/api/settings') {
-				return res.json({
-					class: 'errors-settings',
-					message: errors
-				});
+				return res.json({ message: errors });
 			}
 
 			return res.json({ errors });

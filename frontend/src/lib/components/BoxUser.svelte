@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-  import axios from "axios";
-	import { DIR } from '$lib/config.js';
+	import jsCookie from 'js-cookie';
   import { UserRole } from "$lib/enums";
-	import { clickOutside } from "$lib/services/click-outside";
-  import { user } from '$lib/stores/user-store';
+	import { clickOutside } from "$lib/services";
+  import { user } from '$lib/stores';
 
 	let visible: boolean;
 
 	const links = [
 		{
-		href: `/user/${$user?.username}/post`,
+			href: `/user/${$user?.username}/post`,
 			className: 'fa-regular fa-image',
 			name: 'Post'
 		},
@@ -20,39 +19,31 @@
 			name: 'Favorite'
 		},
 		{
-		href: `/user/${$user?.username}/comment`,
+			href: `/user/${$user?.username}/comment`,
 			className: 'fa-regular fa-message',
 			name: 'Comments'
 		},
 		{
-		href: `/user/${$user?.username}/about`,
+			href: `/user/${$user?.username}/about`,
 			className: 'fa-regular fa-file',
 			name: 'About'
 		},
 		{
-		href: `/user/${$user?.username}/upload`,
+			href: `/user/${$user?.username}/upload`,
 			className: 'fa-solid fa-arrow-up-from-bracket',
 			name: 'Upload'
 		},
 		{
-		href: `/user/${$user?.username}/settings`,
+			href: `/user/${$user?.username}/settings`,
 			className: 'fa-solid fa-gear',
 			name: 'Settings'
 		}
 	];
 
 	async function handleLogout() {
-		const data = await axios({
-			method: 'POST',
-			url: DIR + '/api/auth/logout',
-			withCredentials: true
-		}).then(res => res.data)
-			.catch(() => { return { redirect: false } });
-
-		if (data.redirect) {
-			user.resetUser();
-			goto('/');
-		}
+		jsCookie.remove('authenticate');
+		goto('/');
+		user.resetUser();
 	}
 </script>
 
@@ -77,7 +68,9 @@
 			{#if $user?.role === UserRole.ADMIN || $user?.role === UserRole.SUPER}
 				<a href='/admin' on:click={() => visible = false}>
 					<i class='fa-solid fa-user'></i>
-					<li>Admin</li>
+					<li>
+						Admin
+					</li>
 				</a>
 			{/if}
 			{#each links as link (link.name)}
@@ -88,7 +81,9 @@
 			{/each}
 				<a href='/logout' on:click|preventDefault={handleLogout}>
 					<i class='fa-solid fa-right-from-bracket'></i>
-					<li>Logout</li>
+					<li>
+						Logout
+					</li>
 				</a>
 		</ul>
 	</div>

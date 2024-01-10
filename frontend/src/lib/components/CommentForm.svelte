@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { IComment } from '$lib/global';
-	import { DIR } from '$lib/config.js';
 	import { handleRequest } from "$lib/services/services.js";
-  import { image, user } from '$lib/stores';
+  import { user } from '$lib/stores';
 
+	export let id: string | undefined;
 	export let comments: IComment[];
 
 	let input = '';
@@ -34,12 +34,12 @@
 		Post
 	</h2>
 	<form
-		action="{DIR}/api/image/{$image.id}/comment"
+		action="/image/{id}/comment"
 		method="POST"
 		on:submit|preventDefault={handleSubmit}
 	>
 		<picture>
-			<img src={$user?.avatar} alt={$image.id}>
+			<img src={$user?.avatar} alt={id}>
 		</picture>
 		<input
 			type="text"

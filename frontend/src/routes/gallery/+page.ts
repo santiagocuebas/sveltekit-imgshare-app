@@ -1,13 +1,11 @@
 import type { PageLoad } from './$types';
-import axios from 'axios';
-import { DIR } from '$lib/config.js';
+import axios from '$lib/services/axios';
 
-export const load: PageLoad = (async () => {
-	return axios
-		.get(`${DIR}/api/gallery`)
+export const load = (async () => {
+	return axios({ url: `/gallery` })
 		.then(res => res.data)
 		.catch(err => {
 			console.error(err.message);
 			return { images: [] };
 		});
-});
+}) satisfies PageLoad;

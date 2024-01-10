@@ -7,13 +7,19 @@ export const postComment: Direction = async (req, res) => {
 	const comment = await Comment.findOneBy({ id: req.params.id });
 
 	// Update comment content
-	if (comment !== null && req.user.username === comment.author) {
+	if (
+		comment !== null &&
+		req.user.username === comment.author &&
+		typeof req.body.comment === 'string' &&
+		req.body.comment.length > 0 &&
+		req.body.comment.length <= 4200
+	) {
 		comment.edit = true;
 		comment.comment = req.body.comment;
 		await comment.save();
 	}
 
-	return res.json({});
+	return res.json();
 };
 
 export const postLike: Direction = async (req, res) => {
@@ -34,7 +40,7 @@ export const postLike: Direction = async (req, res) => {
 
 		await comment.save();
 
-		return res.json({ likes: comment.likes, dislikes: comment.dislikes });
+		return res.json();
 	}
 
 	return res.json(comment);
@@ -56,15 +62,16 @@ export const deleteComment: Direction = async (req, res) => {
 		const image = await Image.findOne({
 			where: { id: comment.imageId },
 			select: { id: true, totalComments: true }
-		}) as Image;
+		});
 
 		// Update total comments
-		image.totalComments--;
-		
-		await image.save();
+		if (image) {
+			image.totalComments = image.totalComments.filter(id => image.id !== id);
+			await image.save();
+		}
 		
 		await comment.remove();
 	}
 
-	return res.json({});
+	return res.json();
 };

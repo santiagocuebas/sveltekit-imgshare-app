@@ -1,50 +1,44 @@
 <script lang="ts">
-  import type { AxiosError } from "axios";
-	import type { ResponseData } from "$lib/global";
-  import axios from "axios";
-	import { DIR } from '$lib/config.js';
+	import type { IImage } from '$lib/global';
+  import axios from '$lib/axios';
 	import { OrderText } from '$lib/enums.js';
-	import { clickOutside } from "$lib/services/click-outside";
-  import { images } from "$lib/stores/index";
-
-	export let visibleBox: boolean = true;
+	import { clickOutside } from "$lib/services";
+  import { images } from "$lib/stores";
 
 	let visible = false;
 	let selectText: string = OrderText.NEWEST;
 
 	async function handleSubmit(choise: string) {
+		const url = `/gallery/order/${choise.toUpperCase()}`;
 		selectText = choise.toUpperCase();
 		visible = false;
 
-		const data: ResponseData = await axios
-			.get(`${DIR}/api/gallery/order/${selectText}`)
+		const data: { images: IImage[] } = await axios({ url })
 			.then(res => res.data)
-			.catch((err: AxiosError) => {
+			.catch(err => {
 				console.error(err.message);
-				return [];
+				return { images: [] };
 			});
-
-		images.setImages(data.images)
+		
+		images.setImages(data.images);
 	}
 </script>
 
 <div>
 	<i class="fa-solid fa-images fa-lg"></i>
 	IMAGES
-	{#if visibleBox}
-		<button on:click={() => visible = !visible}>
-			{selectText.toUpperCase()}
-			<i class="fa-solid fa-caret-down"></i>
-		</button>
-		{#if visible}
-			<ul use:clickOutside on:outclick={() => setTimeout(() => visible = false)}>
-				{#each Object.values(OrderText) as text}
-					<li role="none" on:click={() => handleSubmit(text)}>
-						{text.toUpperCase()}
-					</li>
-				{/each}
-			</ul>
-		{/if}
+	<button on:click={() => visible = !visible}>
+		{selectText.toUpperCase()}
+		<i class="fa-solid fa-caret-down"></i>
+	</button>
+	{#if visible}
+		<ul use:clickOutside on:outclick={() => setTimeout(() => visible = false)}>
+			{#each Object.values(OrderText) as text}
+				<li role="none" on:click={() => handleSubmit(text)}>
+					{text.toUpperCase()}
+				</li>
+			{/each}
+		</ul>
 	{/if}
 </div>
 

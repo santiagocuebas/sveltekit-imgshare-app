@@ -1,12 +1,11 @@
 <script lang="ts">
-	import type { LayoutServerData } from './$types';
-  import type { RawUser } from '$lib/global';
+	import type { LayoutData } from './$types';
 	import { beforeUpdate } from 'svelte';
-	import { user } from '$lib/stores/index';
 	import { Nav, BoxUser, Footer } from '$lib/components';
+	import { user } from '$lib/stores';
 	import '../app.css';
 
-	export let data: LayoutServerData & { user: RawUser & { links: string } };
+	export let data: LayoutData;
 
 	let visible = true;
 	let pathname: string;
@@ -14,7 +13,7 @@
 	if (data.user) user.setUser(data.user);
 	
 	async function changeVisibility(e: WheelEvent) {
-		visible = (e.deltaY <=  0) ? true : false;
+		visible = e.deltaY <=  0;
 	}
 
 	beforeUpdate(() => pathname = location.pathname);

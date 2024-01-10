@@ -1,20 +1,12 @@
 import type { PageServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import axios from 'axios';
-import { DIR } from '$lib/server/config.js';
+import axios from '$lib/services/axios';
 
-export const load: PageServerLoad = (async ({ params, cookies }) => {
-	const token = cookies.get('authenticate');
-	const config = {
-		method: 'POST',
-		url: `${DIR}/api/user/${params.username}/settings`,
-		headers: { 'Cookie': `authenticate=${token}` }
-	};
-	
-	return axios(config)
+export const load = (async ({ params }) => {
+	return axios({ method: 'POST', url: `/user/${params.username}/settings` })
 		.then(res => res.data)
 		.catch(err => {
 			console.error(err.message);
 			throw redirect(307, '/');
 		});
-});
+}) satisfies PageServerLoad;

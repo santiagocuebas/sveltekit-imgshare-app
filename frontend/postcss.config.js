@@ -6,10 +6,8 @@ const tailwindConfig = join(__dirname, 'tailwind.config.js');
 
 export default {
   plugins: {
-    'postcss-import': {},
     'tailwindcss/nesting': {},
     tailwindcss: { config: tailwindConfig },
     autoprefixer: {}
-  },
-  
+  }
 }

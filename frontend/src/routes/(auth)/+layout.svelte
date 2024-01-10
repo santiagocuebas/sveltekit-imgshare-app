@@ -1,14 +1,20 @@
 <script lang="ts">
 	import type { IKeys, ResponseData } from '$lib/global';
-  import { beforeUpdate } from 'svelte';
 	import { beforeNavigate, goto } from '$app/navigation';
-	import { DIR } from '$lib/config.js';
-  import { handleRequest } from "$lib/services/services";
-  import { user } from '$lib/stores';
+  import { beforeUpdate } from 'svelte';
+	import jsCookie from 'js-cookie';
 	import { ErrorBox } from '$lib/components';
+  import { DIR, NODE_ENV } from '$lib/config';
+  import { handleRequest } from "$lib/services";
+  import { user } from '$lib/stores';
 
 	let pathname: string;
 	let errors: IKeys<string> | null = null;
+	
+	const setUppercase = (value: string) => {
+		const firstLetter = value.at(0) ?? 's';
+		return value.replace(firstLetter, firstLetter?.toUpperCase());
+	}; 
 	
 	async function handleSubmit(this: HTMLFormElement) {
 		const data: ResponseData = await handleRequest(this)
@@ -19,20 +25,23 @@
 
 		if (data.redirect) goto('/');
 		else if (data.user) {
-			user.setUser(data.user);
+			jsCookie.set('authenticate', data.token, {
+				expires: 15,
+				secure: NODE_ENV === 'production'
+			});
 			goto('/user/' + data.user.username);
+			user.setUser(data.user);
 		} else if (data.errors) errors = data.errors;
 	}
 
-	beforeUpdate(() => pathname = location.pathname);
+	beforeUpdate(() => pathname = location.pathname.replace('/', ''));
 	beforeNavigate(() => errors = null);
 </script>
 
-
 <div id="sign-container">
-	<h1>{pathname === '/signin' ? 'Signin' : 'Signup'}</h1>
+	<h1>{setUppercase(pathname)}</h1>
 	<form
-		action='{DIR}/api/auth/signin'
+		action={DIR + '/api/auth/' + pathname}
 		method='POST'
 		on:submit|preventDefault={handleSubmit}
 	>
@@ -41,10 +50,9 @@
 		{/if}
 		<slot />
 	</form>
-	<a
-		class:register={pathname !== '/signin'}
-		href={pathname === '/signin' ? '/signup' : '/signin'}
-	>{pathname === '/signin' ? 'Create Account' : 'Sign In'}</a>
+	<a class:register={pathname !== 'signin'} href={'/' + pathname}>
+		{pathname === 'signin' ? 'Create Account' : 'Sign In'}
+	</a>
 </div>
 
 <style lang="postcss">

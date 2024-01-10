@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { IImage } from "$lib/global";
 	import { goto } from "$app/navigation";
-  import axios from "axios";
-	import { DIR } from '$lib/config.js';
-	import { clickOutside } from "$lib/services/click-outside";
+  import axios from "$lib/axios";
+	import { clickOutside } from "$lib/services";
 
-	export let image: IImage;
+	export let image: IImage | null;
 	export let description: boolean;
-	let visible: boolean;
+	
+	let visible = false;
 
 	const editDescription = () => {
 		visible = false;
@@ -16,23 +16,18 @@
 
 	const changePublic = async () => {
 		visible = false;
-		image.isPublic = !image.isPublic;
 
-		await axios({
-			method: 'POST',
-			url: `${DIR}/api/image/${image.id}/public`,
-			withCredentials: true
-		}).catch(err => console.log(err.message));
+		if (image) image.isPublic = !image.isPublic;
+
+		await axios({ method: 'POST', url: `/image/${image?.id}/public` })
+			.catch(err => console.log(err.message));
 	};
 
 	const deleteImage = async () => {
 		visible = false;
 
-		await axios({
-			method: 'DELETE',
-			url: `${DIR}/api/image/${image.id}`,
-			withCredentials: true
-		}).catch(err => console.log(err.message));
+		await axios({ method: 'DELETE', url: `/image/${image?.id}` })
+			.catch(err => console.log(err.message));
 
 		goto('/');
 	};
@@ -45,15 +40,21 @@
 	{#if visible}
 		<ul use:clickOutside on:outclick={() => setTimeout(() => visible = false)}>
 			<a href="#edit" on:click={editDescription}>
-				<li>Edit</li>
+				<li>
+					Edit
+				</li>
 				<i class="fa-solid fa-pen"></i>
 			</a>
 			<a href="#placeholder" on:click|preventDefault={changePublic}>
-				<li>Public</li>
-				<i class="fa-solid fa-{image.isPublic ? 'eye' : 'eye-slash'}"></i>
+				<li>
+					Public
+				</li>
+				<i class="fa-solid fa-{image?.isPublic ? 'eye' : 'eye-slash'}"></i>
 			</a>
 			<a href="#placeholder" on:click|preventDefault={deleteImage}>
-				<li>Delete</li>
+				<li>
+					Delete
+				</li>
 				<i class="fa-solid fa-delete-left"></i>
 			</a>
 		</ul>

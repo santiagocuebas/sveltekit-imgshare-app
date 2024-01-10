@@ -3,9 +3,9 @@
   import type { IImage, IKeys, ResponseData } from '$lib/global';
   import { goto } from '$app/navigation';
 	import { DIR } from '$lib/config.js';
-  import { ValidExt } from '$lib/enums';
-  import { handleRequest } from '$lib/services/services';
 	import { ErrorBox, BoxGallery } from '$lib/components';
+  import { ValidExt } from '$lib/enums';
+  import { handleRequest } from '$lib/services';
 
 	export let data: PageData & { images: IImage[] };
 
@@ -27,6 +27,7 @@
 	}
 	
 	async function handleSubmit(this: HTMLFormElement) {
+		console.log(this.action, this.method);
 		const data: ResponseData = await handleRequest(this)
 			.catch(err => {
 				console.log(err.message);
@@ -47,7 +48,7 @@
 	<form
 		action='{DIR}/api/image/upload'
 		method="POST"
-		on:submit={handleSubmit}
+		on:submit|preventDefault={handleSubmit}
 	>
 		{#if errors}
 			<ErrorBox bind:errors={errors} on:click={() => errors = null} />

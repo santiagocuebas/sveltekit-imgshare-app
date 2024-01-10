@@ -1,5 +1,3 @@
-import { Settings } from './enums.js';
-
 export interface IKeys<T> {
 	[index: string]: T;
 }
@@ -40,7 +38,7 @@ export interface IImage extends IContent {
 	description: string;
 	isPublic: boolean;
 	views: number;
-	totalComments: number;
+	totalComments: string[];
 	favorites: string[];
 }
 
@@ -52,10 +50,6 @@ export interface IComment extends IContent {
 	edit: boolean;
 }
 
-export interface IMessage {
-	[index: string]: string;
-}
-
 export interface ILink {
 	title: string;
 	url: string;
@@ -63,7 +57,8 @@ export interface ILink {
 
 export interface ResponseData {
 	[index: string]: IUser | IUserExtended | IUserForeign | IImage | IComment | undefined;
-	user: IUser | undefined;
+	user: RawUser & { links: string } | undefined;
+	token: string;
 	users: IUserExtended[];
 	extendedUser: IUserExtended;
 	foreignUser: IUserForeign;

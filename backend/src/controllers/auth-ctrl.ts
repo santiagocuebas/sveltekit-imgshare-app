@@ -1,5 +1,9 @@
 import type { Direction } from '../global.js';
-import { encryptPassword, getSerializedCookie } from '../libs/index.js';
+import {
+	encryptPassword,
+	getPartialUser,
+	getSerializedCookie
+} from '../libs/index.js';
 import { User } from '../models/index.js';
 
 export const postSignup: Direction = async (req, res) => {
@@ -13,20 +17,10 @@ export const postSignup: Direction = async (req, res) => {
 	}).save();
 
 	// Create a cookie of authentication
-	const token = getSerializedCookie(user);
-
-	res.set('Set-Cookie', token);
-
-	const partialUser = {
-		username: user.username,
-		avatar: user.avatar,
-		description: user.description,
-		links: user.links,
-		email: user.email,
-		role: user.role
-	};
+	const token = getSerializedCookie(user.username);
+	const partialUser = getPartialUser(user);
 	
-	return res.json({ user: partialUser });
+	return res.json({ user: partialUser, token });
 };
 
 export const postSignin: Direction = async (req, res) => {
@@ -39,18 +33,8 @@ export const postSignin: Direction = async (req, res) => {
 	}) as User;
 
 	// Create a cookie of authentication
-	const token = getSerializedCookie(user);
+	const token = getSerializedCookie(user.username);
+	const partialUser = getPartialUser(user);
 
-	res.set('Set-Cookie', token);
-
-	const partialUser = {
-		username: user.username,
-		avatar: user.avatar,
-		description: user.description,
-		links: user.links,
-		email: user.email,
-		role: user.role
-	};
-
-	return res.json({ user: partialUser });
+	return res.json({ user: partialUser, token });
 };

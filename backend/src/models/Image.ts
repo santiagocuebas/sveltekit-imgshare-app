@@ -18,10 +18,10 @@ export class Image extends Content implements IImage {
 
 	@Column('int', { default: 0 })
 	public views!: number;
-
-	@Column('int', { default: 0 })
-	public totalComments!: number;
 	
 	@Column('simple-array')
 	public favorites!: string[];
+
+	@Column('simple-array')
+	public totalComments!: string[];
 }

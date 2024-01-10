@@ -1,10 +1,9 @@
 <script lang="ts">
-  import type { IKeys, ResponseData } from "$lib/global.js";
-  import axios from "axios";
-	import { DIR } from '$lib/config.js';
+  import type { IImage, IKeys } from "$lib/global.js";
+  import axios from "$lib/axios";
   import { SelectIcon } from "$lib/dictionary";
   import { InnerText, OrderText, PublicText, UserRole } from "$lib/enums";
-	import { clickOutside } from "$lib/services/click-outside";
+	import { clickOutside } from "$lib/services";
   import { user, images } from "$lib/stores";
 
 	export let text: string = InnerText.PUBLIC;
@@ -23,14 +22,16 @@
 	async function handleSubmit(option: string, choise: string) {
 		holder[option] = choise.toUpperCase();
 		visible[option] = false;
-
-		const data: ResponseData = await axios({
-			method: 'GET',
-			url: `${DIR}/api/user/${username}/${holder.public}/${holder.order}`,
-			withCredentials: true
-		}).then(res => res.data);
-
-		images.setImages(data.images)
+		const url = `/user/${username}/${holder.public}/${holder.order}`;
+		
+		const data: { images: IImage[] } = await axios({ url })
+			.then(res => res.data)
+			.catch(err => {
+				console.error(err.message);
+				return { images: [] };
+			});
+		
+		images.setImages(data.images);
 	}
 </script>
 

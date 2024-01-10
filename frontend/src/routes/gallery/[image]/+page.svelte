@@ -2,8 +2,7 @@
 	import type { PageServerData } from './$types';
   import type { ResponseImage } from '$lib/global';
 	import { afterUpdate } from 'svelte';
-	import { UserRole } from '$lib/enums';
-	import { user } from '$lib/stores';
+  import axios from '$lib/axios';
 	import {
 		ImageBox,
 		Register,
@@ -13,19 +12,28 @@
 		SideImage,
 		ImageOptions
 	} from '$lib/components';
-	
+	import { UserRole } from '$lib/enums';
+	import { user } from '$lib/stores';
+
 	export let data: PageServerData & ResponseImage;
 	
 	let description = false;
 	let isValidUser = false;
-
+	
 	$: ({ image, comments, sidebarImages } = data);
 
+	const incrementViews = async () => {
+		await axios({ method: 'POST', url: '/gallery/views/' + image.id })
+			.catch(err => console.log(err?.message));
+	};
+
 	afterUpdate(() => {
-		isValidUser = $user !== null && ($user?.username === image.author ||
+		isValidUser = $user !== null && ($user?.username === image?.author ||
 			$user?.role !== UserRole.EDITOR);
 	});
 </script>
+
+<svelte:document on:load={incrementViews()} />
 
 <div id="image-container">
 	<div id="image-box">
@@ -42,7 +50,7 @@
 				Recent Uploads
 			</h2>
 			<BoxGallery className='image-sidebar'>
-				{#each sidebarImages ?? [] as image}
+				{#each sidebarImages as image}
 					<SideImage image={image} />
 				{/each}
 			</BoxGallery>
@@ -50,7 +58,7 @@
 	</div>
 	<div id="comment-container">
 		{#if $user}
-			<CommentForm bind:comments={comments} />
+			<CommentForm id={image?.id} bind:comments={comments} />
 			{:else}
 			<Register />
 		{/if}

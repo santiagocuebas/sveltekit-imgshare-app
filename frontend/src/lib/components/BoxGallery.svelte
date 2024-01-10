@@ -2,7 +2,7 @@
   export let className: string = '';
 </script>
 
-<div class={className} data-sveltekit-preload-data='tap'>
+<div class={className}>
   <slot></slot>
 </div>
 
@@ -26,22 +26,4 @@
       @apply flex-row flex-nowrap justify-evenly gap-0;
     }
 	}
-
-  .image-uploaded {
-    grid-template-columns: repeat(3, 200px);
-    grid-auto-rows: 200px;
-    align-items: center;
-    justify-items: center;
-    padding: 0;
-    gap: 0;
-  }
-
-  .image-cell-user {
-    grid-template-columns: repeat(auto-fill, 400px);
-    grid-auto-rows: 200px;
-    justify-content: flex-start;
-    min-width: 800px;
-    padding: 0;
-    gap: 0;
-  }
 </style>

@@ -1,16 +1,14 @@
-import { IUser } from '$lib/global.js';
-
-declare namespace App {
-	// interface Error {}
-	// interface Locals {}
-	// interface PageData {}
-	// interface Platform {}
-}
+// See https://kit.svelte.dev/docs/types#app
+// for information about these interfaces
 
 declare global {
 	namespace App {
-		interface Locals {
-			user: IUser | undefined;
-		}
+		// interface Error {}
+		// interface Locals {}
+		// interface PageData {}
+		// interface PageState {}
+		// interface Platform {}
 	}
 }
+
+export {};

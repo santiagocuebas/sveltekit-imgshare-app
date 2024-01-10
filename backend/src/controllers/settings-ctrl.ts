@@ -5,8 +5,7 @@ import {
 	encryptPassword,
 	deleteUserComments,
 	deleteUserImages,
-	getId,
-	getSerializedCookie
+	getId
 } from '../libs/index.js';
 import { Image, Comment } from '../models/index.js';
 
@@ -33,11 +32,6 @@ export const postAvatar: Direction = async (req, res) => {
 
 	req.user.avatar = avatarURL;
 	await req.user.save();
-
-	// Update cookie with the new avatar
-	const token = getSerializedCookie(req.user);
-	
-	res.set('Set-Cookie', token);
 
 	return res.json({
 		filename: avatarURL,

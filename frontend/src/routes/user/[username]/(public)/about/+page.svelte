@@ -11,7 +11,7 @@
 </script>
 
 <Gallery>
-	<NavUser text={InnerText.ABOUT} username={foreign.username} />
+	<NavUser text={InnerText.ABOUT} username={data.foreignUser.username} />
 	<BoxGallery>
 		<div id="about-container">
 			<div class="about-box">

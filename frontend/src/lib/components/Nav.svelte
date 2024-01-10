@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { afterUpdate } from 'svelte';
-	import { clickOutside } from '$lib/services/click-outside';
-  import { user } from '$lib/stores/user-store';
+	import { clickOutside } from '$lib/services';
+  import { user } from '$lib/stores';
 
 	let visible = false;
 	let isValidUser = false;
@@ -24,8 +24,12 @@
 		<slot></slot>
 	{:else}
 		<div>
-			<a href="/signin">Signin</a>
-			<a class="signup" href="/signup">Signup</a>
+			<a href="/signin">
+				Signin
+			</a>
+			<a class="signup" href="/signup">
+				Signup
+			</a>
 			<button on:click={() => visible = !visible}>
 				<i class='fa-solid fa-caret-down fa-xl'></i>
 			</button>
@@ -34,11 +38,15 @@
 			<ul use:clickOutside on:outclick={() => visible = false}>
 				<a href="/signin" on:click={() => visible = false}>
 					<i class="fa-solid fa-right-to-bracket"></i>
-					<li>Signin</li>
+					<li>
+						Signin
+					</li>
 				</a>
 				<a href="/signup" on:click={() => visible = false}>
 					<i class="fa-solid fa-right-to-bracket"></i>
-					<li>Signup</li>
+					<li>
+						Signup
+					</li>
 				</a>
 			</ul>
 		{/if}

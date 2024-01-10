@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { serialize } from 'cookie';
-import { DOMAIN, NODE_ENV } from '../config.js';
 import { authCtrl } from '../controllers/index.js';
+import { matchPassword, getPartialUser } from '../libs/index.js';
 import {
 	isValidToken,
 	isNotValidToken,
@@ -9,26 +8,14 @@ import {
 } from '../middleware/logged.js';
 import { validate } from '../middleware/validations.js';
 import * as array from '../validators/arrays-validators.js';
-import { matchPassword } from '../libs/bcrypt.js';
 
 const router = Router();
 
 router.get(
 	'/',
 	getDataToken,
-	(req, res) => {
-		const partialUser = req.user
-			? {
-				username: req.user.username,
-				avatar: req.user.avatar,
-				description: req.user.description,
-				links: req.user.links,
-				email: req.user.email,
-				role: req.user.role
-			} : undefined;
-
-		console.log(partialUser);
-
+	async (req, res) => {
+		const partialUser = req.user ? getPartialUser(req.user) : undefined;
 		return res.json({ user: partialUser });
 	}
 );
@@ -57,24 +44,6 @@ router.post(
 	isNotValidToken,
 	validate(array.Signin),
 	authCtrl.postSignin
-);
-
-router.post(
-	'/logout',
-	isValidToken,
-	(_req, res) => {
-		// Delete cookie authenticate
-		res.set('Set-Cookie', serialize('authenticate', '', {
-			domain: DOMAIN,
-			httpOnly: true,
-			maxAge: 0,
-			path: '/',
-			sameSite: 'none',
-			secure: NODE_ENV === 'production'
-		}));
-
-		return res.json({ redirect: true });
-	}
 );
 
 export default router;

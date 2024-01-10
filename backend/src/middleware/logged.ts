@@ -1,7 +1,7 @@
 import type { Direction } from '../global.js';
 import { UserRole } from '../enums.js';
 import { decodedToken } from '../libs/index.js';
-import { User } from '../models/User.js';
+import { User } from '../models/index.js';
 
 export const isValidToken: Direction = async (req, res, next) => {
 	const token = req.cookies['authenticate'];

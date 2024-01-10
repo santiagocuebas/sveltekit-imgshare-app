@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { IMessage } from "$lib/global.js";
+	import type { IKeys } from "$lib/global.js";
 
-	export let message: string | IMessage;
+	export let message: string | IKeys<string>;
 </script>
 
 <div class:errors={typeof message !== 'string'}>

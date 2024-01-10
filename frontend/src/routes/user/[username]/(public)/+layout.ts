@@ -1,14 +1,12 @@
 import type { LayoutLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import axios from 'axios';
-import { DIR } from '$lib/config.js';
+import axios from '$lib/services/axios';
 
-export const load: LayoutLoad = (async ({ params }) => {
-	return axios
-		.get(`${DIR}/api/user/${params.username}/data`)
+export const load = (async ({ params }) => {
+	return axios({ url: `/user/${params.username}/data` })
 		.then(res => res.data)
 		.catch(err => {
 			console.error(err.message);
 			throw redirect(307, '/');
 		});
-});
+}) satisfies LayoutLoad;
