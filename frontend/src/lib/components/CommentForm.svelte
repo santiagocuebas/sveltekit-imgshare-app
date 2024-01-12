@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IComment } from '$lib/global';
-	import { handleRequest } from "$lib/services/services.js";
+  import { DIR } from '$lib/config';
+	import { handleRequest } from "$lib/services";
   import { user } from '$lib/stores';
 
 	export let id: string | undefined;
@@ -20,9 +21,7 @@
 		const data = await handleRequest(this)
 			.catch(() => { return { comment: null } });
 
-		if (data.comment) {
-			comments = [data.comment, ...comments];
-		}
+		if (data.comment) comments = [data.comment, ...comments];
 
 		changeVisibility(false);
 	}
@@ -34,7 +33,7 @@
 		Post
 	</h2>
 	<form
-		action="/image/{id}/comment"
+		action="{DIR}/api/image/{id}/comment"
 		method="POST"
 		on:submit|preventDefault={handleSubmit}
 	>

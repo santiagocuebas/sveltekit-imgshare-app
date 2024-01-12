@@ -1,6 +1,7 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
+	import type { PageData } from './$types';
   import type { ResponseImage } from '$lib/global';
+  import { afterNavigate } from '$app/navigation';
 	import { afterUpdate } from 'svelte';
   import axios from '$lib/axios';
 	import {
@@ -15,25 +16,26 @@
 	import { UserRole } from '$lib/enums';
 	import { user } from '$lib/stores';
 
-	export let data: PageServerData & ResponseImage;
+	export let data: PageData & ResponseImage;
 	
 	let description = false;
 	let isValidUser = false;
-	
-	$: ({ image, comments, sidebarImages } = data);
-
-	const incrementViews = async () => {
-		await axios({ method: 'POST', url: '/gallery/views/' + image.id })
-			.catch(err => console.log(err?.message));
-	};
+	let { image, comments, sidebarImages } = data;
 
 	afterUpdate(() => {
 		isValidUser = $user !== null && ($user?.username === image?.author ||
 			$user?.role !== UserRole.EDITOR);
 	});
-</script>
 
-<svelte:document on:load={incrementViews()} />
+	afterNavigate(async () => {
+		image = data.image;
+		comments = data.comments;
+		sidebarImages = data.sidebarImages;
+
+		await axios({ method: 'POST', url: '/gallery/views/' + image.id })
+			.catch(err => console.log(err?.message));
+	});
+</script>
 
 <div id="image-container">
 	<div id="image-box">

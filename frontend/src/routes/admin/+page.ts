@@ -1,6 +1,6 @@
-import type { PageServerLoad } from './$types';
+import type { PageLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import axios from '$lib/server/axios';
+import axios from '$lib/axios';
 
 export const load = (async () => {
 	return axios({ url: `/admin` })
@@ -9,4 +9,4 @@ export const load = (async () => {
 			console.error(err.message);
 			throw redirect(307, '/');
 		});
-}) satisfies PageServerLoad;
+}) satisfies PageLoad;

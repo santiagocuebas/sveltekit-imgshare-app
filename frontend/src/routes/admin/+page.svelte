@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
+	import type { PageData } from './$types';
   import type { IUserExtended } from '$lib/global';
   import { afterNavigate } from '$app/navigation';
   import axios from 'axios';
@@ -14,7 +14,7 @@
 		UserBox
 	} from '$lib/components';
 	
-	export let data: PageServerData & { users: IUserExtended[] };
+	export let data: PageData & { users: IUserExtended[] };
 
 	let alert = false;
 	let show = false;

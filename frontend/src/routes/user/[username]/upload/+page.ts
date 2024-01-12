@@ -1,6 +1,6 @@
-import type { PageServerLoad } from './$types';
+import type { PageLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import axios from '$lib/server/axios';
+import axios from '$lib/axios';
 
 export const load = (async ({ params }) => {
 	return axios({ method: 'POST', url: `/user/${params.username}/upload` })
@@ -9,4 +9,4 @@ export const load = (async ({ params }) => {
 			console.error(err.message);
 			throw redirect(307, '/');
 		});
-}) satisfies PageServerLoad;
+}) satisfies PageLoad;

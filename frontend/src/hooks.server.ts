@@ -1,5 +1,5 @@
 import type { Handle } from '@sveltejs/kit';
-import axios from '$lib/server/axios';
+import axios from '$lib/axios';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('authenticate');
