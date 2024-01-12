@@ -27,12 +27,15 @@ router.get('/', async (_req, res) => {
 });
 
 router.get('/:id', getDataToken, async (req, res) => {
-	let where: FindOptionsWhere<Image> = { id: req.params.id, isPublic: true };
+	let where: FindOptionsWhere<Image> | FindOptionsWhere<Image>[] =
+		{ id: req.params.id, isPublic: true };
 
-	if (req.user?.role && req.user?.role !== UserRole.EDITOR) {
-		where = { id: req.params.id };
-	} else if (req.user?.username) {
-		where = { id: req.params.id, author: req.user?.username };
+	if (req.user) {
+		where = (req.user.role === UserRole.EDITOR)
+			? [
+				{ id: req.params.id, isPublic: true },
+				{ id: req.params.id, author: req.user?.username }
+			] : { id: req.params.id };
 	}
 
 	// Find image if exists

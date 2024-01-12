@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageServerData } from './$types';
   import type { IImage, IKeys, ResponseData } from '$lib/global';
   import { goto } from '$app/navigation';
 	import { DIR } from '$lib/config.js';
@@ -7,7 +7,7 @@
   import { ValidExt } from '$lib/enums';
   import { handleRequest } from '$lib/services';
 
-	export let data: PageData & { images: IImage[] };
+	export let data: PageServerData & { images: IImage[] };
 
 	let errors: IKeys<string> | null = null;
 	let src = '/label-img.png';

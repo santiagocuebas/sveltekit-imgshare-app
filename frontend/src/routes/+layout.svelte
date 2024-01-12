@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { LayoutData } from './$types';
+	import type { LayoutServerData } from './$types';
 	import { beforeUpdate } from 'svelte';
 	import { Nav, BoxUser, Footer } from '$lib/components';
 	import { user } from '$lib/stores';
 	import '../app.css';
 
-	export let data: LayoutData;
+	export let data: LayoutServerData;
 
 	let visible = true;
 	let pathname: string;

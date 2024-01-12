@@ -1,5 +1,5 @@
 import type { LayoutServerLoad } from './$types';
-import axios from '$lib/services/axios';
+import axios from '$lib/server/axios';
 
 export const load = (async () => {
 	return axios({ url: '/auth' })

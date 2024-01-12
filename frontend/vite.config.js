@@ -1,24 +1,19 @@
 import { sveltekit } from '@sveltejs/kit/vite';
+// import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 /** @type {import('vite').UserConfig} */
 const config = {
-	resolve: {
-		alias: {
-			http: 'rollup-plugin-node-polyfills/polyfills/http',
-			https: 'rollup-plugin-node-polyfills/polyfills/http',
-			util: 'rollup-plugin-node-polyfills/polyfills/util',
-			zlib: 'rollup-plugin-node-polyfills/polyfills/zlib',
-			stream: 'rollup-plugin-node-polyfills/polyfills/stream',
-			events: 'rollup-plugin-node-polyfills/polyfills/events',
-			path: 'rollup-plugin-node-polyfills/polyfills/path',
-			url: 'rollup-plugin-node-polyfills/polyfills/url',
-			fs: 'rollup-plugin-node-polyfills/polyfills/fs',
-			assert: 'rollup-plugin-node-polyfills/polyfills/assert',
-			tty: 'rollup-plugin-node-polyfills/polyfills/tty',
-			os: 'rollup-plugin-node-polyfills/polyfills/os'
-		}
-	},
-	plugins: [sveltekit()],
+	plugins: [
+		sveltekit(),
+		// nodePolyfills({
+		// 	include: ['http', 'https', 'stream'],
+		// 	globals: {
+		// 		Buffer: 'build',
+		// 		global: true,
+		// 		process: true,
+		// 	},
+		// })
+	],
 	server: {
 		port: 3000
 	},

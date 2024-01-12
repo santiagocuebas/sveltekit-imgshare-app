@@ -12,8 +12,12 @@
 	let errors: IKeys<string> | null = null;
 	
 	const setUppercase = (value: string) => {
-		const firstLetter = value.at(0) ?? 's';
-		return value.replace(firstLetter, firstLetter?.toUpperCase());
+		if (value) {
+			const firstLetter = value?.at(0) ?? 's';
+			return value.replace(firstLetter, firstLetter?.toUpperCase());
+		}
+
+		return '';
 	}; 
 	
 	async function handleSubmit(this: HTMLFormElement) {
@@ -50,9 +54,10 @@
 		{/if}
 		<slot />
 	</form>
-	<a class:register={pathname !== 'signin'} href={'/' + pathname}>
-		{pathname === 'signin' ? 'Create Account' : 'Sign In'}
-	</a>
+	<a
+		class:register={pathname !== 'signin'}
+		href={pathname === 'signin' ? '/signup' : '/signin'}
+	>{pathname === 'signin' ? 'Create Account' : 'Sign In'}</a>
 </div>
 
 <style lang="postcss">

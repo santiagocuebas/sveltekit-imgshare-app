@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { LayoutData } from './$types';
   import type { ResponseForeign } from '$lib/global';
   import { beforeUpdate } from 'svelte';
 	import { DIR } from '$lib/config.js';
   import { LinksOptions, UserRole } from '$lib/enums';
   import { user } from '$lib/stores';
 	
-	export let data: PageData & ResponseForeign;
+	export let data: LayoutData & ResponseForeign;
 
 	let pathname: string;
 

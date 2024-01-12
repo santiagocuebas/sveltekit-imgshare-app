@@ -35,7 +35,7 @@
 			</button>
 		</div>
 		{#if visible}
-			<ul use:clickOutside on:outclick={() => visible = false}>
+			<ul use:clickOutside on:outclick={() => setTimeout(() => visible = false)}>
 				<a href="/signin" on:click={() => visible = false}>
 					<i class="fa-solid fa-right-to-bracket"></i>
 					<li>

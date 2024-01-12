@@ -25,7 +25,7 @@ const config = {
 			edge: false,
 			split: true
 		})
-	}
+	},
 };
 
 export default config;
