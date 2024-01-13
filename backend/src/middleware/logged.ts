@@ -4,6 +4,7 @@ import { decodedToken } from '../libs/index.js';
 import { User } from '../models/index.js';
 
 export const isValidToken: Direction = async (req, res, next) => {
+	console.log(req.headers);
 	const token = req.cookies['authenticate'];
 	const user = await decodedToken(token).catch(() => null);
 
