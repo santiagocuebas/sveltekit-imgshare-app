@@ -4,6 +4,7 @@ import { DIR } from './config';
 const axiosInstance = axios.create({
   baseURL: DIR + '/api',
   method: 'GET',
+  proxy: false,
   withCredentials: true
 });
 

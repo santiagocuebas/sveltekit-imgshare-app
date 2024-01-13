@@ -4,7 +4,7 @@ import axios from '$lib/axios';
 export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('authenticate');
 	axios.defaults.headers.common['Cookie'] = 'authenticate=' + token;
-
+			
 	const response = await resolve(event);
 	return response;
 };
