@@ -13,7 +13,7 @@
 	if (data.user) user.setUser(data.user);
 	
 	async function changeVisibility(e: WheelEvent) {
-		visible = e.deltaY <=  0;
+		visible = e.deltaY <= 0;
 	}
 
 	beforeUpdate(() => pathname = location.pathname);
