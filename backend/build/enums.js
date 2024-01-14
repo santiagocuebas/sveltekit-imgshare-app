@@ -5,6 +5,11 @@ export var UserRole;
     UserRole["ADMIN"] = "admin";
     UserRole["SUPER"] = "superadmin";
 })(UserRole || (UserRole = {}));
+export var Score;
+(function (Score) {
+    Score["LIKE"] = "like";
+    Score["DISLIKE"] = "dislike";
+})(Score || (Score = {}));
 export var OrderGallery;
 (function (OrderGallery) {
     OrderGallery["NEWEST"] = "NEWEST";

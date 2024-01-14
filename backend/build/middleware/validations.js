@@ -11,10 +11,7 @@ export const validate = (validations) => {
             }
             const errors = getErrorMessage(errs.array());
             if (req.baseUrl === '/api/settings') {
-                return res.json({
-                    class: 'errors-settings',
-                    message: errors
-                });
+                return res.json({ message: errors });
             }
             return res.json({ errors });
         }

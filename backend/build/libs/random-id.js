@@ -6,20 +6,17 @@ export const getId = async (identifier = '', num = 8) => {
     for (let i = 0; i < num; i++) {
         id += validChar.charAt(Math.floor(Math.random() * validChar.length));
     }
+    let data = null;
     if (identifier === 'Image') {
-        const image = await Image.findOneBy({ id });
-        if (image !== null)
-            getId(identifier, num);
+        data = await Image.findOneBy({ id });
     }
     else if (identifier === 'Comment') {
-        const comment = await Comment.findOneBy({ id });
-        if (comment !== null)
-            getId(identifier, num);
+        data = await Comment.findOneBy({ id });
     }
     else {
-        const user = await User.findOneBy({ avatar: Like(`${id}%`) });
-        if (user !== null)
-            getId(identifier, num);
+        data = await User.findOneBy({ avatar: Like(`${id}%`) });
     }
+    if (data !== null)
+        getId(identifier, num);
     return id;
 };

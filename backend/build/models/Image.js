@@ -15,8 +15,8 @@ let Image = class Image extends Content {
     description;
     isPublic;
     views;
-    totalComments;
     favorites;
+    totalComments;
 };
 __decorate([
     Column('varchar', { unique: true, nullable: false }),
@@ -39,13 +39,13 @@ __decorate([
     __metadata("design:type", Number)
 ], Image.prototype, "views", void 0);
 __decorate([
-    Column('int', { default: 0 }),
-    __metadata("design:type", Number)
-], Image.prototype, "totalComments", void 0);
-__decorate([
     Column('simple-array'),
     __metadata("design:type", Array)
 ], Image.prototype, "favorites", void 0);
+__decorate([
+    Column('simple-array'),
+    __metadata("design:type", Array)
+], Image.prototype, "totalComments", void 0);
 Image = __decorate([
     Entity()
 ], Image);

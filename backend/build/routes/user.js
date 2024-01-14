@@ -5,7 +5,9 @@ import { Image } from '../models/index.js';
 const router = Router();
 router.get('/:username/data', userCtrl.getUserData);
 router.get('/:username/:isPublic/:sort', getDataToken, userCtrl.getImages);
-router.post('/:username/upload', async (req, res) => {
+router.post('/:username/upload', isValidToken, async (req, res) => {
+    if (req.user.username !== req.params.username)
+        return res.status(401).json();
     const recentImages = await Image.find({
         where: { author: req.params.username },
         order: { createdAt: 'DESC' },
@@ -15,7 +17,8 @@ router.post('/:username/upload', async (req, res) => {
     return res.json({ images: recentImages });
 });
 router.post('/:username/settings', isValidToken, (req, res) => {
-    req.user.password = '';
-    return res.json({ user: req.user });
+    if (req.user.username !== req.params.username)
+        return res.status(401).json();
+    return res.json({});
 });
 export default router;

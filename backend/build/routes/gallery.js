@@ -1,6 +1,6 @@
 import { Router } from 'express';
+import { orderGallery } from '../dictonary.js';
 import { UserRole } from '../enums.js';
-import { getOrderGallery, recentImages } from '../libs/index.js';
 import { getDataToken } from '../middleware/logged.js';
 import { Image, Comment } from '../models/index.js';
 const router = Router();
@@ -19,41 +19,61 @@ router.get('/', async (_req, res) => {
             totalComments: true
         }
     });
-    return res.json(images);
+    return res.json({ images });
 });
 router.get('/:id', getDataToken, async (req, res) => {
-    let where = [];
-    if (req.user?.role !== UserRole.EDITOR) {
-        where = { id: req.params.id };
-    }
-    else {
-        where = [
-            { id: req.params.id, isPublic: true },
-            { id: req.params.id, author: req.user?.username }
-        ];
+    console.log(req.cookies);
+    let where = { id: req.params.id, isPublic: true };
+    if (req.user) {
+        where = (req.user.role === UserRole.EDITOR)
+            ? [
+                { id: req.params.id, isPublic: true },
+                { id: req.params.id, author: req.user?.username }
+            ] : { id: req.params.id };
     }
     // Find image if exists
     const image = await Image.findOne({ where });
     if (image !== null) {
         // Increment views
         image.views++;
-        // Updated total comment 
-        image.totalComments = await Comment.countBy({ imageId: image.id });
-        await image.save();
         // Get comments of images
         const comments = await Comment.find({
             where: { imageId: image.id },
             order: { createdAt: 'DESC' }
         });
         // Get recent images
-        const sidebarImages = await recentImages();
+        const sidebarImages = await Image.find({
+            select: {
+                id: true,
+                filename: true,
+                title: true,
+                author: true,
+                views: true,
+                createdAt: true
+            },
+            where: { isPublic: true },
+            order: { createdAt: 'DESC' },
+            take: 20
+        });
         return res.json({ image, comments, sidebarImages });
     }
-    return res.json(image);
+    return res.status(401).json(image);
+});
+router.post('/views/:id', async (req, res) => {
+    // Find image if exists
+    const image = await Image.findOne({
+        where: { id: req.params.id }
+    });
+    if (image !== null) {
+        // Increment views
+        image.views++;
+        await image.save();
+    }
+    return res.json({});
 });
 router.get('/order/:order', async (req, res) => {
     // Get order of image
-    const order = getOrderGallery(req.params.order);
+    const order = orderGallery[req.params.order] ?? orderGallery.NEWEST;
     // Find images by order
     const images = await Image.find({
         where: { isPublic: true },
@@ -68,6 +88,6 @@ router.get('/order/:order', async (req, res) => {
             totalComments: true
         }
     });
-    return res.json(images);
+    return res.json({ images });
 });
 export default router;

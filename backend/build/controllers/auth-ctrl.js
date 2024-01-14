@@ -1,4 +1,4 @@
-import { encryptPassword, getSerializedCookie } from '../libs/index.js';
+import { encryptPassword, getPartialUser, getSerializedCookie } from '../libs/index.js';
 import { User } from '../models/index.js';
 export const postSignup = async (req, res) => {
     // Create a new user
@@ -10,9 +10,9 @@ export const postSignup = async (req, res) => {
         links: '[]'
     }).save();
     // Create a cookie of authentication
-    const token = getSerializedCookie(user);
-    res.set('Set-Cookie', token);
-    return res.json({ url: '/' + user.username });
+    const token = getSerializedCookie(user.username);
+    const partialUser = getPartialUser(user);
+    return res.json({ user: partialUser, token });
 };
 export const postSignin = async (req, res) => {
     // Find user by username or email
@@ -23,7 +23,7 @@ export const postSignin = async (req, res) => {
         ]
     });
     // Create a cookie of authentication
-    const token = getSerializedCookie(user);
-    res.set('Set-Cookie', token);
-    return res.json({ url: '/' + user.username });
+    const token = getSerializedCookie(user.username);
+    const partialUser = getPartialUser(user);
+    return res.json({ user: partialUser, token });
 };

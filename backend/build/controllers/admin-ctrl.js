@@ -14,7 +14,10 @@ export const postRole = async (req, res) => {
     const { role } = req.body;
     const roles = Object.values(UserRole);
     // Update user role
-    if (roles.includes(role) && role !== UserRole.SUPER && (req.user.role === UserRole.SUPER || (req.user.role === UserRole.ADMIN && role !== UserRole.ADMIN))) {
+    if (roles.includes(role) &&
+        role !== UserRole.SUPER &&
+        (req.user.role === UserRole.SUPER ||
+            (req.user.role === UserRole.ADMIN && role !== UserRole.ADMIN))) {
         req.foreignUser.role = role;
         await req.foreignUser.save();
     }
@@ -33,7 +36,10 @@ export const deleteUser = async (req, res) => {
     const user = req.foreignUser;
     // Delete avatar
     if (user.avatar !== 'default.png') {
-        await fs.unlink(`uploads/avatars/${user.avatar}`);
+        await fs.unlink(`uploads/avatars/${user.avatar}`)
+            .catch(err => {
+            console.error('An error occurred while trying to delete the image', err?.message);
+        });
     }
     // Delete all images and comments of user and filters all their ratings
     deleteUserImages(user.username);

@@ -1,23 +1,19 @@
 import { Router } from 'express';
-import { serialize } from 'cookie';
 import { authCtrl } from '../controllers/index.js';
-import { isValidToken, isNotValidToken } from '../middleware/logged.js';
+import { matchPassword, getPartialUser } from '../libs/index.js';
+import { isValidToken, isNotValidToken, getDataToken } from '../middleware/logged.js';
 import { validate } from '../middleware/validations.js';
 import * as array from '../validators/arrays-validators.js';
-import { DOMAIN, NODE_ENV } from '../config.js';
 const router = Router();
+router.get('/', getDataToken, async (req, res) => {
+    const partialUser = req.user ? getPartialUser(req.user) : undefined;
+    return res.json({ user: partialUser });
+});
+router.post('/password', isValidToken, async (req, res) => {
+    const { password } = req.body;
+    const match = await matchPassword(password, req.user.password);
+    return res.json(match);
+});
 router.post('/signup', isNotValidToken, validate(array.Signup), authCtrl.postSignup);
 router.post('/signin', isNotValidToken, validate(array.Signin), authCtrl.postSignin);
-router.post('/logout', isValidToken, (_req, res) => {
-    // Delete cookie authenticate
-    res.set('Set-Cookie', serialize('authenticate', '', {
-        domain: DOMAIN,
-        httpOnly: true,
-        maxAge: 0,
-        path: '/',
-        sameSite: 'lax',
-        secure: NODE_ENV === 'production'
-    }));
-    return res.json({ redirect: '/' });
-});
 export default router;

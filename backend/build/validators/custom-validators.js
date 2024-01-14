@@ -1,7 +1,7 @@
 import { extname } from 'path';
 import { Ext } from '../enums.js';
-import { User } from '../models/index.js';
 import { matchPassword } from '../libs/index.js';
+import { User } from '../models/index.js';
 export const isValidUsername = async (username) => {
     const user = await User.findOneBy({ username });
     if (user !== null)

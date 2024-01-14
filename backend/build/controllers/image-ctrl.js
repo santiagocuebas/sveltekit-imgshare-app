@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import { extname, resolve } from 'path';
-import { UserRole } from '../enums.js';
+import { Score, UserRole } from '../enums.js';
 import { catchLike, getId } from '../libs/index.js';
 import { Image, Comment } from '../models/index.js';
 export const postUpload = async (req, res) => {
@@ -20,9 +20,10 @@ export const postUpload = async (req, res) => {
         description: req.body.description,
         likes: [],
         dislikes: [],
-        favorites: []
+        favorites: [],
+        totalComments: []
     }).save();
-    return res.json({ url: '/' + image.id });
+    return res.json({ url: image.id });
 };
 export const postPublic = async (req, res) => {
     const { username, role } = req.user;
@@ -46,19 +47,16 @@ export const postDescription = async (req, res) => {
 };
 export const postLike = async (req, res) => {
     const { username } = req.user;
+    const { like } = req.body;
+    const scores = Object.values(Score);
     const image = await Image.findOneBy({ id: req.params.imageId });
     // Update like and dislike
-    if (image !== null) {
-        if (req.body.like === 'like') {
-            const [actLike, actDislike] = catchLike(image.likes, image.dislikes, username);
-            image.likes = actLike;
-            image.dislikes = actDislike;
-        }
-        else if (req.body.like === 'dislike') {
-            const [actDislike, actLike] = catchLike(image.dislikes, image.likes, username);
-            image.likes = actLike;
-            image.dislikes = actDislike;
-        }
+    if (image !== null && scores.includes(like)) {
+        const [actLike, actDislike] = (like === Score.LIKE)
+            ? catchLike(image.likes, image.dislikes, username)
+            : catchLike(image.dislikes, image.likes, username);
+        image.likes = (like === Score.LIKE) ? actLike : actDislike;
+        image.dislikes = (like === Score.LIKE) ? actDislike : actLike;
         await image.save();
         return res.json({ likes: image.likes, dislikes: image.dislikes });
     }
@@ -69,14 +67,11 @@ export const postFavorite = async (req, res) => {
     const image = await Image.findOneBy({ id: req.params.imageId });
     // Update favorite
     if (image !== null) {
-        if (image.favorites.includes(username)) {
-            image.favorites = image.favorites.filter(item => item !== username);
-        }
-        else {
-            image.favorites = [username, ...image.favorites];
-        }
+        image.favorites = (image.favorites.includes(username))
+            ? image.favorites.filter(item => item !== username)
+            : [username, ...image.favorites];
         await image.save();
-        return res.json({ favorites: image.favorites });
+        return res.json({ favorite: image.favorites });
     }
     return res.json(image);
 };
@@ -84,7 +79,10 @@ export const postComment = async (req, res) => {
     const { comment } = req.body;
     const image = await Image.findOneBy({ id: req.params.imageId });
     // Create a new comment if the image exists
-    if (image !== null && typeof comment === 'string' && comment.length > 0 && comment.length < 4200) {
+    if (image !== null &&
+        typeof comment === 'string' &&
+        comment.length > 0 &&
+        comment.length <= 4200) {
         const newComment = await Comment.create({
             id: await getId('Comment', 16),
             imageId: image.id,
@@ -97,7 +95,7 @@ export const postComment = async (req, res) => {
             dislikes: []
         }).save();
         // Update total comments
-        image.totalComments++;
+        image.totalComments = [newComment.id, ...image.totalComments];
         await image.save();
         return res.json({ comment: newComment });
     }
