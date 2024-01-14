@@ -27,6 +27,7 @@ router.get('/', async (_req, res) => {
 });
 
 router.get('/:id', getDataToken, async (req, res) => {
+	console.log(req.cookies);
 	let where: FindOptionsWhere<Image> | FindOptionsWhere<Image>[] =
 		{ id: req.params.id, isPublic: true };
 

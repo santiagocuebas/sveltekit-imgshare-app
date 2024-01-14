@@ -9,7 +9,7 @@ export const AppDatabase = new DataSource({
 	url: DB_URL,
 	ssl: true,
 	synchronize: false,
-	logging: true,
+	logging: false,
 	timeTravelQueries: false,
 	entities: [Comment, Image, User]
 });
