@@ -36,14 +36,14 @@ export const postAvatar: Direction = async (req, res) => {
 			}
 
 			// Update databases with the new avatar
-			Image.update({ author: username }, { avatar: data.url });
-			Comment.update({ author: username }, { avatar: data.url });
+			Image.update({ author: username }, { avatar: data.secure_url });
+			Comment.update({ author: username }, { avatar: data.secure_url });
 
-			req.user.avatar = data.url;
+			req.user.avatar = data.secure_url;
 			await req.user.save();
 
 			return res.json({
-				filename: data.url,
+				filename: data.secure_url,
 				message: 'Your avatar has been successfully updated'
 			});
 		}
