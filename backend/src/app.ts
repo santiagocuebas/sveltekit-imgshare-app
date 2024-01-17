@@ -3,11 +3,13 @@ import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import multer from 'multer';
+import { cloudinaryConfig } from './cloudinary.js';
 import { ORIGIN } from './config.js';
 import * as routes from './routes/index.js';
 
 // Initializations
 const app = express();
+const storage = multer.memoryStorage();
 
 // Middlewares
 app.use(morgan('dev'));
@@ -20,12 +22,10 @@ app.use(cors({
 	allowedHeaders: ['origin', 'authorization', 'x-requested-with', 'content-type', 'accept'],
 	credentials: true
 }));
+app.use('*', cloudinaryConfig);
 
 // Uploads Directory
-app.use(multer({ dest: 'uploads/temp' }).single('image'));
-
-// Public Directory
-app.use('/uploads', express.static('uploads'));
+app.use(multer({ storage }).single('image'));
 
 // Express Routes
 app.use('/api/admin', routes.Admin);

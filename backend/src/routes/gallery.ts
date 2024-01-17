@@ -27,7 +27,6 @@ router.get('/', async (_req, res) => {
 });
 
 router.get('/:id', getDataToken, async (req, res) => {
-	console.log(req.cookies);
 	let where: FindOptionsWhere<Image> | FindOptionsWhere<Image>[] =
 		{ id: req.params.id, isPublic: true };
 
@@ -75,9 +74,7 @@ router.get('/:id', getDataToken, async (req, res) => {
 
 router.post('/views/:id', async (req, res) => {
 	// Find image if exists
-	const image = await Image.findOne({
-		where: { id: req.params.id }
-	});
+	const image = await Image.findOneBy({ id: req.params.id });
 
 	if (image !== null) {
 		// Increment views

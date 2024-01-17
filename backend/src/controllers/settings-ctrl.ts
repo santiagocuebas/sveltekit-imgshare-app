@@ -1,41 +1,56 @@
 import type { Direction, ILink } from '../global.js';
-import fs from 'fs-extra';
-import { extname, resolve } from 'path';
+import { v2 as cloudinary } from 'cloudinary';
 import {
 	encryptPassword,
 	deleteUserComments,
 	deleteUserImages,
+	dataUri,
 	getId
 } from '../libs/index.js';
 import { Image, Comment } from '../models/index.js';
 
 export const postAvatar: Direction = async (req, res) => {
 	const { username, avatar } = req.user;
-	const tempPath = req.file?.path as string;
-	const ext = extname(req.file?.originalname as string).toLowerCase();
-	const avatarURL = await getId() + ext;
-	const oldPath = resolve(`uploads/avatars/${avatar}`);
-	const targetPath = resolve(`uploads/avatars/${avatarURL}`);
+	const file = dataUri(req);
 
-	// Unlink old avatar
-	if (avatar !== 'default.png') await fs.unlink(oldPath)
-		.catch(err => {
-			console.error('An error occurred while trying to delete the image', err?.message);
-		});
+	if (file) {
+		// Set avatar location
+		const data = await cloudinary.uploader
+			.upload(file, { public_id: 'imgshare/avatar/' + await getId() })
+			.catch(() => {
+				console.error('An error occurred while trying to uploaded the image');
+				return null;
+			});
 
-	// Set avatar location
-	await fs.rename(tempPath, targetPath);
+		if (data) {
+			// Unlink old avatar
+			if (!avatar.includes('default')) {
+				const avatarFullFilename = avatar.split('/').reverse();
+				const avatarFilename = avatarFullFilename[0].split('.');
+				
+				await cloudinary.uploader
+					.destroy('imgshare/avatar/' + avatarFilename[0])
+					.catch(() => {
+						console.error('An error occurred while trying to delete the image');
+					});
+			}
 
-	// Update databases with the new avatar
-	Image.update({ author: username }, { avatar: avatarURL });
-	Comment.update({ author: username }, { avatar: avatarURL });
+			// Update databases with the new avatar
+			Image.update({ author: username }, { avatar: data.url });
+			Comment.update({ author: username }, { avatar: data.url });
 
-	req.user.avatar = avatarURL;
-	await req.user.save();
+			req.user.avatar = data.url;
+			await req.user.save();
+
+			return res.json({
+				filename: data.url,
+				message: 'Your avatar has been successfully updated'
+			});
+		}
+	}
 
 	return res.json({
-		filename: avatarURL,
-		message: 'Your avatar has been successfully updated'
+		message: { errors: 'An error occurred while trying to change the avatar' }
 	});
 };
 
@@ -76,12 +91,9 @@ export const postLinks: Direction = async (req, res) => {
 
 export const deleteLinks: Direction = async (req, res) => {
 	const links: ILink[] = JSON.parse(req.user.links);
-	const newLinks: ILink[] = [];
 
 	// Update links
-	for (const link of links) {
-		if (link.title !== req.body.title) newLinks.push(link);
-	}
+	const newLinks = links.filter(link => link.title !== req.body.title);
 
 	req.user.links = JSON.stringify(newLinks);
 	await req.user.save();
@@ -96,10 +108,14 @@ export const deleteUser: Direction = async (req, res) => {
 	const { username, avatar } = req.user;
 
 	// Delete avatar
-	if (avatar !== 'default.png') {
-		await fs.unlink(`uploads/avatars/${avatar}`)
-			.catch(err => {
-				console.error('An error occurred while trying to delete the image', err?.message);
+	if (!avatar.includes('default')) {
+		const avatarFullFilename = avatar.split('/').reverse();
+		const avatarFilename = avatarFullFilename[0].split('.');
+
+		await cloudinary.uploader
+			.destroy('imgshare/avatar/' + avatarFilename[0])
+			.catch(() => {
+				console.error('An error occurred while trying to delete the image');
 			});
 	}
 
@@ -109,9 +125,6 @@ export const deleteUser: Direction = async (req, res) => {
 
 	// Delete user
 	await req.user.remove();
-
-	// Delete cookie
-	res.clearCookie('authenticate');
 
 	return res.json({ url: '/' });
 };

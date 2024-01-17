@@ -1,12 +1,15 @@
 <script lang="ts">
 	import type { IComment } from "$lib/global.js";
-	import axios from "axios";
 	import { format } from "timeago.js";
+	import axios from "$lib/axios";
 	import { DIR } from '$lib/config.js';
 	import { UserRole } from "$lib/enums.js";
-  import { catchLike } from "$lib/services/catch-likes";
-	import { clickOutside } from "$lib/services/click-outside";
-	import { handleRegister, handleRequest } from "$lib/services/services";
+  import {
+		clickOutside,
+		catchLike,
+		handleRegister,
+		handleRequest
+	} from "$lib/services";
 	import { user } from '$lib/stores';
 
 	export let comment: IComment;
@@ -46,8 +49,7 @@
 			comment.likes = (type === 'like') ? actLike : actDislike;
 			comment.dislikes = (type === 'like') ? actDislike : actLike;
 
-			const url = `${DIR}/api/comment/${comment.id}/like`;
-			handleRegister(url, type);
+			handleRegister(`/comment/${comment.id}/like`, type);
 		}
 	}
 	
@@ -55,18 +57,15 @@
 		visible = false;
 		comments = comments.filter(({ id }) => id !== comment.id);
 
-		await axios({
-			method: 'DELETE', 
-			url: `${DIR}/api/comment/${comment.id}`,
-			withCredentials: true
-		}).catch(err => console.error(err.message));
+		await axios({ method: 'DELETE', url: `/comment/${comment.id}` })
+			.catch(err => console.error(err.message));
 	}
 </script>
 
 <div class="comment">
 	<picture class="avatar-comment">
 		<a href="/user/{comment.author}">
-			<img src="{DIR}/uploads/avatars/{comment.avatar}" alt={comment.author}>
+			<img src={comment.avatar} alt={comment.author}>
 		</a>
 	</picture>
 	<div class="author-comment">

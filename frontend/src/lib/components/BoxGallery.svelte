@@ -23,7 +23,7 @@
     }
 
     &.image-upload {
-      @apply flex-row flex-nowrap justify-evenly gap-0;
+      @apply flex-row flex-nowrap py-0 px-1.5 gap-0;
     }
 	}
 </style>

@@ -1,7 +1,7 @@
 import type { Direction } from '../global.js';
 import { Score, UserRole } from '../enums.js';
 import { catchLike } from '../libs/index.js';
-import { User, Comment, Image } from '../models/index.js';
+import { Comment, Image } from '../models/index.js';
 
 export const postComment: Direction = async (req, res) => {
 	const comment = await Comment.findOneBy({ id: req.params.id });
@@ -23,7 +23,7 @@ export const postComment: Direction = async (req, res) => {
 };
 
 export const postLike: Direction = async (req, res) => {
-	const { username } = req.user as User;
+	const { username } = req.user;
 	const { like } = req.body;
 	const scores = Object.values(Score);
 	
@@ -59,10 +59,7 @@ export const deleteComment: Direction = async (req, res) => {
 			role !== UserRole.EDITOR
 		)
 	) {
-		const image = await Image.findOne({
-			where: { id: comment.imageId },
-			select: { id: true, totalComments: true }
-		});
+		const image = await Image.findOneBy({ id: comment.imageId });
 
 		// Update total comments
 		if (image) {

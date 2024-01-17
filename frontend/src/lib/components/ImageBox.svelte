@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { IImage } from '$lib/global';
 	import { format } from 'timeago.js';
-	import { DIR } from '$lib/config.js';
 	import { catchLike, handleRegister, handleRequest } from '$lib/services';
 	import { user } from '$lib/stores';
 
@@ -48,21 +47,20 @@
 <div id="image-author">
 	<picture>
 		<a href="/user/{image?.author}">
-			<img
-				src="{DIR}/uploads/avatars/{image?.avatar ?? 'default.png'}"
-				alt="{image?.author}"
-			>
+			<img src={image?.avatar} alt={image?.author}>
 		</a>
 	</picture>
 	<div>
 		<a href="/user/{image?.author}">
 			{image?.author}
 		</a>
-		<p>{image?.views} views &#x25CF; {format(image?.createdAt ?? Date.now())}</p>
+		<p>
+			{image?.views} views &#x25CF; {format(image?.createdAt ?? Date.now())}
+		</p>
 	</div>
 </div>
 <picture id="image-content">
-	<img src="{DIR}/uploads/{image?.filename}" alt="{image?.title}">
+	<img alt={image?.title} src={image?.filename}>
 </picture>
 <div id="image-description">
 	{#if description}

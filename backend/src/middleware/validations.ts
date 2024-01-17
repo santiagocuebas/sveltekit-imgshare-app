@@ -1,6 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
 import { validationResult, type ValidationChain } from 'express-validator';
-import fs from 'fs-extra';
 import { getErrorMessage } from '../libs/index.js';
 
 export const validate = (validations: ValidationChain[]) => {
@@ -10,10 +9,6 @@ export const validate = (validations: ValidationChain[]) => {
 		const errs = validationResult(req);
 
 		if (!errs.isEmpty()) {
-			if (req.file !== undefined) {
-				fs.unlink(req.file.path);
-			}
-			
 			const errors = getErrorMessage(errs.array());
 
 			if (req.baseUrl === '/api/settings') {

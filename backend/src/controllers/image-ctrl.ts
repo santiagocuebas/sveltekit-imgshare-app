@@ -1,34 +1,44 @@
 import type { Direction } from '../global.js';
-import fs from 'fs-extra';
-import { extname, resolve } from 'path';
+import { v2 as cloudinary } from 'cloudinary';
 import { Score, UserRole } from '../enums.js';
-import { catchLike, getId } from '../libs/index.js';
+import { catchLike, getId, dataUri } from '../libs/index.js';
 import { Image, Comment } from '../models/index.js';
 
 export const postUpload: Direction = async (req, res) => {
-	const tempPath = req.file?.path as string;
-	const ext = extname(req.file?.originalname as string).toLowerCase();
-	const imgUrl = await getId('Image');
-	const targetPath = resolve(`uploads/${imgUrl + ext}`);
+	const file = dataUri(req);
 
-	// Set image location
-	await fs.rename(tempPath, targetPath);
+	if (file) {
+		const imageId = await getId('Image');
+		
+		const data = await cloudinary.uploader
+			.upload(file, { public_id: 'imgshare/' + imageId })
+			.catch(() => {
+				console.log('An error occurred while trying to uploaded the image');
+				return null;
+			});
 
-	// Create a new image
-	const image = await Image.create({
-		id: imgUrl,
-		filename: imgUrl + ext,
-		author: req.user.username,
-		avatar: req.user.avatar,
-		title: req.body.title,
-		description: req.body.description,
-		likes: [],
-		dislikes: [],
-		favorites: [],
-		totalComments: []
-	}).save();
+		if (data) {
+			// Create a new image
+			const image = await Image.create({
+				id: imageId,
+				filename: data.secure_url,
+				author: req.user.username,
+				avatar: req.user.avatar,
+				title: req.body.title,
+				description: req.body.description,
+				likes: [],
+				dislikes: [],
+				favorites: [],
+				totalComments: []
+			}).save();
 
-	return res.json({ url: image.id });
+			return res.json({ url: image.id });
+		}
+	}
+
+	return res.json({
+		error: { message: 'Someting went wrong while processing your request' }
+	});
 };
 
 export const postPublic: Direction = async (req, res) => {
@@ -139,10 +149,15 @@ export const deleteImage: Direction = async (req, res) => {
 	const image = await Image.findOneBy({ id: req.params.imageId });
 
 	// Delete a image and all their comments
-	if (image?.author === username || role !== UserRole.EDITOR) {
-		await fs.unlink(`uploads/${image?.filename}`);
-		await Comment.delete({ imageId: image?.id });
-		await image?.remove();
+	if (image && (image.author === username || role !== UserRole.EDITOR)) {
+		await cloudinary.uploader
+			.destroy('imgshare/' + image.id)
+			.catch(() => {
+				console.error('An error occurred while trying to delete the image');
+			});
+		
+		await Comment.delete({ imageId: image.id });
+		await image.remove();
 	}
 
 	return res.json({});

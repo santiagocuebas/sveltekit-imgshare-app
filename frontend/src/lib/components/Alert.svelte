@@ -1,19 +1,14 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-  import axios from "axios";
-	import { DIR } from '$lib/config.js';
-  import { user } from "$lib/stores/user-store";
+  import axios from "$lib/axios";
+  import { user } from "$lib/stores";
 
 	export let alert: boolean;
 
 	const deleteUser = async () => {
 		alert = false;
 
-		await axios({
-			method: 'DELETE',
-			url: `${DIR}/api/settings/deleteuser`,
-			withCredentials: true
-		});
+		await axios({ method: 'DELETE', url: `/settings/deleteuser` });
 
 		user.resetUser();
 		goto('/');

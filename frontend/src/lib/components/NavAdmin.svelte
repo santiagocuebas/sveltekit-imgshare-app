@@ -1,17 +1,18 @@
 <script lang="ts">
 	import type { IUserExtended } from "$lib/global";
-	import axios from "axios";
+	import axios from "$lib/axios";
 	import { DIR } from '$lib/config.js';
 
 	export let users: IUserExtended[];
 	let searchedUser = '';
 
 	async function handleSubmit(this: HTMLFormElement) {
-		const data = await axios({
-			method: this.method,
-			url: this.action,
-			withCredentials: true
-		}).then(res => res.data);
+		const data = await axios({ url: this.action })
+			.then(res => res.data)
+			.catch(err => {
+				console.error(err?.message);
+				return { users: [] }
+			});
 
 		searchedUser = '';
 		users = data.users;
@@ -19,7 +20,11 @@
 </script>
 
 <nav>
-	<form action="{DIR}/api/admin/{searchedUser}" method="GET" on:submit|preventDefault={handleSubmit}>
+	<form
+		action="{DIR}/api/admin/{searchedUser}"
+		method="GET"
+		on:submit|preventDefault={handleSubmit}
+	>
 		<div>
 			<i class="fa-solid fa-user"></i>
 		</div>

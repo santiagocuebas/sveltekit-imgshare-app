@@ -17,7 +17,7 @@ export const getId = async (identifier = '', num = 8): Promise<string> => {
 	} else if (identifier === 'Comment') {
 		data = await Comment.findOneBy({ id });
 	} else {
-		data = await User.findOneBy({ avatar: Like(`${id}%`) });
+		data = await User.findOneBy({ avatar: Like(`%${id}`) });
 	}
 
 	if (data !== null) getId(identifier, num);

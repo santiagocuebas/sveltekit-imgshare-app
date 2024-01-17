@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import { v2 as cloudinary } from 'cloudinary';
 import { UserRole } from '../enums.js';
 import { Direction, ILink } from '../global.js';
 import { deleteUserComments, deleteUserImages } from '../libs/index.js';
@@ -50,10 +50,14 @@ export const deleteUser: Direction = async (req, res) => {
 	const user = req.foreignUser;
 
 	// Delete avatar
-	if (user.avatar !== 'default.png') {
-		await fs.unlink(`uploads/avatars/${user.avatar}`)
-			.catch(err => {
-				console.error('An error occurred while trying to delete the image', err?.message);
+	if (!user.avatar.includes('default')) {
+		const avatarFullFilename = user.avatar.split('/').reverse();
+		const avatarFilename = avatarFullFilename[0].split('.');
+
+		await cloudinary.uploader
+			.destroy('imgshare/avatar/' + avatarFilename[0])
+			.catch(() => {
+				console.error('An error occurred while trying to delete the image');
 			});
 	}
 

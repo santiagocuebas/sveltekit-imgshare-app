@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { ResponseData } from "$lib/global";
-  import axios from "axios";
 	import { format } from 'timeago.js';
+  import axios from "$lib/axios";
 	import { DIR } from '$lib/config.js';
   import { UserRole } from "$lib/enums";
-	import { handleRequest } from "$lib/services/services";
+	import { handleRequest } from "$lib/services";
 	import { user as properUser, selectUser as user } from '$lib/stores';
 	
 	export let show: boolean;
@@ -38,9 +38,8 @@
 	async function deleteLink(title: string) {
 		const data: ResponseData = await axios({
 			method: 'DELETE',
-			url: `${DIR}/api/admin/${$user?.username}/link`,
-			data: { link: title },
-			withCredentials: true
+			url: `/admin/${$user?.username}/link`,
+			data: { link: title }
 		}).then(res => res.data)
 			.catch(() => {
 				return { change: false };
@@ -57,10 +56,12 @@
 	async function changeRole(this: HTMLOptionElement) {
 		const data = await axios({
 			method: 'POST',
-			url: `${DIR}/api/admin/${$user?.username}/role`,
-			data: { role: this.value },
-			withCredentials: true
-		}).then(res => res.data);
+			url: `/admin/${$user?.username}/role`,
+			data: { role: this.value }
+		}).then(res => res.data)
+			.catch(() => {
+				return { change: false };
+			});
 
 		user.changeRole(this.value);
 		
@@ -76,7 +77,7 @@
 
 <div id="user-box">
 	<div id="user-data">
-		<img src="{DIR}/uploads/avatars/{$user?.avatar}" alt="">
+		<img src={$user?.avatar} alt={$user?.username}>
 		<div>
 			<h3>
 				Username:

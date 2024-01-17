@@ -3,9 +3,6 @@
   import type { IUserExtended } from '$lib/global';
   import { afterNavigate } from '$app/navigation';
   import axios from 'axios';
-	import { DIR } from '$lib/config.js';
-	import { ClassName, TextData } from '$lib/dictionary.js';
-	import { selectUser } from '$lib/stores';
 	import {
 		Gallery,
 		BoxGallery,
@@ -13,6 +10,9 @@
 		NavAdmin,
 		UserBox
 	} from '$lib/components';
+	import { DIR } from '$lib/config.js';
+	import { ClassName, TextData } from '$lib/dictionary.js';
+	import { selectUser } from '$lib/stores';
 	
 	export let data: PageData & { users: IUserExtended[] };
 

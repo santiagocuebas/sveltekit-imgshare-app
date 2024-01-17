@@ -23,7 +23,7 @@ export class User extends BaseEntity implements IUser {
 	@Column('varchar', { nullable: false })
 	public password!: string;
 	
-	@Column('varchar', { default: 'default.png' })
+	@Column('varchar', { default: 'https://res.cloudinary.com/dnu1qjhqz/image/upload/v1705406837/imgshare/avatar/default.png' })
 	public avatar!: string;
 	
 	@Column('text')

@@ -1,5 +1,4 @@
 import type { ILink, IUser, RawUser } from "$lib/global";
-import { DIR } from "$lib/config";
 import { writable } from "svelte/store";
 
 function createUser(user: IUser | null) {
@@ -8,7 +7,7 @@ function createUser(user: IUser | null) {
 	return {
 		subscribe,
 		changeAvatar: (avatar: string) => update(user => {
-			if (user) user.avatar = `${DIR}/uploads/avatars/${avatar}`;
+			if (user) user.avatar = avatar;
 			return user;
 		}),
 		changeDescription: (description: string) => update(user => {
@@ -26,7 +25,6 @@ function createUser(user: IUser | null) {
 		setUser: (user: RawUser & { links: string }) => {
 			const newUser: IUser = {
 				...user,
-				avatar: `${DIR}/uploads/avatars/${user.avatar}`,
 				links: JSON.parse(user.links)
 			};
 

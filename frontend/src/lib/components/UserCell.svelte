@@ -1,14 +1,13 @@
 <script lang="ts">
 	import type { IUserExtended } from "$lib/global";
 	import { format } from "timeago.js";
-	import { DIR } from '$lib/config.js';
 
 	export let user: IUserExtended;
 </script>
 
 <div class="user-cell" role="none" on:click>
 	<picture>
-		<img src="{DIR}/uploads/avatars/{user.avatar}" alt="">
+		<img src={user.avatar} alt={user.username}>
 	</picture>
 	<span></span>
 	<div class="user-box">

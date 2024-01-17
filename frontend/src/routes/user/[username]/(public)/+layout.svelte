@@ -2,7 +2,6 @@
 	import type { LayoutData } from './$types';
   import type { ResponseForeign } from '$lib/global';
   import { beforeUpdate } from 'svelte';
-	import { DIR } from '$lib/config.js';
   import { LinksOptions, UserRole } from '$lib/enums';
   import { user } from '$lib/stores';
 	
@@ -17,7 +16,7 @@
 
 <div id="foreign-head">
 	<picture>
-		<img src="{DIR}/uploads/avatars/{avatar}" alt={username}>
+		<img src={avatar} alt={username}>
 	</picture>
 	<div id="foreign-options">
 			<h1>{username}</h1>

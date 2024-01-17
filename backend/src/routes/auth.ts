@@ -24,10 +24,7 @@ router.post(
 	'/password',
 	isValidToken,
 	async (req, res) => {
-		const { password } = req.body;
-
-		const match = await matchPassword(password, req.user.password);
-
+		const match = await matchPassword(req.body.password, req.user.password);
 		return res.json(match);
 	}
 );

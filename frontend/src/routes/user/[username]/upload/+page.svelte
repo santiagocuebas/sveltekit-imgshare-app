@@ -27,7 +27,6 @@
 	}
 	
 	async function handleSubmit(this: HTMLFormElement) {
-		console.log(this.action, this.method);
 		const data: ResponseData = await handleRequest(this)
 			.catch(err => {
 				console.log(err.message);
@@ -87,7 +86,7 @@
 		{#each data.images as image}
 			<picture>
 				<a href="/gallery/{image.id}">
-					<img src="{DIR}/uploads/{image.filename}" alt={image.title}>
+					<img src={image.filename} alt={image.title}>
 				</a>
 			</picture>
 		{/each}
@@ -126,10 +125,10 @@
 	}
 
 	picture {
-		box-shadow: 0 0 4px #666666;
-		@apply flex-none w-[180px] h-[180px];
+		@apply flex-none w-[196px] h-[200px] py-3 px-1.5;
 
 		& img {
+			box-shadow: 0 0 4px #666666;
 			@apply w-full h-full object-cover;
 		}
 	}

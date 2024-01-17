@@ -1,4 +1,4 @@
-import { IUser } from '../global.js';
+import type { IUser } from '../global.js';
 
 export const getPartialUser = (user: IUser) => {
 	return {
