@@ -24,7 +24,7 @@
 			image.likes = (type === 'like') ? actLike : actDislike;
 			image.dislikes = (type === 'like') ? actDislike : actLike;
 			
-			handleRegister(`/image/${image.id}/like`, type);
+			handleRegister(`/image/${image.id}/like`, type).catch(err => console.log(err.message));
 		}
 	}
 
