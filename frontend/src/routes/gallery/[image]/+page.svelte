@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageServerData } from './$types';
   import type { ResponseImage } from '$lib/global';
   import { afterNavigate } from '$app/navigation';
 	import { afterUpdate } from 'svelte';
@@ -16,7 +16,7 @@
 	import { UserRole } from '$lib/enums';
 	import { user } from '$lib/stores';
 
-	export let data: PageData & ResponseImage;
+	export let data: PageServerData & ResponseImage;
 	
 	let description = false;
 	let isValidUser = false;

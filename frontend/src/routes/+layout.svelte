@@ -1,11 +1,13 @@
 <script lang="ts">
-	import type { LayoutData } from './$types';
-	import { beforeUpdate } from 'svelte';
+	import type { LayoutServerData } from './$types';
+	import { beforeUpdate, onMount } from 'svelte';
+	import jsCookie from 'js-cookie';
+  import axios from '$lib/axios';
 	import { Nav, BoxUser, Footer } from '$lib/components';
 	import { user } from '$lib/stores';
 	import '../app.css';
 
-	export let data: LayoutData;
+	export let data: LayoutServerData;
 
 	let visible = true;
 	let pathname: string;
@@ -15,6 +17,11 @@
 	async function changeVisibility(e: WheelEvent) {
 		visible = e.deltaY <= 0;
 	}
+
+	onMount(() => {
+		const token = jsCookie.get('authenticate');
+		axios.defaults.headers.common['Authorization'] = token;
+	});
 
 	beforeUpdate(() => pathname = location.pathname);
 </script>

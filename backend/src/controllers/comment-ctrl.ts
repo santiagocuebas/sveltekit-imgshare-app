@@ -63,7 +63,7 @@ export const deleteComment: Direction = async (req, res) => {
 
 		// Update total comments
 		if (image) {
-			image.totalComments = image.totalComments.filter(id => image.id !== id);
+			image.totalComments = image.totalComments.filter(id => comment.id !== id);
 			await image.save();
 		}
 		

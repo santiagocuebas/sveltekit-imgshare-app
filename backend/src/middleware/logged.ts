@@ -4,8 +4,8 @@ import { decodedToken } from '../libs/index.js';
 import { User } from '../models/index.js';
 
 export const isValidToken: Direction = async (req, res, next) => {
-	const token = req.cookies['authenticate'] ?? req.headers['authorization'];
-	const user = await decodedToken(token).catch(() => null);
+	const token = req.headers['authorization'];
+	const user = await decodedToken(String(token)).catch(() => null);
 
 	if (user === null) return res.status(401).json({ redirect: true });
 
@@ -15,8 +15,8 @@ export const isValidToken: Direction = async (req, res, next) => {
 };
 
 export const isNotValidToken: Direction = async (req, res, next) => {
-	const token = req.cookies['authenticate'] ?? req.headers['authorization'];
-	const user = await decodedToken(token).catch(() => null);
+	const token = req.headers['authorization'];
+	const user = await decodedToken(String(token)).catch(() => null);
 
 	if (user === null) return next();
 
@@ -49,8 +49,8 @@ export const isValidUser: Direction = async (req, res, next) => {
 };
 
 export const getDataToken: Direction = async (req, _res, next) => {
-	const token = req.cookies['authenticate'] ?? req.headers['authorization'];
-	const user = await decodedToken(token).catch(() => null);
+	const token = req.headers['authorization'];
+	const user = await decodedToken(String(token)).catch(() => null);
 
 	if (user !== null) req.user = user;
 
