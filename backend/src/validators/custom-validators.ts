@@ -97,7 +97,7 @@ export const limitLinks: CustomValidator = async (_value: string, { req: { user 
 };
 
 export const isUndefinedImage: CustomValidator = (_value, { req }) => {
-	return req.file !== undefined;
+	return req.file !== undefined && req.file.buffer instanceof Buffer;
 };
 
 export const isValidExtension: CustomValidator = (_value, { req }) => {
@@ -109,9 +109,9 @@ export const isValidExtension: CustomValidator = (_value, { req }) => {
 };
 
 export const isValidImageSize: CustomValidator = (_value, { req }) => {
-	return req.file.size < 20971520;
+	return req.file.size < 2e7;
 };
 
 export const isValidAvatarSize: CustomValidator = (_value, { req }) => {
-	return req.file.size < 1048576;
+	return req.file.size < 1e6;
 };

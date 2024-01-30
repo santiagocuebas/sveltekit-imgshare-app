@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { LayoutServerData } from './$types';
+  import type { RawUser } from '$lib/global';
 	import { beforeUpdate, onMount } from 'svelte';
 	import jsCookie from 'js-cookie';
   import axios from '$lib/axios';
@@ -7,7 +8,7 @@
 	import { user } from '$lib/stores';
 	import '../app.css';
 
-	export let data: LayoutServerData;
+	export let data: LayoutServerData & { user: RawUser & { links: string } };
 
 	let visible = true;
 	let pathname: string;
@@ -63,8 +64,7 @@
 	}
 
 	:global(a) {
-		text-decoration: none;
-		@apply bg-transparent text-black;
+		@apply bg-transparent no-underline text-black;
 	}
 
 	:global(ul) {
@@ -83,5 +83,14 @@
 
 	:global(.title-icon) {
 		@apply text-[32px];
+	}
+
+	:global(.footer-title) {
+		@apply text-[72px] font-medium;
+	}
+
+	:global(.footer-container) {
+		box-shadow: 0 0 4px #666666;
+		@apply w-3/5 min-w-[500px] max-w-[800px] p-5 rounded-xl bg-white text-balance;
 	}
 </style>

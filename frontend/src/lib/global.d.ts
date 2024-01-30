@@ -55,25 +55,11 @@ export interface ILink {
 	url: string;
 }
 
-export interface ResponseData {
-	[index: string]: IUser | IUserExtended | IUserForeign | IImage | IComment | undefined;
+export interface ResponseSubmit {
+	url: string;
+	errors: IKeys<string>;
 	user: RawUser & { links: string } | undefined;
 	token: string;
-	users: IUserExtended[];
-	extendedUser: IUserExtended;
-	foreignUser: IUserForeign;
-	image: IImage;
-	images: IImage[];
-	favorites: IImage[];
-	sidebarImages: IImage[];
-	comments: IComment[];
-	change: boolean;
-	errors: IKeys<string>;
-	redirect: boolean;
-	url: string;
-	likes: string[];
-	dislikes: string[];
-	favorite: string[];
 }
 
 export interface ResponseForeign {

@@ -23,7 +23,7 @@
 			<div>
 				{#if $user?.username === username}
 					<i class="fa-solid fa-arrow-up-from-bracket"></i>
-					<a href="/user/{$user?.username}/upload">
+					<a href="/user/{username}/upload">
 						UPLOAD
 					</a>
 					<p>&#x25CF;</p>
@@ -34,7 +34,9 @@
 					{#if $user?.role === UserRole.ADMIN || $user?.role === UserRole.SUPER}
 						<p>&#x25CF;</p>
 						<i class="fa-solid fa-user"></i>
-						<a href="/admin">ADMIN</a>
+						<a href="/admin">
+							ADMIN
+						</a>
 					{/if}
 				{/if}
 			</div>
@@ -98,6 +100,18 @@
 			&.selected {
 				border-bottom: 3px solid #ffffff;
 			}
+		}
+	}
+	
+	:global(.user-message) {
+		@apply flex flex-col items-center justify-evenly w-60 h-60 mx-auto font-bold;
+
+		& :global(p) {
+			@apply text-center text-[20px] break-words;
+		}
+
+		& :global(a) {
+			@apply py-2 px-4 rounded-md bg-[#5383d3] text-[20px] text-white;
 		}
 	}
 </style>

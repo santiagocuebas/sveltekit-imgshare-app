@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IImage } from "$lib/global.js";
+  import type { IImage } from "$lib/global";
 
   export let image: IImage;
 </script>
@@ -9,7 +9,9 @@
     <img loading="lazy" alt={image.title} src={image.filename}>
   </picture>
   <div>
-    <h2>{image.title}</h2>
+    <h2>
+      {image.title}
+    </h2>
     <p>
       <i class="fa-solid fa-message"></i>
       {image.totalComments.length}
@@ -32,7 +34,7 @@
 <style lang="postcss">
   a {
     box-shadow: 0 0 4px #888888;
-    @apply flex flex-none relative;
+    @apply flex flex-none relative w-min;
   }
 
   picture {
@@ -44,7 +46,7 @@
   }
 
   div {
-    @apply self-end flex absolute flex-wrap justify-between w-full p-2.5 bg-[#dddddd] gap-2.5;
+    @apply self-end flex absolute flex-wrap justify-between w-60 p-2.5 bg-[#dddddd] gap-2.5;
   }
 
   h2 {

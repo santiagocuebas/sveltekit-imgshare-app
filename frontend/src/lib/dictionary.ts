@@ -14,7 +14,7 @@ export const SelectIcon: IKeys<string> = {
 	like: 'fa-thumbs-up',
 	dislike: 'fa-thumbs-down',
 	fav: 'fa-star',
-	public: 'fa-images',
+	public: 'fa-image',
 	favorites: 'fa-star',
 	comments: 'fa-message',
 	about: 'fa-file'

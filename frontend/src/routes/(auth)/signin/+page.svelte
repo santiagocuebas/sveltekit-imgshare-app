@@ -1,5 +1,9 @@
-<input type="text" name="username" placeholder="Username or Email">
-<input type="password" name="password" placeholder="Password">
+<label>
+	<input type="text" name="username" placeholder="Username or Email">
+</label>
+<label>
+	<input type="password" name="password" placeholder="Password">
+</label>
 <button>
 	Signin
 </button>

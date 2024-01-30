@@ -24,7 +24,7 @@
 		grid-auto-rows: min-content;
 		border: 1px solid #e6df88;
 		outline: 1px solid #e6df88;
-		@apply grid items-center w-full h-min p-5 rounded bg-[#f2f8a1] font-bold text-[#222203];
+		@apply grid items-center w-full h-min p-5 rounded bg-[#f2f8a1] font-bold text-[#222203] gap-1;
 	}
 
 	ul {

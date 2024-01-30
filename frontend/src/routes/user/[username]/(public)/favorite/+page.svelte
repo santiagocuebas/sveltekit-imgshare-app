@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { PageData } from './$types';
   import type { ResponseForeign } from '$lib/global';
+  import { BoxGallery, Gallery, Image, NavUser } from '$lib/components';
   import { InnerText } from '$lib/enums';
   import { images } from '$lib/stores';
-  import { BoxGallery, Gallery, Image, NavUser } from '$lib/components';
 	
 	export let data: PageData & ResponseForeign;
 

@@ -1,15 +1,9 @@
 <script lang="ts">
-	import type { IComment } from "$lib/global.js";
+	import type { IComment } from "$lib/global";
 	import { format } from "timeago.js";
 	import axios from "$lib/axios";
-	import { DIR } from '$lib/config.js';
-	import { UserRole } from "$lib/enums.js";
-  import {
-		clickOutside,
-		catchLike,
-		handleRegister,
-		handleRequest
-	} from "$lib/services";
+	import { Method, UserRole } from "$lib/enums";
+  import { clickOutside, catchLike, handleForm } from "$lib/services";
 	import { user } from '$lib/stores';
 
 	export let comment: IComment;
@@ -37,19 +31,23 @@
 		comment.edit = true;
 		comment.comment = description;
 
-		handleRequest(this).catch(err => console.error(err.message));
+		handleForm(this).catch(err => console.error(err.message));
 	}
 
-	async function handleLike(type: string) {
+	async function handleLike(like: string) {
 		if ($user) {
-			const [ actLike, actDislike ] = (type === 'like')
+			const [ actLike, actDislike ] = (like === 'like')
 				? catchLike(comment.likes, comment.dislikes, $user.username)
 				: catchLike(comment.dislikes, comment.likes, $user.username);
 
-			comment.likes = (type === 'like') ? actLike : actDislike;
-			comment.dislikes = (type === 'like') ? actDislike : actLike;
+			comment.likes = (like === 'like') ? actLike : actDislike;
+			comment.dislikes = (like === 'like') ? actDislike : actLike;
 
-			handleRegister(`/comment/${comment.id}/like`, type);
+			axios({
+				method: Method.POST,
+				url:`/comment/${comment.id}/like`,
+				data: { like }
+			}).catch(err => console.error(err.message));
 		}
 	}
 	
@@ -57,7 +55,7 @@
 		visible = false;
 		comments = comments.filter(({ id }) => id !== comment.id);
 
-		await axios({ method: 'DELETE', url: `/comment/${comment.id}` })
+		axios({ method: Method.DELETE, url: `/comment/${comment.id}` })
 			.catch(err => console.error(err.message));
 	}
 </script>
@@ -79,8 +77,8 @@
 	{#if editable}
 		<form
 			class="form-comment"
-			action="{DIR}/api/comment/{comment.id}/edit"
-			method="POST"
+			action="/comment/{comment.id}/edit"
+			method={Method.POST}
 			on:submit|preventDefault={editComment}
 		>
 			<input

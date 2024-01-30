@@ -1,6 +1,8 @@
-<h1>Rules</h1>
+<h1 class="footer-title">
+	Rules
+</h1>
 
-<div id="rules-container">
+<div class="footer-container">
 	<div>
 		<h3>1. Lorem</h3>
 		Lorem ipsum, dolor sit amet consectetur adipisicing elit. Amet asperiores aut laudantium consequuntur sapiente magnam magni vitae animi nulla rerum beatae illo voluptate qui, cum odit odio. Minus, at tempore?
@@ -53,12 +55,8 @@
 </div>
 
 <style lang="postcss">
-	h1 {
-		@apply text-[60px];
-	}
-
-	#rules-container {
-		@apply flex flex-col w-3/5 min-w-[500px] max-w-[800px] rounded-xl bg-white text-justify;
+	.footer-container {
+		@apply flex flex-col p-0;
 
 		& div {
 			@apply w-full p-5;

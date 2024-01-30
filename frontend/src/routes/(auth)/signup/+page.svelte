@@ -1,7 +1,15 @@
-<input type="text" name="username" placeholder="Username">
-<input type="email" name="email" placeholder="Email" maxlength="100">
-<input type="password" name="password" placeholder="Password">
-<input type="password" name="confirmPassword" placeholder="Confirm password">
+<label>
+	<input type="text" name="username" placeholder="Username">
+</label>
+<label>
+	<input type="email" name="email" placeholder="Email" maxlength="100">
+</label>
+<label>
+	<input type="password" name="password" placeholder="Password">
+</label>
+<label>
+	<input type="password" name="confirmPassword" placeholder="Confirm password">
+</label>
 <button>
 	Signup
 </button>

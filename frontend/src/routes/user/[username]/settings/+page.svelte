@@ -7,17 +7,17 @@
 		DisabledButton
 	} from "$lib/global.js";
   import { onMount } from "svelte";
-  import axios from "$lib/axios";
-	import { DIR } from '$lib/config.js';
+	import axios from "$lib/axios";
+	import { BoxSettings, Alert } from "$lib/components";
   import { ButtonText, SettingText } from "$lib/dictionary";
-	import { Settings, ValidExt } from '$lib/enums.js';
+	import { Method, Settings } from '$lib/enums';
 	import {
-		handleRequest,
 		setSettingsProps,
-		isDisabledButton
+		isDisabledButton,
+    loadImage,
+    handleForm
 	} from "$lib/services";
   import { user } from "$lib/stores";
-	import { BoxSettings, Alert } from "$lib/components";
 
 	let settingChoise = '';
 	let alert = false;
@@ -34,30 +34,26 @@
 		alert = true;
 	};
 
-	function handleImage(this: HTMLInputElement) {
-		const reader = new FileReader();
-		const [file] = this.files ?? [];
-		const validExt: string[] = Object.values(ValidExt);
-
-		reader.addEventListener('load', ({ target }) => {
-			settingsProps.avatar = target?.result as string;
-		}, false);
-
-		if (file && file.size < 2 * 1e7 && validExt.includes(file.type)) {
-			reader.readAsDataURL(file);
+	async function handleDrop(e: DragEvent) {
+		if (e.dataTransfer) {
+			settingsProps.avatar = await loadImage(e.dataTransfer.files[0]);
+			e.dataTransfer.items.clear();
 		}
+	}
+
+	async function handleImage(this: HTMLInputElement) {
+		if (this.files) settingsProps.avatar = await loadImage(this.files[0]);
 	}
 	
   const handleDelete = async (link: ILink) => {
 		const data: ResponseSettings = await axios({
-      method: 'DELETE',
-      url: `${DIR}/api/settings/deletelink`,
-      withCredentials: true,
-      data: link
-    }).then(res => res.data)
+			method: Method.DELETE,
+			url: `/settings/deletelink`,
+			data: link
+		}).then(res => res.data)
 			.catch(err => {
 				console.log(err.message);
-				return { class: 'error-settings', message: { log: 'Logged Error' } };
+				return { message: { log: 'Logged Error' } };
 			});
 
 		if (typeof data.message === 'string') user.removeLink(link);
@@ -68,10 +64,10 @@
   };
 
 	async function handleSubmit(this: HTMLFormElement) {
-		const data: ResponseSettings = await handleRequest(this)
+		const data: ResponseSettings = await handleForm(this)
 			.catch(err => {
 				console.log(err.message);
-				return { class: 'error-settings', message: { log: 'Logged Error' } };
+				return { message: { log: 'Logged Error' } };
 			});
 
 		if (typeof data.message === 'string') {
@@ -123,15 +119,15 @@
 				{#if settingChoise === value}
 					<form
 						id={value}
-						action="{DIR}/api/settings/{value}"
-						method={value !== Settings.DELETE ? 'POST' : 'DELETE'}
+						action="/settings/{value}"
+						method={value !== Settings.DELETE ? Method.POST : Method.DELETE}
 						on:submit|preventDefault={handleSubmit}
 					>
 						{#if value === Settings.AVATAR}
 							<div>
 								Change the avatar:
 							</div>
-							<label class="settings-avatar">
+							<label class="settings-avatar" on:drop|preventDefault={handleDrop}>
 								<input type="file" name="image" on:change={handleImage}>
 								<img src={settingsProps.avatar} alt={$user?.username}>
 							</label>

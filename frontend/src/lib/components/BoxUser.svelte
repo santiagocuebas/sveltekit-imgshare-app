@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import jsCookie from 'js-cookie';
+  import axios from "$lib/axios";
   import { UserRole } from "$lib/enums";
 	import { clickOutside } from "$lib/services";
   import { user } from '$lib/stores';
@@ -30,7 +31,7 @@
 		},
 		{
 			href: `/user/${$user?.username}/upload`,
-			className: 'fa-solid fa-arrow-up-from-bracket',
+			className: 'fa-regular fa-file-image',
 			name: 'Upload'
 		},
 		{
@@ -42,6 +43,7 @@
 
 	async function handleLogout() {
 		jsCookie.remove('authenticate');
+		axios.defaults.headers.common['Authorization'] = '';
 		goto('/');
 		user.resetUser();
 	}
@@ -90,9 +92,13 @@
 {/if}
 
 <style lang="postcss">
-	img {
-		box-shadow: 0 0 4px #666666;
-		@apply w-10 h-10 rounded-full object-cover;
+	button {
+		@apply justify-self-end;
+
+		& img {
+			box-shadow: 0 0 4px #666666;
+			@apply w-10 h-10 rounded-full object-cover;
+		}
 	}
 
 	#user-list {
@@ -121,7 +127,15 @@
 		}
 
 		& a {
-			@apply flex items-center w-full py-1.5 px-5 font-semibold gap-5 hover:bg-[#dddddd];
+			@apply flex items-center w-full py-1.5 px-5 font-semibold gap-6 hover:bg-[#dddddd];
+		}
+
+		& i {
+			@apply flex-none w-6 h-5 text-center text-[20px];
+		}
+
+		& li {
+			@apply leading-tight;
 		}
 	}
 </style>

@@ -1,41 +1,43 @@
 <script lang="ts">
 	import type { PageServerData } from './$types';
-  import type { IImage, IKeys, ResponseData } from '$lib/global';
+  import type { IImage, IKeys, ResponseSubmit } from '$lib/global';
   import { goto } from '$app/navigation';
-	import { DIR } from '$lib/config.js';
 	import { ErrorBox, BoxGallery } from '$lib/components';
-  import { ValidExt } from '$lib/enums';
-  import { handleRequest } from '$lib/services';
+	import { Method } from '$lib/enums';
+  import { handleForm, loadImage } from '$lib/services';
 
 	export let data: PageServerData & { images: IImage[] };
 
-	let errors: IKeys<string> | null = null;
+	let isDisabled = false;
 	let src = '/label-img.png';
+	let upload = '';
+	let errors: IKeys<string> | null = null;
 
-	function handleImage(this: HTMLInputElement) {
-		const reader = new FileReader();
-		const [file] = this.files ?? [];
-		const validExt: string[] = Object.values(ValidExt);
-
-		reader.addEventListener('load', ({ target }) => {
-			src = target?.result as string ?? src;
-		}, false);
-
-		if (file && file.size < 2 * 1e7 && validExt.includes(file.type)) {
-			reader.readAsDataURL(file);
+	async function handleDrop(e: DragEvent) {
+		if (e.dataTransfer) {
+			src = await loadImage(e.dataTransfer.files[0]);
+			e.dataTransfer.items.clear();
 		}
+	}
+
+	async function handleImage(this: HTMLInputElement) {
+		if (this.files) src = await loadImage(this.files[0]);
 	}
 	
 	async function handleSubmit(this: HTMLFormElement) {
-		const data: ResponseData = await handleRequest(this)
+		isDisabled = true;
+
+		const data: ResponseSubmit = await handleForm(this)
 			.catch(err => {
 				console.log(err.message);
-				return { redirect: true };
+				goto('/');
 			});
 
-		if (data.redirect) goto('/');
-		else if (data.url) goto('/gallery/' + data.url);
-		else if (data.errors) errors = data.errors;
+		if (data.url) goto('/gallery/' + data.url);
+		else if (data.errors) {
+			errors = data.errors;
+			isDisabled = false;
+		}
 	}
 </script>
 
@@ -45,32 +47,39 @@
 		Upload Image
 	</h2>
 	<form
-		action='{DIR}/api/image/upload'
-		method="POST"
+		action='/image/upload'
+		method={Method.POST}
 		on:submit|preventDefault={handleSubmit}
 	>
 		{#if errors}
 			<ErrorBox bind:errors={errors} on:click={() => errors = null} />
 		{/if}
-		<label>
+		<label class="box-image" on:drop|preventDefault={handleDrop}>
 			<input type="file" name="image" on:change={handleImage}>
-			<img src={src} alt="">
+			<img src={src} alt="Of Upload">
 		</label>
-		<input
-			type="text"
-			name="title"
-			placeholder="Title"
-			spellcheck="false"
-			autocomplete="off"
-		>
-		<textarea
-			name="description"
-			placeholder="Description"
-			rows="5"
-			spellcheck="false"
-			autocomplete="off"
-		></textarea>
-		<button>
+		<label>
+			<input
+				type="text"
+				name="title"
+				placeholder="Title"
+				spellcheck="false"
+				autocomplete="off"
+				bind:value={upload}
+			>
+		</label>
+		<label>
+			<textarea
+				name="description"
+				placeholder="Description"
+				rows="5"
+				spellcheck="false"
+				autocomplete="off"
+				maxlength="4200"
+			></textarea>
+		</label>
+		<button disabled={isDisabled || src === '/label-img.png' ||
+			upload.length < 3 || upload.length >= 60}>
 			<i class="fa-solid fa-upload"></i>
 			Upload
 		</button>
@@ -102,7 +111,7 @@
 	form {
 		@apply flex flex-col h-max p-5 gap-y-5;
 		
-		& label {
+		& .box-image {
 			@apply w-[360px] h-[360px] m-auto cursor-pointer;
 
 			& img {
@@ -122,6 +131,10 @@
 
 	button {
 		@apply ml-auto py-3 px-5 bg-[#63c187] rounded text-[18px] font-semibold text-white hover:bg-[#53b177];
+
+		&[disabled] {
+			@apply bg-[#dddddd] text-[#666666] cursor-auto;
+		}
 	}
 
 	picture {

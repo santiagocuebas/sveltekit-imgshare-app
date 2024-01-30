@@ -1,7 +1,9 @@
 <script lang="ts">
 	import type { IImage } from '$lib/global';
 	import { format } from 'timeago.js';
-	import { catchLike, handleRegister, handleRequest } from '$lib/services';
+	import axios from '$lib/axios';
+	import { Method } from '$lib/enums';
+	import { catchLike, handleForm } from '$lib/services';
 	import { user } from '$lib/stores';
 
 	export let image: IImage | null;
@@ -12,29 +14,37 @@
 	async function changeDescription(this: HTMLFormElement) {
 		description = false;
 
-		handleRequest(this).catch(err => console.log(err.message));
+		handleForm(this).catch(err => console.log(err.message));
 	}
 	
-	async function handleLike(type: string) {
+	async function handleLike(like: string) {
 		if (image && $user) {
-			const [ actLike, actDislike ] = (type === 'like')
+			const [ actLike, actDislike ] = (like === 'like')
 				? catchLike(image.likes, image.dislikes, $user.username)
 				: catchLike(image.dislikes, image.likes, $user.username);
 		
-			image.likes = (type === 'like') ? actLike : actDislike;
-			image.dislikes = (type === 'like') ? actDislike : actLike;
+			image.likes = (like === 'like') ? actLike : actDislike;
+			image.dislikes = (like === 'like') ? actDislike : actLike;
 			
-			handleRegister(`/image/${image.id}/like`, type).catch(err => console.log(err.message));
+			axios({
+				method: Method.POST,
+				url: `/image/${image.id}/like`,
+				data: { like }
+			}).catch(err => console.error(err.message));
 		}
 	}
 
-	async function handleFavotite(type: string) {
+	async function handleFavotite(favorite: string) {
 		if (image && $user) {
 			image.favorites = (image.favorites.includes($user.username))
 				? image.favorites.filter(username => username !== $user?.username)
 				: [$user.username, ...image.favorites];
 
-			handleRegister(`/image/${image.id}/favorite`, type);
+				axios({
+					method: Method.POST,
+					url: `/image/${image.id}/favorite`,
+					data: { favorite }
+				}).catch(err => console.error(err.message));
 		}
 	}
 </script>
@@ -66,7 +76,7 @@
 	{#if description}
 		<form
 			action="/image/{image?.id}/description"
-			method="POST"
+			method={Method.POST}
 			on:submit|preventDefault={changeDescription}
 		>
 			<textarea

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { IImage } from '$lib/global';
-  import axios from '$lib/axios';
-	import { OrderText } from '$lib/enums.js';
+	import axios from '$lib/axios';
+	import { Method, OrderText } from '$lib/enums';
 	import { clickOutside } from "$lib/services";
   import { images } from "$lib/stores";
 
@@ -9,12 +9,13 @@
 	let selectText: string = OrderText.NEWEST;
 
 	async function handleSubmit(choise: string) {
-		const url = `/gallery/order/${choise.toUpperCase()}`;
 		selectText = choise.toUpperCase();
 		visible = false;
 
-		const data: { images: IImage[] } = await axios({ url })
-			.then(res => res.data)
+		const data: { images: IImage[] } = await axios({
+			method: Method.GET,
+			url: `/gallery/order/${choise.toUpperCase()}`
+		}).then(res => res.data)
 			.catch(err => {
 				console.error(err.message);
 				return { images: [] };
@@ -48,15 +49,15 @@
 	}
 
 	button {
-		@apply flex relative items-center justify-center w-[120px] ml-auto bg-[#5383d3] text-[20px] font-bold text-white cursor-pointer gap-1;
+		@apply flex relative items-center justify-center w-[120px] ml-auto gap-1;
 	}
 
 	ul {
 		box-shadow: 0 0 4px #666666;
-		@apply flex absolute flex-col self-start w-[120px] right-2 mt-7 py-1 bg-white text-black z-[70];
+		@apply flex absolute flex-col self-start w-[128px] right-2 mt-8 py-[5px] bg-white text-black z-[70];
 	}
 
 	li {
-		@apply w-full py-1 text-center cursor-pointer hover:bg-[#dddddd];
+		@apply w-full py-[5px] text-center text-[18px] cursor-pointer hover:bg-[#dddddd];
 	}
 </style>

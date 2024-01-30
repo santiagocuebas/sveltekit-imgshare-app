@@ -3,22 +3,22 @@
   import type { ResponseForeign } from '$lib/global';
   import { beforeUpdate } from 'svelte';
 	import { format } from "timeago.js";
-  import { InnerText } from '$lib/enums';
 	import { BoxGallery, Gallery, NavUser } from '$lib/components';
+  import { InnerText } from '$lib/enums';
 	
 	export let data: PageData & ResponseForeign;
 
 	let origin = '';
 
-	$: comments = data.comments;
+	$: ({ comments, foreignUser } = data);
 
 	beforeUpdate(() => origin = location.origin);
 </script>
 
 <Gallery>
-	<NavUser text={InnerText.COMMENTS} username={data.foreignUser.username} />
+	<NavUser text={InnerText.COMMENTS} username={foreignUser.username} />
 	<BoxGallery className='image-row'>
-		{#if comments.length > 0}
+		{#if comments.length}
 			{#each comments as comment}
 				<div class="comment-container">
 					<a href="/gallery/{comment.imageId}">

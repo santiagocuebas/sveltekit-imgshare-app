@@ -15,6 +15,6 @@
 	}
 
 	img {
-		filter: drop-shadow(0 0 1px #000000);
+		filter: drop-shadow(0 0 1px #666666);
 	}
 </style>

@@ -1,14 +1,13 @@
 <script lang="ts">
 	import type { IUserExtended } from "$lib/global";
-	import axios from "$lib/axios";
-	import { DIR } from '$lib/config.js';
+	import { Method } from "$lib/enums";
+  import { handleForm } from "$lib/services";
 
 	export let users: IUserExtended[];
 	let searchedUser = '';
 
 	async function handleSubmit(this: HTMLFormElement) {
-		const data = await axios({ url: this.action })
-			.then(res => res.data)
+		const data: { users: IUserExtended[] } = await handleForm(this)
 			.catch(err => {
 				console.error(err?.message);
 				return { users: [] }
@@ -21,8 +20,8 @@
 
 <nav>
 	<form
-		action="{DIR}/api/admin/{searchedUser}"
-		method="GET"
+		action="/admin/{searchedUser}"
+		method={Method.GET}
 		on:submit|preventDefault={handleSubmit}
 	>
 		<div>
@@ -52,10 +51,10 @@
 	}
 
 	input {
-		@apply w-full py-2 px-4 rounded-2xl;
+		@apply w-full py-1.5 px-4 rounded-2xl;
 	}
 
 	button, div {
-		@apply flex items-center justify-center w-[90%] h-[90%] bg-[#5383d3] text-white [&_i]:text-[20px];
+		@apply justify-self-center flex items-center justify-center w-[90%] h-[90%] bg-[#5383d3] text-white [&_i]:text-[20px];
 	}
 </style>

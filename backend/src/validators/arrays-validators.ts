@@ -95,3 +95,17 @@ export const Link: ValidationChain[] = [
 		.custom(isValidURL).bail()
 		.custom(limitLinks)
 ];
+
+export const Contact: ValidationChain[] = [
+	body('subject', 'Enter a valid subject')
+		.isString().bail()
+		.isLength({ min: 5, max: 40 }).withMessage('Have exceeded the max number of characters allowed'),
+	body('email', 'Enter a valid e-mail')
+		.exists({ checkFalsy: true }).bail()
+		.isLength({ max: 100 }).bail()
+		.normalizeEmail()
+		.isEmail(),
+	body('message', 'Enter a valid message')
+		.isString().bail()
+		.isLength({ min: 5, max: 4200 }).withMessage('Have exceeded the max number of characters allowed')
+];

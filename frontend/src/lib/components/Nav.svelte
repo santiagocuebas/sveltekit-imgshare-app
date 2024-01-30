@@ -55,8 +55,9 @@
 
 <style lang="postcss">
 	nav {
+		grid-template-columns: 160px 1fr 160px;
 		box-shadow: 0 0 4px #666666;
-		@apply flex fixed items-center justify-between w-full min-w-[510px] h-14 -mt-14 px-5 bg-[#5383d3] gap-5 z-[100];
+		@apply grid fixed items-center w-full min-w-[510px] h-14 -mt-14 px-5 bg-[#5383d3] gap-5 z-[100];
 
 		& #avatar {
 			@apply flex-none w-40 h-10;
@@ -68,7 +69,7 @@
 
 		& form {
 			outline: 1px solid #cccccc;
-			@apply flex w-2/3 min-w-[320px] max-w-[700px] bg-[#cccccc] gap-x-px;
+			@apply justify-self-center flex w-2/3 min-w-[350px] max-w-[700px] bg-[#cccccc] gap-x-px;
 
 			& input {
 				@apply w-full py-2.5 px-4;
@@ -109,6 +110,10 @@
 		}
 
 		@media (width < 1040px) {
+			& {
+				grid-template-columns: 40px 1fr 40px;
+			}
+
 			& #avatar {
 				@apply w-10 h-10;
 

@@ -2,8 +2,8 @@
 	import type { PageData } from './$types';
   import type { ResponseForeign } from '$lib/global';
 	import { format } from 'timeago.js';
+  import { Gallery, NavUser } from '$lib/components';
   import { InnerText } from '$lib/enums';
-  import { BoxGallery, Gallery, NavUser } from '$lib/components';
 	
 	export let data: PageData & ResponseForeign;
 
@@ -11,8 +11,7 @@
 </script>
 
 <Gallery>
-	<NavUser text={InnerText.ABOUT} username={data.foreignUser.username} />
-	<BoxGallery>
+	<NavUser text={InnerText.ABOUT} username={foreign.username} />
 		<div id="about-container">
 			<div class="about-box">
 				<h2>Description</h2>
@@ -23,7 +22,7 @@
 				<ul>
 				{#each foreign.links as link (link.title)}
 					<li>
-						<a href="{link.url}" target="_blank" rel="noreferrer">
+						<a href={link.url} target="_blank">
 							{link.title}
 						</a>
 					</li>
@@ -36,14 +35,13 @@
 				<p>{foreign.totalViews} views</p>
 			</div>
 		</div>
-	</BoxGallery>
 </Gallery>
 
 <style lang="postcss">
 	#about-container {
-		grid-template-columns: 1fr minmax(200px, 20%);
+		grid-template-columns: 1fr minmax(220px, 20%);
 		grid-auto-rows: min-content;
-		@apply grid content-start w-full h-full;
+		@apply grid content-start w-full h-full p-2.5 gap-x-2;
 	}
 
 	h2 {
@@ -52,7 +50,7 @@
 
 	.about-box {
 		border-bottom: 1px solid #cccccc;
-		@apply flex flex-col w-[90%] mt-5 mx-auto py-2.5 gap-2.5;
+		@apply flex flex-col w-[96%] mt-5 mx-auto py-2.5 gap-2.5;
 
 		& ul {
 			@apply flex flex-wrap;

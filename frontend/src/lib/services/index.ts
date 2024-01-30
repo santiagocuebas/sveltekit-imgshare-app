@@ -5,5 +5,6 @@ export {
   checkNewPassword,
   checkOldPassword
 } from './check-password.js';
-export { handleRequest, handleRegister } from './services.js';
+export { loadImage } from './load-image.js';
+export { handleForm } from './services.js';
 export { setSettingsProps, isDisabledButton } from './settings-functions.js';

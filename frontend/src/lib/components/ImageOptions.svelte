@@ -2,6 +2,7 @@
 	import type { IImage } from "$lib/global";
 	import { goto } from "$app/navigation";
   import axios from "$lib/axios";
+	import { Method } from "$lib/enums";
 	import { clickOutside } from "$lib/services";
 
 	export let image: IImage | null;
@@ -19,14 +20,14 @@
 
 		if (image) image.isPublic = !image.isPublic;
 
-		await axios({ method: 'POST', url: `/image/${image?.id}/public` })
+		axios({ method: Method.POST, url: `/image/${image?.id}/public` })
 			.catch(err => console.log(err.message));
 	};
 
-	const deleteImage = async () => {
+	const deleteImage = () => {
 		visible = false;
 
-		await axios({ method: 'DELETE', url: `/image/${image?.id}` })
+		axios({ method: Method.DELETE, url: `/image/${image?.id}` })
 			.catch(err => console.log(err.message));
 
 		goto('/');
@@ -72,10 +73,10 @@
 	
 	ul {
 		box-shadow: 0 0 2px #666666;
-		@apply flex absolute flex-col w-[200px] top-7 right-0 py-[5px] rounded bg-[#444444];
+		@apply flex absolute flex-col w-[200px] top-8 right-0 py-[5px] rounded bg-[#444444];
 	}
 
 	a {
-		@apply flex justify-between items-center py-1 px-5 font-bold text-white cursor-pointer hover:bg-white hover:text-black;
+		@apply flex justify-between items-center py-1 px-5 font-bold text-white hover:bg-white hover:text-black;
 	}
 </style>

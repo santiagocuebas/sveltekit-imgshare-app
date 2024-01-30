@@ -1,34 +1,31 @@
 <script lang="ts">
-	import type { IKeys, ResponseData } from '$lib/global';
+	import type { IKeys, ResponseSubmit } from '$lib/global';
 	import { beforeNavigate, goto } from '$app/navigation';
   import { beforeUpdate } from 'svelte';
 	import jsCookie from 'js-cookie';
 	import { ErrorBox } from '$lib/components';
-  import { DIR, NODE_ENV } from '$lib/config';
-  import { handleRequest } from "$lib/services";
+  import { NODE_ENV } from '$lib/config';
+	import { Method } from '$lib/enums';
+  import { handleForm } from "$lib/services";
   import { user } from '$lib/stores';
 
 	let pathname: string;
 	let errors: IKeys<string> | null = null;
 	
 	const setUppercase = (value: string) => {
-		if (value) {
-			const firstLetter = value?.at(0) ?? 's';
-			return value.replace(firstLetter, firstLetter?.toUpperCase());
-		}
+		const firstLetter = value.at(0) ?? 's';
 
-		return '';
+		return value.replace(firstLetter, firstLetter.toUpperCase());
 	}; 
 	
 	async function handleSubmit(this: HTMLFormElement) {
-		const data: ResponseData = await handleRequest(this)
+		const data: ResponseSubmit = await handleForm(this)
 			.catch(err => {
 				console.log(err.message);
-				return { redirect: true };
+				goto('/');
 			});
 
-		if (data.redirect) goto('/');
-		else if (data.user) {
+		if (data.user) {
 			jsCookie.set('authenticate', data.token, {
 				expires: 15,
 				secure: NODE_ENV === 'production'
@@ -43,10 +40,12 @@
 </script>
 
 <div id="sign-container">
-	<h1>{setUppercase(pathname)}</h1>
+	<h1>
+		{setUppercase(pathname)}
+	</h1>
 	<form
-		action={DIR + '/api/auth/' + pathname}
-		method='POST'
+		action={'/auth/' + pathname}
+		method={Method.POST}
 		on:submit|preventDefault={handleSubmit}
 	>
 		{#if errors}

@@ -30,6 +30,7 @@ app.use(multer({ storage }).single('image'));
 // Express Routes
 app.use('/api/admin', routes.Admin);
 app.use('/api/auth', routes.Auth);
+app.use('/api/contact', routes.Contact);
 app.use('/api/comment', routes.Comment);
 app.use('/api/gallery', routes.Gallery);
 app.use('/api/image', routes.Image);

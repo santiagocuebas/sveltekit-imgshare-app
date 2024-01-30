@@ -2,7 +2,7 @@
 	import type { PageServerData } from './$types';
   import type { IUserExtended } from '$lib/global';
   import { afterNavigate } from '$app/navigation';
-  import axios from 'axios';
+	import axios from '$lib/axios';
 	import {
 		Gallery,
 		BoxGallery,
@@ -10,8 +10,8 @@
 		NavAdmin,
 		UserBox
 	} from '$lib/components';
-	import { DIR } from '$lib/config.js';
-	import { ClassName, TextData } from '$lib/dictionary.js';
+	import { ClassName, TextData } from '$lib/dictionary';
+	import { Method } from '$lib/enums';
 	import { selectUser } from '$lib/stores';
 	
 	export let data: PageServerData & { users: IUserExtended[] };
@@ -25,19 +25,18 @@
 		alert = false;
 		selectUser.resetUser();
 
-		const resData = await axios({
-			method: 'DELETE',
-			url: `${DIR}/api/admin/${username}`,
-			withCredentials: true
+		const resData: { change: boolean } = await axios({
+			method: Method.DELETE,
+			url: `/admin/${username}`
 		}).then(res => res.data)
 			.catch(err => {
-				console.log(err.message);
+				console.log(err?.message);
 				return { change: false };
 			});
 
-		data.users = (resData.change)
-			? data.users.filter(user => user.username !== username)
-			: data.users;
+		if (resData.change) {
+			data.users = data.users.filter(user => user.username !== username);
+		}
 
 		text = (resData.change) ? 'accept' : 'error';
 		show = true;

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { IComment } from '$lib/global';
-  import { DIR } from '$lib/config';
-	import { handleRequest } from "$lib/services";
+	import type { IComment } from '$lib/global';
+	import { Method } from '$lib/enums';
+	import { handleForm } from "$lib/services";
   import { user } from '$lib/stores';
 
 	export let id: string | undefined;
@@ -18,8 +18,10 @@
 	};
 
 	async function handleSubmit(this: HTMLFormElement) {
-		const data = await handleRequest(this)
-			.catch(() => { return { comment: null } });
+		const data: { comment: IComment | null } = await handleForm(this)
+			.catch(() => {
+				return { comment: null }
+			});
 
 		if (data.comment) comments = [data.comment, ...comments];
 
@@ -33,8 +35,8 @@
 		Post
 	</h2>
 	<form
-		action="{DIR}/api/image/{id}/comment"
-		method="POST"
+		action="/image/{id}/comment"
+		method={Method.POST}
 		on:submit|preventDefault={handleSubmit}
 	>
 		<picture>
