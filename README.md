@@ -38,8 +38,9 @@ pnpm run preview
 
 ## Future Improvements
 - [x] Add Nodemailer for transactional emails.
-- [x] Implement Tailwind.css
-- [ ] Update syntax a Svelte 5
+- [x] Implement Tailwind.css.
+- [ ] Update syntax a Svelte 5.
+- [ ] Add Responsive Desing Mobile.
 
 ## Tools
 * Nodejs

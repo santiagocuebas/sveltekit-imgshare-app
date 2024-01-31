@@ -7,7 +7,7 @@
 
 	const handleClick = () => {
 		setTimeout(() => className = !visible ? 'is-visible' : 'occult');
-		setTimeout(() => visible = !visible, visible ? 350 : 0);
+		setTimeout(() => visible = !visible, visible ? 355 : 0);
 	};
 </script>
 

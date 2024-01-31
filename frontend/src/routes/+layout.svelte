@@ -5,6 +5,7 @@
 	import jsCookie from 'js-cookie';
   import axios from '$lib/axios';
 	import { Nav, BoxUser, Footer } from '$lib/components';
+	import { NODE_ENV } from '$lib/config';
 	import { user } from '$lib/stores';
 	import '../app.css';
 
@@ -15,13 +16,18 @@
 
 	if (data.user) user.setUser(data.user);
 	
-	async function changeVisibility(e: WheelEvent) {
-		visible = e.deltaY <= 0;
-	}
+	const changeVisibility = (e: WheelEvent) => visible = e.deltaY <= 0;
 
 	onMount(() => {
 		const token = jsCookie.get('authenticate');
 		axios.defaults.headers.common['Authorization'] = token;
+		
+		if (token) {
+			jsCookie.set('authenticate', token, {
+				expires: 15,
+				secure: NODE_ENV === 'production'
+			});
+		}
 	});
 
 	beforeUpdate(() => pathname = location.pathname);
