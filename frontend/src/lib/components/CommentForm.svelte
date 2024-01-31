@@ -19,7 +19,8 @@
 
 	async function handleSubmit(this: HTMLFormElement) {
 		const data: { comment: IComment | null } = await handleForm(this)
-			.catch(() => {
+			.catch(err => {
+				console.error(err?.message);
 				return { comment: null }
 			});
 

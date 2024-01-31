@@ -7,20 +7,20 @@ imgShare is a web application to share images, comments, and more.
 
 ## Enviroment Variables
 ### Client
-* `PORT`, the http client port, default is `3000`.
-* `PUBLIC_DIR`, the http server port.
-* `JWT`, secret JWT key.
+* `PUBLIC_DIR`, the http/https server port.
+* `NODE_ENV`, indicates if the cookie is secure.
 ### Server
-* `PORT`, the http server port, default is `4200`.
+* `PORT`, the http/https server port, default is `4200`.
+* `ORIGIN`, the http/https client port.
+* `JWT`, secret JWT key.
+* `CLOUDINARY_NAME`, the cloudinary name.
+* `CLOUDINARY_KEY`, the cloudinary key.
+* `CLOUDINARY_SECRET`, the cloudinary secret.
 * `DB_HOST`, the MySQL database host.
 * `DB_PORT`, the MySQL database port.
 * `DB_USER`, the MySQL database username.
 * `DB_PASS`, the MySQL database password.
 * `DB_DATABASE`, the MySQL database.
-* `JWT`, secret JWT key.
-* `ORIGIN`, the http client port.
-* `NODE_ENV`, indicates if the cookie is secure.
-* `DOMAIN`, domain of the server cookie.
 
 ## Installation
 ```
@@ -28,15 +28,17 @@ git clone https://github.com/santiagocuebas/sveltekit-advanced-chat-app
 cd sveltekit-advanced-chat-app
 cd backend
 pnpm install
-npm start
+pnpm run build
+pnpm run preview
 cd frontend
 pnpm install
-npm start
+pnpm run build
+pnpm run preview
 ```
 
 ## Future Improvements
-- [ ] Add Nodemailer for transactional emails.
-- [ ] Implement Tailwind.css
+- [x] Add Nodemailer for transactional emails.
+- [x] Implement Tailwind.css
 - [ ] Update syntax a Svelte 5
 
 ## Tools

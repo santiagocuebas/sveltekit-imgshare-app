@@ -3,43 +3,12 @@
 	import jsCookie from 'js-cookie';
   import axios from "$lib/axios";
   import { UserRole } from "$lib/enums";
-	import { clickOutside } from "$lib/services";
+	import { clickOutside, getLinks } from "$lib/services";
   import { user } from '$lib/stores';
 
 	let visible: boolean;
 
-	const links = [
-		{
-			href: `/user/${$user?.username}/post`,
-			className: 'fa-regular fa-image',
-			name: 'Post'
-		},
-		{
-		href: `/user/${$user?.username}/favorite`,
-			className: 'fa-regular fa-star',
-			name: 'Favorite'
-		},
-		{
-			href: `/user/${$user?.username}/comment`,
-			className: 'fa-regular fa-message',
-			name: 'Comments'
-		},
-		{
-			href: `/user/${$user?.username}/about`,
-			className: 'fa-regular fa-file',
-			name: 'About'
-		},
-		{
-			href: `/user/${$user?.username}/upload`,
-			className: 'fa-regular fa-file-image',
-			name: 'Upload'
-		},
-		{
-			href: `/user/${$user?.username}/settings`,
-			className: 'fa-solid fa-gear',
-			name: 'Settings'
-		}
-	];
+	const links = getLinks($user?.username ?? '');
 
 	async function handleLogout() {
 		jsCookie.remove('authenticate');

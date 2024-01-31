@@ -1,15 +1,9 @@
 <script lang="ts">
 	import type { PageData } from './$types';
   import type { IImage } from '$lib/global';
-	import { afterNavigate } from '$app/navigation';
 	import { Logo, Gallery, BoxGallery, Image } from '$lib/components';
-  import { images } from '$lib/stores';
 
 	export let data: PageData & { images: IImage[] };
-
-	images.setImages(data.images)
-
-	afterNavigate(async () => images.setImages(data.images));
 </script>
 
 <Logo />
@@ -19,7 +13,7 @@
 		IMAGES
 	</div>
 	<BoxGallery>
-		{#each $images as image}
+		{#each data.images as image}
 			<Image image={image} />
 		{/each}
 	</BoxGallery>

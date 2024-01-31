@@ -3,8 +3,8 @@
 	import axios from '$lib/axios';
 	import { Method, OrderText } from '$lib/enums';
 	import { clickOutside } from "$lib/services";
-  import { images } from "$lib/stores";
 
+	export let images: IImage[];
 	let visible = false;
 	let selectText: string = OrderText.NEWEST;
 
@@ -12,16 +12,15 @@
 		selectText = choise.toUpperCase();
 		visible = false;
 
-		const data: { images: IImage[] } = await axios({
+		images = await axios({
 			method: Method.GET,
 			url: `/gallery/order/${choise.toUpperCase()}`
 		}).then(res => res.data)
+			.then(data => data.images)
 			.catch(err => {
 				console.error(err.message);
-				return { images: [] };
+				return [];
 			});
-		
-		images.setImages(data.images);
 	}
 </script>
 

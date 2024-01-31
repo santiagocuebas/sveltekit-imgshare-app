@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
   import axios from "$lib/axios";
+  import { Method } from "$lib/enums";
   import { user } from "$lib/stores";
 
 	export let alert: boolean;
@@ -8,7 +9,7 @@
 	const deleteUser = async () => {
 		alert = false;
 
-		await axios({ method: 'DELETE', url: `/settings/deleteuser` });
+		await axios({ method: Method.DELETE, url: `/settings/deleteuser` });
 
 		user.resetUser();
 		goto('/');

@@ -4,8 +4,9 @@
   import { SelectIcon } from "$lib/dictionary";
   import { InnerText, Method, OrderText, PublicText, UserRole } from "$lib/enums";
 	import { clickOutside } from "$lib/services";
-  import { user, images } from "$lib/stores";
+  import { user } from "$lib/stores";
 
+	export let images: IImage[] | null = null;
 	export let text: string = InnerText.PUBLIC;
 	export let username: string;
 	export let isPrivate: string | null = null;
@@ -25,16 +26,15 @@
 		holder[option] = choise.toUpperCase();
 		visible[option] = false;
 		
-		const data: { images: IImage[] } = await axios({
+		images = await axios({
 			method: Method.GET,
 			url: `/user/${username}/${holder.public}/${holder.order}`
 		}).then(res => res.data)
+			.then(data => data.images)
 			.catch(err => {
 				console.error(err.message);
-				return { images: [] };
+				return [];
 			});
-		
-		images.setImages(data.images);
 	}
 </script>
 

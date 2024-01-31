@@ -3,22 +3,24 @@
   import type { ResponseForeign } from '$lib/global';
   import { BoxGallery, Gallery, Image, NavUser } from '$lib/components';
 	import { PublicText } from '$lib/enums';
-  import { images, user } from '$lib/stores';
+  import { user } from '$lib/stores';
 	
 	export let data: PageData & ResponseForeign;
 
 	$: ({ username } = data.foreignUser);
 
 	let isPrivate = PublicText.PUBLIC;
-
-	images.setImages(data.images);
 </script>
 
 <Gallery>
-	<NavUser username={username} bind:isPrivate={isPrivate} />
+	<NavUser
+		bind:images={data.images}
+		bind:isPrivate={isPrivate}
+		username={username}
+	/>
 	<BoxGallery>
-		{#if $images.length}
-			{#each $images as image}
+		{#if data.images.length}
+			{#each data.images as image}
 				<Image image={image} />
 			{/each}
 		{:else}

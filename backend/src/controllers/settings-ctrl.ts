@@ -16,7 +16,7 @@ export const postAvatar: Direction = async (req, res) => {
 	if (file) {
 		// Set avatar location
 		const data = await cloudinary.uploader
-			.upload(file, { public_id: 'imgshare/avatar/' + await getId() })
+			.upload(file, { public_id: await getId(), folder: 'imgshare/avatar/' })
 			.catch(() => {
 				console.error('An error occurred while trying to uploaded the image');
 				return null;
@@ -126,5 +126,5 @@ export const deleteUser: Direction = async (req, res) => {
 	// Delete user
 	await req.user.remove();
 
-	return res.json({ url: '/' });
+	return res.json({});
 };

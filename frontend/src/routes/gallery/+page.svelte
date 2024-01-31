@@ -8,18 +8,15 @@
 		BoxGallery,
 		Image
 	} from '$lib/components';
-  import { images } from '$lib/stores';
 
 	export let data: PageData & { images: IImage[] };
-
-	images.setImages(data.images);
 </script>
 
 <Logo />
 <Gallery>
-	<NavGallery />
+	<NavGallery bind:images={data.images} />
 	<BoxGallery>
-		{#each $images as image}
+		{#each data.images as image}
 			<Image image={image} />
 		{/each}
 	</BoxGallery>

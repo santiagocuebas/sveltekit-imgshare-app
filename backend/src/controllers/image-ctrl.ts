@@ -11,7 +11,7 @@ export const postUpload: Direction = async (req, res) => {
 		const imageId = await getId('Image');
 		
 		const data = await cloudinary.uploader
-			.upload(file, { public_id: 'imgshare/' + imageId })
+			.upload(file, { public_id: imageId, folder: 'imgshare/' })
 			.catch(() => {
 				console.log('An error occurred while trying to uploaded the image');
 				return null;
@@ -52,7 +52,7 @@ export const postPublic: Direction = async (req, res) => {
 		await image.save();
 	}
 
-	return res.json({});
+	return res.status(image ? 200 : 401).json({});
 };
 
 export const postDescription: Direction = async (req, res) => {
@@ -66,7 +66,7 @@ export const postDescription: Direction = async (req, res) => {
 		await image.save();
 	}
 
-	return res.json({});
+	return res.status(image ? 200 : 401).json({});
 };
 
 export const postLike: Direction = async (req, res) => {
@@ -86,11 +86,9 @@ export const postLike: Direction = async (req, res) => {
 		image.dislikes = (like === Score.LIKE) ? actDislike : actLike;
 
 		await image.save();
-
-		return res.json({ likes: image.likes, dislikes: image.dislikes });
 	}
 
-	return res.json(image);
+	return res.status(image ? 200 : 401).json({});
 };
 
 export const postFavorite: Direction = async (req, res) => {
@@ -104,11 +102,9 @@ export const postFavorite: Direction = async (req, res) => {
 			: [username, ...image.favorites];
 
 		await image.save();
-
-		return res.json({ favorite: image.favorites });
 	}
 
-	return res.json(image);
+	return res.status(image ? 200 : 401).json({});
 };
 
 export const postComment: Direction = async (req, res) => {
@@ -141,7 +137,7 @@ export const postComment: Direction = async (req, res) => {
 		return res.json({ comment: newComment });
 	}
 
-	return res.json({});
+	return res.status(401).json({});
 };
 
 export const deleteImage: Direction = async (req, res) => {
@@ -160,5 +156,5 @@ export const deleteImage: Direction = async (req, res) => {
 		await image.remove();
 	}
 
-	return res.json({});
+	return res.status(image ? 200 : 401).json({});
 };

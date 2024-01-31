@@ -13,35 +13,30 @@
 		SideImage,
 		ImageOptions
 	} from '$lib/components';
-	import { UserRole } from '$lib/enums';
+	import { Method, UserRole } from '$lib/enums';
 	import { user } from '$lib/stores';
 
 	export let data: PageServerData & ResponseImage;
 	
 	let description = false;
 	let isValidUser = false;
-	let { image, comments, sidebarImages } = data;
 
 	afterUpdate(() => {
-		isValidUser = $user !== null && ($user?.username === image?.author ||
+		isValidUser = $user !== null && ($user?.username === data.image?.author ||
 			$user?.role !== UserRole.EDITOR);
 	});
 
-	afterNavigate(async () => {
-		image = data.image;
-		comments = data.comments;
-		sidebarImages = data.sidebarImages;
-
-		await axios({ method: 'POST', url: '/gallery/views/' + image.id })
+	afterNavigate(() => {
+		axios({ method: Method.POST, url: '/gallery/views/' + data.image.id })
 			.catch(err => console.log(err?.message));
 	});
 </script>
 
 <div id="image-container">
 	<div id="image-box">
-		<ImageBox bind:image={image} bind:description={description}>
+		<ImageBox bind:image={data.image} bind:description={description}>
 			{#if isValidUser}
-				<ImageOptions bind:image={image} bind:description={description} />
+				<ImageOptions bind:image={data.image} bind:description={description} />
 			{/if}
 		</ImageBox>
 	</div>
@@ -52,7 +47,7 @@
 				Recent Uploads
 			</h2>
 			<BoxGallery className='image-sidebar'>
-				{#each sidebarImages as image}
+				{#each data.sidebarImages as image}
 					<SideImage image={image} />
 				{/each}
 			</BoxGallery>
@@ -60,19 +55,19 @@
 	</div>
 	<div id="comment-container">
 		{#if $user}
-			<CommentForm id={image?.id} bind:comments={comments} />
+			<CommentForm id={data.image?.id} bind:comments={data.comments} />
 			{:else}
 			<Register />
 		{/if}
 		<div id="comments-container">
 			<h2 class="title">
 				<i class="fa-solid fa-message title-icon"></i>
-				{comments.length} Comments
+				{data.comments.length} Comments
 			</h2>
-			{#if comments.length}
+			{#if data.comments.length}
 				<div>
-					{#each comments as comment (comment.id)}
-						<Comment bind:comments={comments} bind:comment={comment} />
+					{#each data.comments as comment (comment.id)}
+						<Comment bind:comments={data.comments} bind:comment={comment} />
 					{/each}
 				</div>
 			{/if}

@@ -3,18 +3,15 @@
   import type { ResponseForeign } from '$lib/global';
   import { BoxGallery, Gallery, Image, NavUser } from '$lib/components';
   import { InnerText } from '$lib/enums';
-  import { images } from '$lib/stores';
 	
 	export let data: PageData & ResponseForeign;
-
-	images.setImages(data.favorites);
 </script>
 
 <Gallery>
 	<NavUser text={InnerText.FAVORITES} username={data.foreignUser.username} />
 	<BoxGallery>
-		{#if $images.length > 0}
-			{#each $images as image}
+		{#if data.favorites.length > 0}
+			{#each data.favorites as image}
 				<Image image={image} />
 			{/each}
 		{/if}

@@ -19,7 +19,7 @@ export const postComment: Direction = async (req, res) => {
 		await comment.save();
 	}
 
-	return res.json();
+	return res.status(comment ? 200 : 401).json();
 };
 
 export const postLike: Direction = async (req, res) => {
@@ -39,11 +39,9 @@ export const postLike: Direction = async (req, res) => {
 		comment.dislikes = (like === Score.LIKE) ? actDislike : actLike;
 
 		await comment.save();
-
-		return res.json();
 	}
 
-	return res.json(comment);
+	return res.status(comment ? 200 : 401).json(comment);
 };
 
 export const deleteComment: Direction = async (req, res) => {
@@ -70,5 +68,5 @@ export const deleteComment: Direction = async (req, res) => {
 		await comment.remove();
 	}
 
-	return res.json();
+	return res.status(comment ? 200 : 401).json();
 };
