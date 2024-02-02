@@ -7,7 +7,7 @@
 
 	const handleClick = () => {
 		setTimeout(() => className = !visible ? 'is-visible' : 'occult');
-		setTimeout(() => visible = !visible, visible ? 355 : 0);
+		setTimeout(() => visible = !visible, visible ? 205 : 0);
 	};
 </script>
 
@@ -40,6 +40,10 @@
 						<path d={IconsPaths.GITHUB} />
 					</svg>
 					Github Repo
+					<a
+						href="https://github.com/santiagocuebas/sveltekit-imgshare-app"
+						target="_blank"
+					><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
 				</li>
 				<li>
 					<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#ffffff">
@@ -112,11 +116,11 @@
 			@apply flex absolute flex-col right-2.5 bottom-12 z-[-1];
 
 			&.occult {
-				animation: .35s linear 0s isvisible;
+				animation: .2s linear 0s occultbox;
 			}
 
 			&.is-visible {
-				animation: .35s linear 0s occultando;
+				animation: .2s linear 0s showbox;
 			}
 
 			& button {
@@ -127,13 +131,13 @@
 				@apply flex flex-col py-2.5 bg-[#5383d3] rounded-ss-lg;
 
 				& li {
-					@apply flex relative items-center w-full py-[5px] px-5 text-[18px] cursor-default gap-2.5;
+					@apply flex relative items-center w-full py-[5px] px-5 text-[18px] cursor-default gap-2.5 [&_a]:text-white;
 				}
 			}
 		}
 	}
 
-	@keyframes isvisible {
+	@keyframes occultbox {
 		0% {
 			transform: translateY(0);
 		}
@@ -143,7 +147,7 @@
 		}
 	}
 
-	@keyframes occultando {
+	@keyframes showbox {
 		0% {
 			transform: translateY(190px);
 		}

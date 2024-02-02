@@ -22,7 +22,6 @@
 	};
 
 	async function handleSubmit(option: string, choise: string) {
-		isPrivate = choise;
 		holder[option] = choise.toUpperCase();
 		visible[option] = false;
 		
@@ -35,6 +34,8 @@
 				console.error(err.message);
 				return [];
 			});
+	
+		isPrivate = choise;
 	}
 </script>
 

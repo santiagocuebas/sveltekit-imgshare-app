@@ -7,20 +7,17 @@
 	
 	export let data: PageData & ResponseForeign;
 
-	$: ({ username } = data.foreignUser);
-
 	let isPrivate = PublicText.PUBLIC;
+	let images = data.images;
+
+	$: ({ username } = data.foreignUser);
 </script>
 
 <Gallery>
-	<NavUser
-		bind:images={data.images}
-		bind:isPrivate={isPrivate}
-		username={username}
-	/>
+	<NavUser bind:images={images} bind:isPrivate={isPrivate} {username} />
 	<BoxGallery>
-		{#if data.images.length}
-			{#each data.images as image}
+		{#if images.length}
+			{#each images as image}
 				<Image image={image} />
 			{/each}
 		{:else}
