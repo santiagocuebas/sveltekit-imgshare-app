@@ -1,6 +1,6 @@
+import type { IComment, IImage, IUser } from '../types/global.js';
 import { Like } from 'typeorm';
 import { Image, Comment, User } from '../models/index.js';
-import { IComment, IImage, IUser } from '../global.js';
 
 export const getId = async (identifier = '', num = 8): Promise<string> => {
 	const validChar = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -14,9 +14,11 @@ export const getId = async (identifier = '', num = 8): Promise<string> => {
 
 	if (identifier === 'Image') {
 		data = await Image.findOneBy({ id });
-	} else if (identifier === 'Comment') {
+	}
+	else if (identifier === 'Comment') {
 		data = await Comment.findOneBy({ id });
-	} else {
+	}
+	else {
 		data = await User.findOneBy({ avatar: Like(`%${id}`) });
 	}
 

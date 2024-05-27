@@ -1,24 +1,30 @@
 <script lang="ts">
-	import type { IKeys } from "$lib/global";
+	import type { IKeys } from "$lib/types/global";
 
+	export let success: boolean;
 	export let message: string | IKeys<string>;
 </script>
 
-<div class:errors={typeof message !== 'string'}>
-	{#if typeof message !== 'string'}
+<div class:errors={!success}>
+	{#if !success}
 		<p>Have been found the next errors:</p>
+	{/if}
+	{#if typeof message !== 'string'}
 		<ul>
 			{#each Object.entries(message) as [key, value]}
 				<li>&#x25CF; {key}: {value}</li>
 			{/each}
 		</ul>
+	{:else}
+		<p>{message}</p>
+	{/if}
+	{#if success}
+		<i class="fa-solid fa-check"></i>
+	{:else}
 		<i class="fa-solid fa-xmark"></i>
 		<button on:click>
 			<i class="fa-solid fa-xmark"></i>
 		</button>
-	{:else}
-		<p>{message}</p>
-		<i class="fa-solid fa-check"></i>
 	{/if}
 </div>
 

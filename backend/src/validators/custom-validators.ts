@@ -1,11 +1,13 @@
 import type { CustomValidator } from 'express-validator';
-import type { ILink } from '../global.js';
 import { extname } from 'path';
-import { Ext } from '../enums.js';
 import { matchPassword } from '../libs/index.js';
 import { User } from '../models/index.js';
+import { Ext, Score, UserRole } from '../types/enums.js';
+import { ILink } from '../types/global.js';
 
-export const isValidUsername: CustomValidator = async (username: string): Promise<boolean> => {
+const roles: string[] = Object.values(UserRole);
+
+export const isValidUsername: CustomValidator = async (username) => {
 	const user: User | null = await User.findOneBy({ username });
 
 	if (user !== null) throw new Error('Username already in use');
@@ -13,7 +15,7 @@ export const isValidUsername: CustomValidator = async (username: string): Promis
 	return true;
 };
 
-export const isValidEmail: CustomValidator = async (email: string): Promise<boolean> => {
+export const isValidEmail: CustomValidator = async (email) => {
 	const user: User | null = await User.findOneBy({ email });
 
 	if (user !== null) throw new Error('E-mail already in use');
@@ -21,18 +23,18 @@ export const isValidEmail: CustomValidator = async (email: string): Promise<bool
 	return true;
 };
 
-export const confirmPassword: CustomValidator = (value: string, { req: { body } }): boolean => {
-	if (value !== body.password) throw new Error('Password not match');
+export const confirmPassword: CustomValidator = (value, { req }) => {
+	if (value !== req.body.password) throw new Error('Password not match');
 
 	return true;
 };
 
-export const isRegisterUser: CustomValidator = async (value: string): Promise<boolean> => {
+export const isRegisterUser: CustomValidator = async (value) => {
 	const user: User | null = await User.findOne({
 		where: [
 			{ username: value },
-			{ email: value }
-		]
+			{ email: value },
+		],
 	});
 
 	if (!user) throw new Error('The user no exists');
@@ -40,15 +42,15 @@ export const isRegisterUser: CustomValidator = async (value: string): Promise<bo
 	return true;
 };
 
-export const isCorrectPassword: CustomValidator = async (value: string, { req: { body } }): Promise<boolean> => {
-	if (body.username) {
+export const isCorrectPassword: CustomValidator = async (value, { req }) => {
+	if (req.body.username) {
 		const user: User | null = await User.findOne({
 			where: [
-				{ username: body.username },
-				{ email: body.username }
-			]
+				{ username: req.body.username },
+				{ email: req.body.username },
+			],
 		});
-	
+
 		if (user) {
 			const match = await matchPassword(value, user.password);
 			if (match) return true;
@@ -58,42 +60,61 @@ export const isCorrectPassword: CustomValidator = async (value: string, { req: {
 	throw new Error('Incorrect password');
 };
 
-export const isCorrectCurrentPassword: CustomValidator = async (value: string, { req: { user } }): Promise<boolean> => {
-	const match: boolean = await matchPassword(value, user.password);
+export const isValidScore: CustomValidator = async (value) => {
+	return value === Score.LIKE || value === Score.DISLIKE;
+};
+
+export const isCorrectCurrentPassword: CustomValidator = async (value, { req }) => {
+	const match: boolean = await matchPassword(value, req.user.password);
 
 	if (!match) throw new Error('Incorrect password');
 
 	return true;
 };
 
-export const isValidTitle: CustomValidator = async (value: string, { req: { user } }): Promise<boolean> => {
-	const parseLinks: ILink[] = JSON.parse(user.links);
-
-	for (const link of parseLinks) {
+export const isValidTitle: CustomValidator = async (value, { req }) => {
+	for (const link of req.user.links) {
 		if (link.title === value) throw new Error('This title already exists');
 	}
 
 	return true;
 };
 
-export const isValidURL: CustomValidator = async (value: string, { req: { user } }): Promise<boolean> => {
-	const parseLinks: ILink[] = JSON.parse(user.links);
-
-	for (const link of parseLinks) {
+export const isValidURL: CustomValidator = async (value, { req }) => {
+	for (const link of req.user.links) {
 		if (link.url === value) throw new Error('This URL already exists');
 	}
 
 	return true;
 };
 
-export const limitLinks: CustomValidator = async (_value: string, { req: { user } }): Promise<boolean> => {
-	const parseLinks: ILink[] = JSON.parse(user.links);
-
-	if (parseLinks.length >= 12) {
+export const limitLinks: CustomValidator = async (_value, { req }) => {
+	if (req.user.links.length >= 12) {
 		throw new Error('Max number of links reached');
 	}
 
 	return true;
+};
+
+export const existsLink: CustomValidator = async (value, { req }) => {
+	return req.user.links
+		.map((link: ILink) => link.title)
+		.includes(value);
+};
+
+export const existsForeignLink: CustomValidator = async (value, { req }) => {
+	return req.foreignUser.links
+		.map((link: ILink) => link.title)
+		.includes(value);
+};
+
+export const existsRole: CustomValidator = (value) => {
+	return roles.includes(value) && value !== UserRole.SUPER;
+};
+
+export const validPermissions: CustomValidator = (value, { req }) => {
+	return req.user.role === UserRole.SUPER
+		|| (req.user.role === UserRole.ADMIN && value !== UserRole.ADMIN);
 };
 
 export const isUndefinedImage: CustomValidator = (_value, { req }) => {

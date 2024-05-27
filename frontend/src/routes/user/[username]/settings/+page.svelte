@@ -1,16 +1,15 @@
 <script lang="ts">
+	import type { AxiosError } from "axios";
   import type {
-		ILink,
-		IKeys,
-		ResponseSettings,
 		SettingsProps,
-		DisabledButton
-	} from "$lib/global.js";
+		DisabledButton,
+		IResProps
+	} from "$lib/types/global.js";
   import { onMount } from "svelte";
+	import validator from 'validator';
 	import axios from "$lib/axios";
 	import { BoxSettings, Alert } from "$lib/components";
   import { ButtonText, SettingText } from "$lib/dictionary";
-	import { Method, Settings } from '$lib/enums';
 	import {
 		setSettingsProps,
 		isDisabledButton,
@@ -18,10 +17,12 @@
     handleForm
 	} from "$lib/services";
   import { user } from "$lib/stores";
+	import { Method, Settings } from '$lib/types/enums';
 
 	let settingChoise = '';
+	let passwordValue = { old: '', new: '', confirm: '' };
 	let alert = false;
-	let message: string | IKeys<string> | null;
+	let resProps: IResProps | null = null;
 	let settingsProps: SettingsProps;
 	let isDisabled: DisabledButton;
 
@@ -45,33 +46,53 @@
 		if (this.files) settingsProps.avatar = await loadImage(this.files[0]);
 	}
 	
-  const handleDelete = async (link: ILink) => {
-		const data: ResponseSettings = await axios({
-			method: Method.DELETE,
+	export const checkOldPassword = async () => {
+		const options = {
+			method: 'POST',
+			url: '/api/auth/password',
+			data: { password: passwordValue.old }
+		};
+
+		settingsProps.password.old = passwordValue.old.length >= 8 &&
+			await axios(options)
+				.then(res => res.data)
+				.catch(() => false);
+	};
+
+	export const checkNewPassword = () => {
+		settingsProps.password.new = validator.isStrongPassword(passwordValue.new) &&
+			validator.isLength(passwordValue.new, { max: 40 });
+	};
+
+	export const checkConfirmPassword = () => {
+		settingsProps.password.confirm = passwordValue.confirm === passwordValue.new;
+	};
+	
+  const handleDelete = async (title: string) => {
+		resProps = await axios({
+			method: Method.POST,
 			url: `/settings/deletelink`,
-			data: link
+			data: { title }
 		}).then(res => res.data)
-			.catch(err => {
+			.catch((err: AxiosError) => {
 				console.log(err.message);
-				return { message: { log: 'Logged Error' } };
+				return err.response?.data ?? { success: false, message: 'Logged Error' };
 			});
 
-		if (typeof data.message === 'string') user.removeLink(link);
+		if (typeof resProps?.message === 'string') user.removeLink(title);
 
-		message = data.message;
-
-		if (typeof message === 'string') setTimeout(() => message = null, 3000);
+		if (resProps?.success) setTimeout(() => resProps = null, 5000);
   };
 
 	async function handleSubmit(this: HTMLFormElement) {
-		const data: ResponseSettings = await handleForm(this)
-			.catch(err => {
+		resProps = await handleForm(this)
+			.catch((err: AxiosError) => {
 				console.log(err.message);
-				return { message: { log: 'Logged Error' } };
+				return err.response?.data ?? { success: false, message: 'Logged Error' };
 			});
 
-		if (typeof data.message === 'string') {
-			if (this.id === Settings.AVATAR) user.changeAvatar(data.filename);
+		if (resProps?.success) {
+			if (this.id === Settings.AVATAR) user.changeAvatar(resProps.filename ?? '');
 			else if (this.id === Settings.DESCRIPTION) {
 				user.changeDescription(settingsProps.description);
 			} else if (this.id === Settings.LINKS) user.addLink(settingsProps.link);
@@ -80,11 +101,9 @@
 				settingsProps = setSettingsProps($user);
 				isDisabled = isDisabledButton($user);
 			}
+
+			setTimeout(() => resProps = null, 5000);
 		}
-
-		message = data.message;
-
-		if (typeof message === 'string') setTimeout(() => message = null, 3000);
 	}
 
 	onMount(() => {
@@ -95,8 +114,12 @@
 	});
 </script>
 
-{#if message}
-	<BoxSettings message={message} on:click={() => message = null} />
+{#if resProps}
+	<BoxSettings
+		success={resProps.success}
+		message={resProps.message}
+		on:click={() => resProps = null}
+	/>
 {/if}
 
 {#if alert}
@@ -153,7 +176,8 @@
 								name="actPassword"
 								placeholder="Actual Password"
 								autocomplete="off"
-								bind:value={settingsProps.password.old}
+								bind:value={passwordValue.old}
+								on:keyup={checkOldPassword}
 							>
 							<label for="newPassword">
 								Enter the new password:
@@ -163,7 +187,8 @@
 								name="password"
 								placeholder="New Password"
 								autocomplete="off"
-								bind:value={settingsProps.password.new}
+								bind:value={passwordValue.new}
+								on:keyup={checkNewPassword}
 							>
 							<label for="confirmPassword">
 								Confirm the new password:
@@ -173,7 +198,8 @@
 								name="confirmPassword"
 								placeholder="Confirm Password"
 								autocomplete="off"
-								bind:value={settingsProps.password.confirm}
+								bind:value={passwordValue.confirm}
+								on:keyup={checkConfirmPassword}
 							>
 						{/if}
 						{#if value === Settings.LINKS}
@@ -184,6 +210,7 @@
 								type="text"
 								name="title"
 								placeholder="Title"
+								maxlength=40
 								bind:value={settingsProps.link.title}
 							>
 							<label for="url">
@@ -193,7 +220,7 @@
 								type="url"
 								name="url"
 								placeholder="URL"
-								maxlength="4000"
+								maxlength=.4000
 								bind:value={settingsProps.link.url}
 							>
 						{/if}
@@ -206,10 +233,10 @@
 				{/if}
 				{#if value === Settings.LINKS && settingChoise === Settings.LINKS && $user?.links.length}
 					<ul>
-						{#each $user.links as link (link.title)}
-							<li title={link.url}>
-								{link.title}
-								<button on:click|preventDefault={() => handleDelete(link)}>
+						{#each $user.links as { title, url } (title)}
+							<li title={url}>
+								{title}
+								<button on:click|preventDefault={() => handleDelete(title)}>
 									<i class="fa-solid fa-xmark fa-lg"></i>
 								</button>
 							</li>

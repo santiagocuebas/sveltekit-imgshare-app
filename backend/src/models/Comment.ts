@@ -1,4 +1,4 @@
-import type { IComment } from '../global.js';
+import type { IComment } from '../types/global.js';
 import { Entity, Column } from 'typeorm';
 import { Content } from './abstract/Content.js';
 
@@ -13,9 +13,9 @@ export class Comment extends Content implements IComment {
 	@Column('varchar')
 	public receiver!: string;
 
-	@Column('text')
+	@Column('string', { length: 4200, default: '' })
 	public comment!: string;
-	
+
 	@Column('boolean', { default: false })
 	public edit!: boolean;
 }

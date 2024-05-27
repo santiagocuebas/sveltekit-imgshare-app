@@ -1,4 +1,4 @@
-import type { ILink, IUser, RawUser } from "$lib/global";
+import type { ILink, IUser } from "$lib/types/global";
 import { writable } from "svelte/store";
 
 function createUser(user: IUser | null) {
@@ -8,28 +8,25 @@ function createUser(user: IUser | null) {
 		subscribe,
 		changeAvatar: (avatar: string) => update(user => {
 			if (user) user.avatar = avatar;
+
 			return user;
 		}),
 		changeDescription: (description: string) => update(user => {
 			if (user) user.description = description;
+
 			return user;
 		}),
 		addLink: (link: ILink) => update(user => {
 			if (user) user.links = [link, ...user.links];
-			return user;
-		}),
-		removeLink: (link: ILink) => update(user => {
-			if (user) user.links = user.links.filter(({ title }) => title !== link.title);
-			return user;
-		}),
-		setUser: (user: RawUser & { links: string }) => {
-			const newUser: IUser = {
-				...user,
-				links: JSON.parse(user.links)
-			};
 
-			set(newUser);
-		},
+			return user;
+		}),
+		removeLink: (title: string) => update(user => {
+			if (user) user.links = user.links.filter(link => link.title !== title);
+
+			return user;
+		}),
+		setUser: (user: IUser) => set(user),
 		resetUser: () => set(null)
 	}
 }

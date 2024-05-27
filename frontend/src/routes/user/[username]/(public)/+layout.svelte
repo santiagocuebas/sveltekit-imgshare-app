@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { LayoutData } from './$types';
-  import type { ResponseForeign } from '$lib/global';
+  import type { ResponseForeign } from '$lib/types/global';
   import { beforeUpdate } from 'svelte';
-  import { LinksOptions, UserRole } from '$lib/enums';
   import { user } from '$lib/stores';
+  import { LinksOptions, UserRole } from '$lib/types/enums';
 	
 	export let data: LayoutData & ResponseForeign;
 

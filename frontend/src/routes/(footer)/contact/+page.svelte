@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { IKeys, ResponseSubmit } from "$lib/global";
+	import type { IKeys, ResponseSubmit } from "$lib/types/global";
   import { ErrorBox } from "$lib/components";
-	import { Method } from "$lib/enums";
   import { handleForm } from "$lib/services";
+	import { Method } from "$lib/types/enums";
 	
 	const contactData: IKeys<string> = { subject: '', email: '', message: '' };
 	let url: string | null = null;

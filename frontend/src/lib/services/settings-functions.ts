@@ -4,19 +4,14 @@ import type {
 	ILink,
 	IUser,
 	SettingsProps
-} from "$lib/global";
+} from "$lib/types/global";
 import isURL from 'validator/lib/isURL';
-import {
-	checkOldPassword,
-	checkNewPassword,
-	checkConfirmPassword
-} from './index';
 
 export function setSettingsProps({ avatar, description }: IUser): SettingsProps {
 	return {
 		avatar,
 		description,
-		password: { old: '', new: '', confirm: '' },
+		password: { old: false, new: false, confirm: false },
 		link: { title: '', url: '' }
 	}
 }
@@ -27,10 +22,8 @@ export function isDisabledButton(
 	return {
 		avatar: (value: string) => value !== avatar,
 		description: (value: string) => value !== description,
-		password: (password: IKeys<string>) => {
-			return checkOldPassword(password.old, password.new, password.confirm) &&
-				checkNewPassword(password.new) &&
-				checkConfirmPassword(password.confirm, password.new);
+		password: (password: IKeys<boolean>) => {
+			return password.old && password.new && password.confirm;
 		},
 		link: (link: ILink) => {
 			return link.title.length > 0 &&

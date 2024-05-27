@@ -1,14 +1,17 @@
+import { Score } from "$lib/types/enums";
+
 export const catchLike = (
-	optOne: string[],
-	optTwo: string[],
+	scores: [string[], string[]],
+	score: string,
 	username: string
 ) => {
-	if (!optOne.includes(username)) {
-		optOne.push(username);
-		optTwo = optTwo.filter(opt => opt !== username);
-	} else {
-		optOne = optOne.filter(opt => opt !== username);
-	}
+	let patchedcores = (score === Score.LIKE) ? scores : scores.reverse();
 
-	return [ optOne, optTwo ];
+	patchedcores[0] = patchedcores[0].includes(username)
+		? patchedcores[0].filter(name => username !== name)
+		: [username, ...patchedcores[0]];
+
+	patchedcores[1] = patchedcores[1].filter(name => username !== name);
+
+	return (score === Score.LIKE) ? patchedcores : patchedcores.reverse();
 };

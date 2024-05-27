@@ -1,18 +1,22 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
   import axios from "$lib/axios";
-  import { Method } from "$lib/enums";
   import { user } from "$lib/stores";
+  import { Method } from "$lib/types/enums";
 
 	export let alert: boolean;
 
 	const deleteUser = async () => {
 		alert = false;
 
-		await axios({ method: Method.DELETE, url: `/settings/deleteuser` });
+		const data = await axios({ method: Method.DELETE, url: `/settings/deleteuser` })
+			.catch(() => null);
 
-		user.resetUser();
-		goto('/');
+		if (data !== null) {
+			axios.defaults.headers.common['Authorization'] = '';
+			user.resetUser();
+			goto('/');
+		}
 	};
 </script>
 

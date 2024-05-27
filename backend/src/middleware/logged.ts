@@ -1,11 +1,12 @@
-import type { Direction } from '../global.js';
-import { UserRole } from '../enums.js';
+import type { Direction } from '../types/global.js';
 import { decodedToken } from '../libs/index.js';
 import { User } from '../models/index.js';
+import { UserRole } from '../types/enums.js';
 
 export const isValidToken: Direction = async (req, res, next) => {
-	const token = req.headers['authorization'];
-	const user = await decodedToken(String(token)).catch(() => null);
+	const token = String(req.headers['authorization']);
+	const user = await decodedToken(token)
+		.catch(() => null);
 
 	if (user === null) return res.status(401).json({ redirect: true });
 
@@ -15,8 +16,9 @@ export const isValidToken: Direction = async (req, res, next) => {
 };
 
 export const isNotValidToken: Direction = async (req, res, next) => {
-	const token = req.headers['authorization'];
-	const user = await decodedToken(String(token)).catch(() => null);
+	const token = String(req.headers['authorization']);
+	const user = await decodedToken(token)
+		.catch(() => null);
 
 	if (user === null) return next();
 
@@ -32,16 +34,17 @@ export const isAdminToken: Direction = async (req, res, next) => {
 };
 
 export const isValidUser: Direction = async (req, res, next) => {
-	const user = await User.findOneBy({ username: req.params.username });
+	console.log(req.query);
+	const user = await User.findOneBy({ username: String(req.query.username) });
 
 	if (
-		user !== null &&
-		req.user.username !== user.username &&
-		user.role !== UserRole.SUPER &&
-		(user.role !== UserRole.ADMIN || req.user.role === UserRole.SUPER)
+		user !== null
+		&& req.user.username !== user.username
+		&& user.role !== UserRole.SUPER
+		&& (user.role !== UserRole.ADMIN || req.user.role === UserRole.SUPER)
 	) {
 		req.foreignUser = user;
-		
+
 		return next();
 	}
 
@@ -49,8 +52,9 @@ export const isValidUser: Direction = async (req, res, next) => {
 };
 
 export const getDataToken: Direction = async (req, _res, next) => {
-	const token = req.headers['authorization'];
-	const user = await decodedToken(String(token)).catch(() => null);
+	const token = String(req.headers['authorization']);
+	const user = await decodedToken(token)
+		.catch(() => null);
 
 	if (user !== null) req.user = user;
 

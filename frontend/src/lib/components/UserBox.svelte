@@ -2,9 +2,9 @@
   import { afterUpdate } from "svelte";
 	import { format } from 'timeago.js';
 	import axios from "$lib/axios";
-  import { Method, UserRole } from "$lib/enums";
 	import { clickOutside, handleForm } from "$lib/services";
 	import { user as properUser, selectUser as user } from '$lib/stores';
+  import { Method, UserRole } from "$lib/types/enums";
 	
 	export let show: boolean;
 	export let alert: boolean;
@@ -20,48 +20,44 @@
 	}
   
   async function handleSubmit(this: HTMLFormElement) {
-		const data: { change: boolean } = await handleForm(this)
-			.catch(() => {
-				return { change: false };
-			});
+		const change: boolean = await handleForm(this)
+			.then(data => data.change)
+			.catch(() => false);
 		
-		if (data.change) user.changeDescription(description);
+		if (change) user.changeDescription(description);
 		visible = false;
 
-		showBox(data.change);
+		showBox(change);
 	}
 
 	async function deleteLink(title: string) {
-		const data: { change: boolean } = await axios({
-			method: Method.DELETE,
-			url: `/admin/${$user?.username}/link`, 
+		const change: boolean = await axios({
+			method: Method.POST,
+			url: '/admin/link?username=' + $user?.username, 
 			data: { link: title }
-		}).then(res => res.data)
-			.catch(() => {
-				return { change: false };
-			});
+		}).then(res => res.data?.change ?? false)
+			.catch(() => false);
 
-		if (data.change && $user) {
+		if (change && $user) {
 			const reloadLinks = $user.links.filter(link => link.title !== title);
+
 			user.changeLinks(reloadLinks);
 		}
 		
-		showBox(data.change);
+		showBox(change);
 	}
 
 	async function changeRole(this: HTMLOptionElement) {
-		const data: { change: boolean } = await axios({
+		const change: boolean = await axios({
 			method: Method.POST,
-			url: `/admin/${$user?.username}/role`,
+			url: '/admin/role?username=' + $user?.username,
 			data: { role: this.value }
-		}).then(res => res.data)
-			.catch(() => {
-				return { change: false };
-			});
+		}).then(res => res.data?.change ?? false)
+			.catch(() => false);
 
 		user.changeRole(this.value);
 		
-		showBox(data.change);
+		showBox(change);
 	}
 
 	afterUpdate(() => {
@@ -101,7 +97,7 @@
 		<div>
 			<h3>Description:</h3>
 				<form
-					action="/admin/{$user?.username}/description"
+					action="/admin/description?username={$user?.username}"
 					method={Method.POST}
 					on:submit|preventDefault={handleSubmit}
 					use:clickOutside

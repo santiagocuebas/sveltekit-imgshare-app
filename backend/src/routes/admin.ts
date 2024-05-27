@@ -1,70 +1,27 @@
 import { Router } from 'express';
-import { Like } from 'typeorm';
 import { adminCtrl } from '../controllers/index.js';
-import { UserRole } from '../enums.js';
-import {
-	isValidToken,
-	isAdminToken,
-	isValidUser
-} from '../middleware/logged.js';
-import { User } from '../models/index.js';
+import { isValidToken, isAdminToken, isValidUser } from '../middleware/logged.js';
+import { validate } from '../middleware/validations.js';
+import * as array from '../validators/arrays-validators.js';
 
 const router = Router();
 
 router.use(isValidToken, isAdminToken);
 
-router.get('/', async (_req, res) => {
-	// Find all users
-	const users = await User.find({
-		select: {
-			username: true,
-			email: true,
-			avatar: true,
-			description: true,
-			role: true,
-			links: true,
-			createdAt: true
-		},
-		where: [
-			{ role: UserRole.EDITOR },
-			{ role: UserRole.MOD },
-			{ role: UserRole.ADMIN }
-		],
-		order: { createdAt: 'DESC' }
-	});
+router.get('/', adminCtrl.getUsers);
 
-	return res.json({ users });
-});
+router.use(isValidUser);
 
-router.get('/:username', async (req, res) => {
-	// Get specific user
-	const users = await User.find({
-		select: {
-			username: true,
-			email: true,
-			avatar: true,
-			description: true,
-			role: true,
-			links: true,
-			createdAt: true
-		},
-		where: [
-			{ role: UserRole.EDITOR, username: Like(`%${req.params.username}%`) },
-			{ role: UserRole.MOD, username: Like(`%${req.params.username}%`) },
-			{ role: UserRole.ADMIN, username: Like(`%${req.params.username}%`) }
-		],
-		order: { createdAt: 'DESC' }
-	});
+router.post(
+	'/description',
+	validate(array.UserDescription),
+	adminCtrl.postDescription,
+);
 
-	return res.json({ users });
-});
+router.post('/role', validate(array.Role), adminCtrl.postRole);
 
-router.post('/:username/description', isValidUser, adminCtrl.postDescription);
+router.post('/link', validate(array.DeleteForeignLink), adminCtrl.deleteLink);
 
-router.post('/:username/role', isValidUser, adminCtrl.postRole);
-
-router.delete('/:username', isValidUser, adminCtrl.deleteUser);
-
-router.delete('/:username/link', isValidUser, adminCtrl.deleteLink);
+router.delete('/', adminCtrl.deleteUser);
 
 export default router;

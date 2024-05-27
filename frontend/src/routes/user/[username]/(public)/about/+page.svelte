@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-  import type { ResponseForeign } from '$lib/global';
+  import type { ResponseForeign } from '$lib/types/global';
 	import { format } from 'timeago.js';
   import { Gallery, NavUser } from '$lib/components';
-  import { InnerText } from '$lib/enums';
+  import { InnerText } from '$lib/types/enums';
 	
 	export let data: PageData & ResponseForeign;
 

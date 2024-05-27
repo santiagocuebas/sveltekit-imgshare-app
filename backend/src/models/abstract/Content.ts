@@ -1,27 +1,27 @@
-import type { IContent } from '../../global.js';
+import type { IContent } from '../../types/global.js';
 import {
 	BaseEntity,
 	Column,
 	CreateDateColumn,
 	Entity,
-	PrimaryColumn
+	PrimaryColumn,
 } from 'typeorm';
 
 @Entity()
 export abstract class Content extends BaseEntity implements IContent {
-	@PrimaryColumn('varchar')
+	@PrimaryColumn('varchar', { nullable: false })
 	public id!: string;
-	
+
 	@Column('varchar', { nullable: false })
 	public author!: string;
 
-	@Column('varchar', { default: 'default.png' })
+	@Column('varchar', { nullable: false })
 	public avatar!: string;
 
-	@Column('simple-array')
+	@Column('text', { array: true, default: {} })
 	public likes!: string[];
 
-	@Column('simple-array')
+	@Column('text', { array: true, default: {} })
 	public dislikes!: string[];
 
 	@CreateDateColumn()

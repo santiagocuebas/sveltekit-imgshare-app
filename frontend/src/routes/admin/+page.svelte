@@ -1,20 +1,14 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
-  import type { IUserExtended } from '$lib/global';
+	import type { PageData } from './$types';
+  import type { IUserExtended } from '$lib/types/global';
   import { afterNavigate } from '$app/navigation';
 	import axios from '$lib/axios';
-	import {
-		Gallery,
-		BoxGallery,
-		UserCell,
-		NavAdmin,
-		UserBox
-	} from '$lib/components';
+	import { Gallery, BoxGallery, UserCell, NavAdmin, UserBox } from '$lib/components';
 	import { ClassName, TextData } from '$lib/dictionary';
-	import { Method } from '$lib/enums';
 	import { selectUser } from '$lib/stores';
+	import { Method } from '$lib/types/enums';
 	
-	export let data: PageServerData & { users: IUserExtended[] };
+	export let data: PageData & { users: IUserExtended[] };
 
 	let alert = false;
 	let show = false;
@@ -25,20 +19,20 @@
 		alert = false;
 		selectUser.resetUser();
 
-		const resData: { change: boolean } = await axios({
+		const change: boolean = await axios({
 			method: Method.DELETE,
-			url: `/admin/${username}`
-		}).then(res => res.data)
+			url: `/admin/?username=${username}`
+		}).then(res => res.data?.change ?? false)
 			.catch(err => {
 				console.log(err?.message);
-				return { change: false };
+				return false;
 			});
 
-		if (resData.change) {
+		if (change) {
 			data.users = data.users.filter(user => user.username !== username);
 		}
 
-		text = (resData.change) ? 'accept' : 'error';
+		text = (change) ? 'accept' : 'error';
 		show = true;
 
 		setTimeout(() => show = false, 3000);
@@ -48,7 +42,7 @@
 </script>
 
 {#if show}
-	<div id="user-message">
+	<div id="user-message" class={text}>
 		<i class='fa-solid {ClassName[text]}'></i>
 		<p>{TextData[text]}</p>
 	</div>
@@ -101,12 +95,16 @@
 	}
 
 	#user-message {
-    box-shadow: 0 0 4px #444444;
-		@apply flex fixed justify-around items-center w-[400px] h-[200px] left-auto right-auto bottom-20 bg-white z-[500];
+    box-shadow: 0 0 0 4px #0b7c14;
+		@apply flex fixed justify-around items-center w-[400px] h-[200px] left-auto right-auto bottom-20 bg-[#97f09e] rounded-lg z-[500];
+
+		&.error {
+			box-shadow: 0 0 0 2px #7c0b0b;
+			@apply bg-[#f09797];
+		}
 
 		& i {
-			outline: 2px solid #000000;
-			@apply flex place-content-center w-[180px] h-[180px] rounded-full text-[160px] [&.fa-check]:bg-[#97f09e] [&.fa-check]:text-[#0b7c14] [&.fa-xmark]:bg-[#f09797] [&.fa-xmark]:text-[#7c0b0b];
+			@apply flex place-content-center w-[180px] h-[180px] rounded-full text-[160px] [&.fa-check]:text-[#0b7c14] [&.fa-xmark]:text-[#7c0b0b];
 		}
 
 		& p {

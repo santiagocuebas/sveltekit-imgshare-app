@@ -1,4 +1,4 @@
-import type { IImage } from '../global.js';
+import type { IImage } from '../types/global.js';
 import { Entity, Column } from 'typeorm';
 import { Content } from './abstract/Content.js';
 
@@ -10,7 +10,7 @@ export class Image extends Content implements IImage {
 	@Column('varchar', { length: 40, nullable: false })
 	public title!: string;
 
-	@Column('text')
+	@Column('string', { length: 4200, default: '' })
 	public description!: string;
 
 	@Column('boolean', { default: true })
@@ -18,10 +18,10 @@ export class Image extends Content implements IImage {
 
 	@Column('int', { default: 0 })
 	public views!: number;
-	
-	@Column('simple-array')
+
+	@Column('text', { array: true, default: {} })
 	public favorites!: string[];
 
-	@Column('simple-array')
+	@Column('text', { array: true, default: {} })
 	public totalComments!: string[];
 }

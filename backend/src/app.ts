@@ -20,7 +20,7 @@ app.use(cors({
 	origin: ORIGIN,
 	methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
 	allowedHeaders: ['origin', 'authorization', 'x-requested-with', 'content-type', 'accept'],
-	credentials: true
+	credentials: true,
 }));
 app.use('*', cloudinaryConfig);
 
@@ -34,7 +34,6 @@ app.use('/api/contact', routes.Contact);
 app.use('/api/comment', routes.Comment);
 app.use('/api/gallery', routes.Gallery);
 app.use('/api/image', routes.Image);
-app.use('/api/search', routes.Search);
 app.use('/api/settings', routes.Settings);
 app.use('/api/user', routes.User);
 

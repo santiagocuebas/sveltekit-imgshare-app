@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { IComment } from "$lib/global";
+	import type { IComment } from "$lib/types/global";
 	import { format } from "timeago.js";
 	import axios from "$lib/axios";
-	import { Method, UserRole } from "$lib/enums";
   import { clickOutside, catchLike, handleForm } from "$lib/services";
 	import { user } from '$lib/stores';
+	import { Method, Score, UserRole } from "$lib/types/enums";
 
 	export let comment: IComment;
 	export let comments: IComment[];
@@ -28,35 +28,37 @@
 
 	async function editComment(this: HTMLFormElement) {
 		editable = false;
-		comment.edit = true;
-		comment.comment = description;
 
-		handleForm(this).catch(err => console.error(err.message));
+		const data = await handleForm(this)
+			.then(() => true)
+			.catch(() => false);
+
+		if (data) {
+			comment.edit = true;
+			comment.comment = description;
+		} else description = comment.comment;
 	}
 
-	async function handleLike(like: string) {
-		if ($user) {
-			const [ actLike, actDislike ] = (like === 'like')
-				? catchLike(comment.likes, comment.dislikes, $user.username)
-				: catchLike(comment.dislikes, comment.likes, $user.username);
+	async function handleLike(score: string) {
+		if (!$user) return;
 
-			comment.likes = (like === 'like') ? actLike : actDislike;
-			comment.dislikes = (like === 'like') ? actDislike : actLike;
+		const data = await axios({
+			method: Method.POST,
+			url:`/comment/${comment.id}/score?score=${score}`
+		}).then(() => true)
+			.catch(() => false);
 
-			axios({
-				method: Method.POST,
-				url:`/comment/${comment.id}/like`,
-				data: { like }
-			}).catch(err => console.error(err.message));
-		}
+		if (data) [comment.likes, comment.dislikes] = catchLike([comment.likes, comment.dislikes], score, $user.username);
 	}
 	
 	async function deleteComment() {
 		visible = false;
-		comments = comments.filter(({ id }) => id !== comment.id);
 
-		axios({ method: Method.DELETE, url: `/comment/${comment.id}` })
-			.catch(err => console.error(err.message));
+		const data = await axios({ method: Method.DELETE, url: `/comment/${comment.id}` })
+			.then(() => true)
+			.catch(() => false);
+
+		if (data) comments = comments.filter(({ id }) => id !== comment.id);
 	}
 </script>
 
@@ -105,14 +107,14 @@
 		</div>
 	{/if}
 	<div class="stats-comment">
-		<button on:click={() => handleLike('like')}>
+		<button on:click={() => handleLike(Score.LIKE)}>
 			<i
 				class="fa-solid fa-thumbs-up"
 				class:selected={comment.likes.includes($user?.username ?? '')}
 			></i>
 			{comment.likes.length}
 		</button>
-		<button on:click={() => handleLike('dislike')}>
+		<button on:click={() => handleLike(Score.DISLIKE)}>
 			<i
 				class="fa-solid fa-thumbs-up"
 				class:selected={comment.dislikes.includes($user?.username ?? '')}

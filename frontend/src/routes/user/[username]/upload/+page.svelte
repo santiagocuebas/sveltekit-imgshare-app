@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { PageServerData } from './$types';
-  import type { IImage, IKeys, ResponseSubmit } from '$lib/global';
+  import type { IImage, IKeys, ResponseSubmit } from '$lib/types/global';
   import { goto } from '$app/navigation';
 	import { ErrorBox, BoxGallery } from '$lib/components';
-	import { Method } from '$lib/enums';
   import { handleForm, loadImage } from '$lib/services';
+	import { Method } from '$lib/types/enums';
 
 	export let data: PageServerData & { images: IImage[] };
 

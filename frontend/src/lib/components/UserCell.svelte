@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { IUserExtended } from "$lib/global";
+	import type { IUserExtended } from "$lib/types/global";
 	import { format } from "timeago.js";
 
 	export let user: IUserExtended;

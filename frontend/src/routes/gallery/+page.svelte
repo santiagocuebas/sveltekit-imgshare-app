@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-  import type { IImage } from '$lib/global';
+  import type { IImage } from '$lib/types/global';
 	import {
 		Logo,
 		Gallery,

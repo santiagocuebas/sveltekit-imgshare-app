@@ -4,7 +4,7 @@ import axios from '$lib/axios';
 export const load = (async ({ url }) => {
 	const searchParams = url.searchParams.get('q');
 
-	return axios({ url: '/search/' + searchParams })
+	return axios({ url: '/gallery/search?searchParams=' + searchParams })
 		.then(res => res.data)
 		.catch(err => {
 			console.error(err.message);

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { IImage } from '$lib/global';
+	import type { IImage } from '$lib/types/global';
 	import axios from '$lib/axios';
-	import { Method, OrderText } from '$lib/enums';
 	import { clickOutside } from "$lib/services";
+	import { Method, OrderText } from '$lib/types/enums';
 
 	export let images: IImage[];
 	let visible = false;
@@ -14,7 +14,7 @@
 
 		images = await axios({
 			method: Method.GET,
-			url: `/gallery/order/${choise.toUpperCase()}`
+			url: `/gallery/?order=${choise.toUpperCase()}`
 		}).then(res => res.data)
 			.then(data => data.images)
 			.catch(err => {

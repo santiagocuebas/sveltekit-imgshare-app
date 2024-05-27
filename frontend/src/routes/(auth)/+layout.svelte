@@ -1,13 +1,14 @@
 <script lang="ts">
-	import type { IKeys, ResponseSubmit } from '$lib/global';
+	import type { IKeys, ResponseSubmit } from '$lib/types/global';
 	import { beforeNavigate, goto } from '$app/navigation';
   import { beforeUpdate } from 'svelte';
 	import jsCookie from 'js-cookie';
+	import axios from '$lib/axios';
 	import { ErrorBox } from '$lib/components';
   import { NODE_ENV } from '$lib/config';
-	import { Method } from '$lib/enums';
   import { handleForm } from "$lib/services";
   import { user } from '$lib/stores';
+	import { Method } from '$lib/types/enums';
 
 	let pathname: string;
 	let errors: IKeys<string> | null = null;
@@ -26,6 +27,7 @@
 			});
 
 		if (data.user) {
+			axios.defaults.headers.common['Authorization'] = data.token;
 			jsCookie.set('authenticate', data.token, {
 				expires: 15,
 				secure: NODE_ENV === 'production'

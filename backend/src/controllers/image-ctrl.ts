@@ -1,160 +1,144 @@
-import type { Direction } from '../global.js';
-import { v2 as cloudinary } from 'cloudinary';
-import { Score, UserRole } from '../enums.js';
-import { catchLike, getId, dataUri } from '../libs/index.js';
+import type { Direction } from '../types/global.js';
+import { SelectOption } from '../dictonary.js';
+import { queryOption, deleteFile, uploadFile, updateImage } from '../libs/index.js';
 import { Image, Comment } from '../models/index.js';
+import { Folder, UserRole } from '../types/enums.js';
+
+export const getImage: Direction = async (req, res) => {
+	const isPublic = !req.user || req.user.role === UserRole.EDITOR
+		? true
+		: undefined;
+
+	try {
+		// Find image if exists
+		const image = await Image.findOne({
+			where: [
+				{ id: req.params.id, isPublic },
+				{ id: req.params.id, author: req.user?.username ?? '' },
+			] });
+
+		if (image === null) throw new Error();
+
+		console.log(typeof image.views, image.views);
+
+		image.views++;
+
+		// Get comments of images
+		const comments = await Comment.find({
+			where: { imageId: image.id },
+			order: { createdAt: 'DESC' },
+		});
+
+		// Get recent images
+		const sidebarImages = await Image.find({
+			select: SelectOption.UnscoredImages,
+			where: { isPublic: true },
+			order: { createdAt: 'DESC' },
+			take: 20,
+		});
+
+		return res.json({ image, comments, sidebarImages });
+	}
+	catch {
+		return res.status(401).json(null);
+	}
+};
 
 export const postUpload: Direction = async (req, res) => {
-	const file = dataUri(req);
+	try {
+		const file = await uploadFile(req.file, Folder.PUBLIC, null, 'Image');
 
-	if (file) {
-		const imageId = await getId('Image');
-		
-		const data = await cloudinary.uploader
-			.upload(file, { public_id: imageId, folder: 'imgshare/' })
-			.catch(() => {
-				console.log('An error occurred while trying to uploaded the image');
-				return null;
-			});
+		if (file === null) throw undefined;
 
-		if (data) {
-			// Create a new image
-			const image = await Image.create({
-				id: imageId,
-				filename: data.secure_url,
-				author: req.user.username,
-				avatar: req.user.avatar,
-				title: req.body.title,
-				description: req.body.description,
-				likes: [],
-				dislikes: [],
-				favorites: [],
-				totalComments: []
-			}).save();
+		// Create a new image
+		const image = await Image.create({
+			id: file.public_id.replace(Folder.PUBLIC, ''),
+			filename: file.secure_url,
+			author: req.user.username,
+			avatar: req.user.avatar,
+			title: req.body.title,
+			description: req.body.description,
+			likes: [],
+			dislikes: [],
+			favorites: [],
+			totalComments: [],
+		}).save();
 
-			return res.json({ url: image.id });
-		}
+		return res.json({ url: image.id });
 	}
+	catch {
+		return res.status(401).json({
+			error: { message: 'Someting went wrong while processing your request' },
+		});
+	}
+};
 
-	return res.json({
-		error: { message: 'Someting went wrong while processing your request' }
-	});
+export const postViews: Direction = async (req, res) => {
+	// Find image if exists
+	const success = await updateImage({ id: req.params.id },
+		{ views: () => 'views + 1' });
+
+	return res.status(success ? 200 : 401).json();
 };
 
 export const postPublic: Direction = async (req, res) => {
-	const { username, role } = req.user;
+	// Switch to public or private
+	const success = await updateImage({ id: req.params.id },
+		{ isPublic: () => 'NOT isPublic' }, req.user);
 
-	const image = await Image.findOneBy({ id: req.params.imageId });
-
-	// Switch to public or private 
-	if (image !== null && (username === image.author || role !== UserRole.EDITOR)) {
-		image.isPublic = !image.isPublic;
-		await image.save();
-	}
-
-	return res.status(image ? 200 : 401).json({});
+	return res.status(success ? 200 : 401).json();
 };
 
 export const postDescription: Direction = async (req, res) => {
-	const { username, role } = req.user;
-
-	const image = await Image.findOneBy({ id: req.params.imageId });
-
 	// Update description
-	if (image !== null && (username === image.author || role !== UserRole.EDITOR)) {
-		image.description = req.body.description;
-		await image.save();
-	}
+	const success = await updateImage({ id: req.params.id },
+		{ description: req.body.description }, req.user);
 
-	return res.status(image ? 200 : 401).json({});
+	return res.status(success ? 200 : 401).json();
 };
 
-export const postLike: Direction = async (req, res) => {
-	const { username } = req.user;
-	const { like } = req.body;
-	const scores = Object.values(Score);
-
-	const image = await Image.findOneBy({ id: req.params.imageId });
+export const postScore: Direction = async (req, res) => {
+	const query = queryOption(String(req.query.score), req.user.username);
 
 	// Update like and dislike
-	if (image !== null && scores.includes(like)) {
-		const [ actLike, actDislike ] = (like === Score.LIKE)
-			? catchLike(image.likes, image.dislikes, username)
-			: catchLike(image.dislikes, image.likes, username);
-		
-		image.likes = (like === Score.LIKE) ? actLike : actDislike;
-		image.dislikes = (like === Score.LIKE) ? actDislike : actLike;
+	const success = await updateImage({ id: req.params.id }, query);
 
-		await image.save();
-	}
-
-	return res.status(image ? 200 : 401).json({});
+	return res.status(success ? 200 : 401).json();
 };
 
 export const postFavorite: Direction = async (req, res) => {
 	const { username } = req.user;
-	const image = await Image.findOneBy({ id: req.params.imageId });
+	const favorites = () => `
+		CASE WHEN '${username}' = ANY(favorites)
+			THEN array_remove(favorites, '${username}')
+			ELSE array_append(favorites, '${username}')
+		END
+	`;
 
 	// Update favorite
-	if (image !== null) {
-		image.favorites = (image.favorites.includes(username))
-			? image.favorites.filter(item => item !== username)
-			: [username, ...image.favorites];
+	const success = await updateImage({ id: req.params.id }, { favorites });
 
-		await image.save();
-	}
-
-	return res.status(image ? 200 : 401).json({});
-};
-
-export const postComment: Direction = async (req, res) => {
-	const { comment } = req.body;
-	const image = await Image.findOneBy({ id: req.params.imageId });
-
-	// Create a new comment if the image exists
-	if (
-		image !== null &&
-		typeof comment === 'string' &&
-		comment.length > 0 &&
-		comment.length <= 4200
-	) {
-		const newComment = await Comment.create({
-			id: await getId('Comment', 16),
-			imageId: image.id,
-			imageDir: image.filename,
-			receiver: image.author,
-			author: req.user.username,
-			avatar: req.user.avatar,
-			comment,
-			likes: [],
-			dislikes: []
-		}).save();
-		
-		// Update total comments
-		image.totalComments = [newComment.id, ...image.totalComments];
-		await image.save();
-		
-		return res.json({ comment: newComment });
-	}
-
-	return res.status(401).json({});
+	return res.status(success ? 200 : 401).json();
 };
 
 export const deleteImage: Direction = async (req, res) => {
-	const { username, role } = req.user;
-	const image = await Image.findOneBy({ id: req.params.imageId });
+	try {
+		const author = req.user.role === UserRole.EDITOR
+			? req.user.username
+			: undefined;
 
-	// Delete a image and all their comments
-	if (image && (image.author === username || role !== UserRole.EDITOR)) {
-		await cloudinary.uploader
-			.destroy('imgshare/' + image.id)
-			.catch(() => {
-				console.error('An error occurred while trying to delete the image');
-			});
-		
+		const image = await Image.findOneBy({ id: req.params.id, author });
+
+		if (image === null) throw undefined;
+
+		// Delete a image and all their comments
+		await deleteFile(image.filename, Folder.PUBLIC);
 		await Comment.delete({ imageId: image.id });
 		await image.remove();
-	}
 
-	return res.status(image ? 200 : 401).json({});
+		return res.json();
+	}
+	catch {
+		return res.status(401).json(null);
+	}
 };

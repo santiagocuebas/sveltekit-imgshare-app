@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { IUserExtended } from "$lib/global";
-	import { Method } from "$lib/enums";
+	import type { IUserExtended } from "$lib/types/global";
   import { handleForm } from "$lib/services";
+	import { Method } from "$lib/types/enums";
 
 	export let users: IUserExtended[];
 	let searchedUser = '';
@@ -20,7 +20,7 @@
 
 <nav>
 	<form
-		action="/admin/{searchedUser}"
+		action="/admin/?username={searchedUser}"
 		method={Method.GET}
 		on:submit|preventDefault={handleSubmit}
 	>

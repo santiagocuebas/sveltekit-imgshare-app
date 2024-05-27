@@ -1,11 +1,17 @@
 <script lang="ts">
-  import type { IImage, IKeys } from "$lib/global";
+  import type { IImage, IKeys } from "$lib/types/global";
 	import axios from "$lib/axios";
   import { SelectIcon } from "$lib/dictionary";
-  import { InnerText, Method, OrderText, PublicText, UserRole } from "$lib/enums";
 	import { clickOutside } from "$lib/services";
   import { user } from "$lib/stores";
-
+  import {
+		InnerText,
+		Method,
+		OrderText,
+		PublicText,
+		UserRole
+	} from "$lib/types/enums";
+	
 	export let images: IImage[] | null = null;
 	export let text: string = InnerText.PUBLIC;
 	export let username: string;
@@ -27,7 +33,7 @@
 		
 		images = await axios({
 			method: Method.GET,
-			url: `/user/${username}/${holder.public}/${holder.order}`
+			url: `/user/${username}/order?order=${holder.order}&isVisible=${holder.public}`
 		}).then(res => res.data)
 			.then(data => data.images)
 			.catch(err => {

@@ -11,5 +11,5 @@ export const AppDatabase = new DataSource({
 	synchronize: false,
 	logging: false,
 	timeTravelQueries: false,
-	entities: [Comment, Image, User]
+	entities: [Comment, Image, User],
 });

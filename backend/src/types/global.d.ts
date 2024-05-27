@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { UserRole } from './enums.js';
-import { User } from './models/index.js';
 
 declare global {
 	namespace Express {
 		interface Request {
-			user: User;
-			foreignUser: User;
+			user: IUser;
+			foreignUser: IUser;
 		}
 	}
 }
@@ -25,7 +24,7 @@ export interface IUser {
 	description: string;
 	role: UserRole;
 	totalViews: number;
-	links: string;
+	links: ILink[];
 	createdAt: Date;
 }
 
@@ -57,6 +56,6 @@ export interface IComment extends IContent {
 }
 
 export interface ILink {
-	title: string,
-	url: string
+	title: string;
+	url: string;
 }

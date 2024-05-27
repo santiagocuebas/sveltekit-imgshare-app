@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { IImage } from "$lib/global";
+	import type { IImage } from "$lib/types/global";
 	import { format } from "timeago.js";
 
 	export let image: IImage;

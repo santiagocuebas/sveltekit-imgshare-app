@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { IImage } from '$lib/global';
+	import type { IImage } from '$lib/types/global';
 	import { format } from 'timeago.js';
 	import axios from '$lib/axios';
-	import { Method } from '$lib/enums';
 	import { catchLike, handleForm } from '$lib/services';
 	import { user } from '$lib/stores';
+	import { Method, Score } from '$lib/types/enums';
 
 	export let image: IImage | null;
 	export let description: boolean;
@@ -14,38 +14,34 @@
 	async function changeDescription(this: HTMLFormElement) {
 		description = false;
 
-		handleForm(this).catch(err => console.log(err.message));
+		handleForm(this)
+			.catch(() => imageDescription = image?.description);
 	}
 	
-	async function handleLike(like: string) {
-		if (image && $user) {
-			const [ actLike, actDislike ] = (like === 'like')
-				? catchLike(image.likes, image.dislikes, $user.username)
-				: catchLike(image.dislikes, image.likes, $user.username);
-		
-			image.likes = (like === 'like') ? actLike : actDislike;
-			image.dislikes = (like === 'like') ? actDislike : actLike;
-			
-			axios({
-				method: Method.POST,
-				url: `/image/${image.id}/like`,
-				data: { like }
-			}).catch(err => console.error(err.message));
-		}
+	async function handleLike(score: string) {
+		if (!image || !$user) return;
+	
+		const data = await axios({
+			method: Method.POST,
+			url: `/image/${image.id}/score?score=${score}`
+		}).then(() => true)
+			.catch(() => false);
+
+		if (data) [image.likes, image.dislikes] = catchLike([image.likes, image.dislikes], score, $user.username);
 	}
 
-	async function handleFavotite(favorite: string) {
-		if (image && $user) {
-			image.favorites = (image.favorites.includes($user.username))
-				? image.favorites.filter(username => username !== $user?.username)
-				: [$user.username, ...image.favorites];
+	async function handleFavotite() {
+		if (!image || !$user) return;
 
-				axios({
-					method: Method.POST,
-					url: `/image/${image.id}/favorite`,
-					data: { favorite }
-				}).catch(err => console.error(err.message));
-		}
+		const data = await axios({
+			method: Method.POST,
+			url: `/image/${image.id}/favorite`
+		}).then(() => true)
+			.catch(() => false);
+
+		if (data) image.favorites = image.favorites.includes($user.username)
+			? image.favorites.filter(username => username !== $user?.username)
+			: [$user.username, ...image.favorites];
 	}
 </script>
 
@@ -100,21 +96,21 @@
 	{/if}
 </div>
 <div id="image-stats">
-	<button on:click={() => handleLike('like')}>
+	<button on:click={() => handleLike(Score.LIKE)}>
 		<i
 			class="fa-solid fa-thumbs-up"
 			class:selected={image?.likes.includes($user?.username ?? '')}
 		></i>
 		{image?.likes.length}
 	</button>
-	<button on:click={() => handleLike('dislike')}>
+	<button on:click={() => handleLike(Score.DISLIKE)}>
 		<i
 			class="fa-solid fa-thumbs-down"
 			class:selected={image?.dislikes.includes($user?.username ?? '')}
 		></i>
 		{image?.dislikes.length}
 	</button>
-	<button on:click={() => handleFavotite('favorite')}>
+	<button on:click={handleFavotite}>
 		<i
 			class="fa-solid fa-star"
 			class:selected={image?.favorites.includes($user?.username ?? '')}

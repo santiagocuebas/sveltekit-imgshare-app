@@ -1,4 +1,4 @@
-import type { IKeys } from '../global.js';
+import type { IKeys } from '../types/global.js';
 import { ValidationError } from 'express-validator';
 
 export const getErrorMessage = (errors: ValidationError[]) => {

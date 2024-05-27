@@ -1,4 +1,4 @@
-import type { IKeys } from "./global";
+import type { IKeys } from "./types/global";
 
 export const ClassName: IKeys<string> = {
 	accept: 'fa-check',

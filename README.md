@@ -1,48 +1,41 @@
 # imgShare
-imgShare is a web application to share images, comments, and more.
+imgShare es una aplicación web para compartir images, comentarios y más.
 ![image](/docs/screenshot1.png)
 ![image](/docs/screenshot2.png)
 ![image](/docs/screenshot3.png)
 ![image](/docs/screenshot4.png)
 
-## Enviroment Variables
-### Client
-* `PUBLIC_DIR`, the http/https server port.
-* `NODE_ENV`, indicates if the cookie is secure.
-### Server
-* `PORT`, the http/https server port, default is `4200`.
-* `ORIGIN`, the http/https client port.
-* `JWT`, secret JWT key.
-* `CLOUDINARY_NAME`, the cloudinary name.
-* `CLOUDINARY_KEY`, the cloudinary key.
-* `CLOUDINARY_SECRET`, the cloudinary secret.
-* `DB_HOST`, the MySQL database host.
-* `DB_PORT`, the MySQL database port.
-* `DB_USER`, the MySQL database username.
-* `DB_PASS`, the MySQL database password.
-* `DB_DATABASE`, the MySQL database.
+## Variables de Ambiente
+### Cliente
+* `PUBLIC_DIR`, la dirección del servidor.
+* `NODE_ENV`, indica si la cookie es segura.
+### Servidor
+* `PORT`, el puerto http/https servidor, por default es `4200`.
+* `ORIGIN`, la dirección del cliente.
+* `JWT`, clave JWT secreta.
+* `DB_HOST`, el host de la base de datos PostgreSQL.
+* `DB_PORT`, el puerto de la base de datos PostgreSQL.
+* `DB_USER`, el usuario de la base de datos PostgreSQL.
+* `DB_PASS`, la contraseña de la base de datos PostgreSQL.
+* `DB_DATABASE`, el nombre de la base de datos PostgreSQL.
 
-## Installation
+## Instalacion
 ```
-git clone https://github.com/santiagocuebas/sveltekit-advanced-chat-app
-cd sveltekit-advanced-chat-app
+git clone -b imgshare-with-fs --single-branch https://github.com/santiagocuebas/sveltekit-imgshare-app
+cd sveltekit-imgshare-app
 cd backend
-pnpm install
-pnpm run build
-pnpm run preview
+pnpm run todo
 cd frontend
-pnpm install
-pnpm run build
-pnpm run preview
+pnpm run todo
 ```
 
-## Future Improvements
-- [x] Add Nodemailer for transactional emails.
-- [x] Implement Tailwind.css.
-- [ ] Update syntax a Svelte 5.
-- [ ] Add Responsive Desing Mobile.
+## Mejoras Futuras
+- [x] Añadir Nodemailer para emails transaccionales.
+- [x] Implementar Tailwind.css.
+- [ ] Actualizar la sintaxis a Svelte 5.
+- [ ] Añadir Responsive Desing Mobile.
 
-## Tools
+## Herramientas
 * Nodejs
 * MySQL
 * Express

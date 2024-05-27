@@ -1,72 +1,76 @@
-import { v2 as cloudinary } from 'cloudinary';
-import { UserRole } from '../enums.js';
-import { Direction, ILink } from '../global.js';
-import { deleteUserComments, deleteUserImages } from '../libs/index.js';
+import type { Direction } from '../types/global.js';
+import { FindOperator, Like } from 'typeorm';
+import { SelectOption } from '../dictonary.js';
+import {
+	deleteFile,
+	deleteUserComments,
+	deleteUserImages,
+	updateUser,
+} from '../libs/index.js';
+import { User } from '../models/index.js';
+import { Folder, UserRole } from '../types/enums.js';
+
+export const getUsers: Direction = async (req, res) => {
+	const findRole = new FindOperator<UserRole>('not', UserRole.SUPER);
+	const username = req.query.username?.length
+		? Like(`%${req.query.username}%`)
+		: undefined;
+
+	// Find all users
+	const users = await User
+		.find({
+			select: SelectOption.Users,
+			where: { role: findRole, username },
+			order: { createdAt: 'DESC' },
+		})
+		.catch(() => []);
+
+	return res.json({ users });
+};
 
 export const postDescription: Direction = async (req, res) => {
-	const { description } = req.body;
-
 	// Edit or delete user description
-	if (typeof description === 'string' && description.length < 4200) {
-		req.foreignUser.description = description;
-		await req.foreignUser.save();
-	}
+	const [success] = await updateUser(req.foreignUser.username,
+		{ description: req.body.description });
 
-	return res.json({ change: true });
+	return res.status(success ? 200 : 401).json({ change: success });
 };
 
 export const postRole: Direction = async (req, res) => {
-	const { role } = req.body;
-	const roles: string[] = Object.values(UserRole);
-
 	// Update user role
-	if (
-		roles.includes(role) &&
-		role !== UserRole.SUPER &&
-		(req.user.role === UserRole.SUPER ||
-		(req.user.role === UserRole.ADMIN && role !== UserRole.ADMIN))
-	) {
-		req.foreignUser.role = role;
-		await req.foreignUser.save();
-	}
+	const [success] = await updateUser(req.foreignUser.username,
+		{ role: req.body.role });
 
-	return res.json({ change: true });
+	return res.status(success ? 200 : 401).json({ change: success });
 };
 
 export const deleteLink: Direction = async (req, res) => {
-	const user = req.foreignUser;
+	const linkIndex = req.foreignUser.links.findIndex(link => link.title === req.body.title);
 
 	// Delete user link
-	let parseLinks = JSON.parse(user.links);
-	parseLinks = parseLinks.filter((link: ILink) => link.title !== req.body.link);
-	user.links = JSON.stringify(parseLinks);
+	const [success] = await updateUser(req.foreignUser.username,
+		{ links: () => `links - ${linkIndex}` });
 
-	await user.save();
-
-	return res.json({ change: true });
+	return res.status(success ? 200 : 401).json({ change: success });
 };
 
 export const deleteUser: Direction = async (req, res) => {
-	const user = req.foreignUser;
+	try {
+		const user = req.foreignUser;
 
-	// Delete avatar
-	if (!user.avatar.includes('default')) {
-		const avatarFullFilename = user.avatar.split('/').reverse();
-		const avatarFilename = avatarFullFilename[0].split('.');
+		// Delete avatar
+		if (!user.avatar.includes('default')) await deleteFile(user.avatar, Folder.USER);
 
-		await cloudinary.uploader
-			.destroy('imgshare/avatar/' + avatarFilename[0])
-			.catch(() => {
-				console.error('An error occurred while trying to delete the image');
-			});
+		// Delete all images and comments of user and filters all their ratings
+		await deleteUserImages(user.username);
+		await deleteUserComments(user.username);
+
+		// Delete user
+		await User.delete({ username: user.username });
+
+		return res.json({ change: true });
 	}
-
-	// Delete all images and comments of user and filters all their ratings
-	deleteUserImages(user.username);
-	deleteUserComments(user.username);
-
-	// Delete user
-	await user.remove();
-
-	return res.json({ change: true });
+	catch {
+		return res.status(401).json({ change: false });
+	}
 };

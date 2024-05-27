@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-  import type { ResponseForeign } from '$lib/global';
+  import type { ResponseForeign } from '$lib/types/global';
   import { beforeUpdate } from 'svelte';
 	import { format } from "timeago.js";
 	import { BoxGallery, Gallery, NavUser } from '$lib/components';
-  import { InnerText } from '$lib/enums';
+  import { InnerText } from '$lib/types/enums';
 	
 	export let data: PageData & ResponseForeign;
 

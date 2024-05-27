@@ -2,20 +2,16 @@ export interface IKeys<T> {
 	[index: string]: T;
 }
 
-export interface RawUser {
+export interface IUser {
 	username: string;
   avatar: string;
   description: string;
 	email: string;
   role: string;
-}
-
-export interface IUser extends RawUser {
   links: ILink[];
 }
 
-export interface IUserExtended extends RawUser {
-	links: ILink[];
+export interface IUserExtended extends IUser {
 	createdAt: Date;
 }
 
@@ -55,6 +51,12 @@ export interface ILink {
 	url: string;
 }
 
+export interface IResProps {
+	success: boolean;
+	message: string | IKeys<string>;
+	filename?: string;
+}
+
 export interface ResponseSubmit {
 	url: string;
 	errors: IKeys<string>;
@@ -75,24 +77,19 @@ export interface ResponseImage {
 	sidebarImages: IImage[];
 }
 
-export interface ResponseSettings {
-	message: string | IKeys<string>;
-	filename: string;
-}
-
 export interface SettingsProps {
-	[index: string]: string | IKeys<string> | ILink;
+	[index: string]: string | IKeys<boolean> | ILink;
 	avatar: string;
 	description: string;
-	password: IKeys<string>;
+	password: IKeys<boolean>;
 	link: ILink;
 }
 
 export interface DisabledButton {
-	[index: string]: ((value: string) => boolean) | ((pass: IKeys<string>) => boolean) | ((value: ILink) => boolean);
+	[index: string]: ((value: string) => boolean) | ((pass: IKeys<boolean>) => boolean) | ((value: ILink) => boolean);
 	avatar: (value: any) => boolean;
 	description: (value: any) => boolean;
-	password: (pass: any) => boolean;
+	password: (value: any) => boolean;
 	link: (value: any) => boolean;
 	deleteuser: () => boolean;
 }

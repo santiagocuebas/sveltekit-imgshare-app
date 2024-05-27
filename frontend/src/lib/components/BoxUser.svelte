@@ -2,9 +2,9 @@
 	import { goto } from "$app/navigation";
 	import jsCookie from 'js-cookie';
   import axios from "$lib/axios";
-  import { UserRole } from "$lib/enums";
 	import { clickOutside, getLinks } from "$lib/services";
   import { user } from '$lib/stores';
+  import { UserRole } from "$lib/types/enums";
 
 	let visible: boolean;
 

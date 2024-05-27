@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { imageCtrl } from '../controllers/index.js';
-import { isValidToken } from '../middleware/logged.js';
+import { getDataToken, isValidToken } from '../middleware/logged.js';
 import { validate } from '../middleware/validations.js';
 import * as array from '../validators/arrays-validators.js';
 
@@ -8,18 +8,24 @@ const router = Router();
 
 router.use(isValidToken);
 
+router.get('/:id', getDataToken, imageCtrl.getImage);
+
 router.post('/upload', validate(array.Upload), imageCtrl.postUpload);
 
-router.post('/:imageId/public', imageCtrl.postPublic);
+router.post('/:id/views', imageCtrl.postViews);
 
-router.post('/:imageId/description', imageCtrl.postDescription);
+router.post('/:id/public', imageCtrl.postPublic);
 
-router.post('/:imageId/comment', imageCtrl.postComment);
+router.post(
+	'/:id/description',
+	validate(array.ImageDescription),
+	imageCtrl.postDescription,
+);
 
-router.post('/:imageId/like', imageCtrl.postLike);
+router.post('/:id/score', validate(array.Score), imageCtrl.postScore);
 
-router.post('/:imageId/favorite', imageCtrl.postFavorite);
+router.post('/:id/favorite', imageCtrl.postFavorite);
 
-router.delete('/:imageId', imageCtrl.deleteImage);
+router.delete('/:id', imageCtrl.deleteImage);
 
 export default router;

@@ -8,6 +8,6 @@ export const transporter = createTransport({
 	secure: account.smtp.secure,
 	auth: {
 		user: account.user,
-		pass: account.pass
-	}
+		pass: account.pass,
+	},
 });

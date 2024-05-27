@@ -1,4 +1,4 @@
-import { ValidExt } from "$lib/enums";
+import { ValidExt } from "$lib/types/enums";
 
 export const loadImage = (file: File): Promise<string> => {
   return new Promise((resolve) => {

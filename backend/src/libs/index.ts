@@ -1,9 +1,11 @@
 export { encryptPassword, matchPassword } from './bcrypt.js';
-export { catchLike } from './catch-like.js';
+export { deleteFile, uploadFile } from './catch-file.js';
 export { decodedToken } from './decoded-token.js';
 export { deleteUserComments, deleteUserImages } from './delete-user.js';
 export { getErrorMessage } from './error-messages.js';
 export { getPartialUser } from './get-user.js';
-export { dataUri } from './patch-datauri.js';
+export { patchArray } from './patch-array.js';
 export { getId } from './random-id.js';
+export { queryOption } from './select-query.js';
 export { getSerializedCookie } from './serialized-cookie.js';
+export { updateImage, updateComment, updateUser } from './update-image.js';

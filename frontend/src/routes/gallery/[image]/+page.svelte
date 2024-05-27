@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageServerData } from './$types';
-  import type { ResponseImage } from '$lib/global';
+  import type { ResponseImage } from '$lib/types/global';
   import { afterNavigate } from '$app/navigation';
 	import { afterUpdate } from 'svelte';
   import axios from '$lib/axios';
@@ -13,8 +13,8 @@
 		SideImage,
 		ImageOptions
 	} from '$lib/components';
-	import { Method, UserRole } from '$lib/enums';
 	import { user } from '$lib/stores';
+	import { Method, UserRole } from '$lib/types/enums';
 
 	export let data: PageServerData & ResponseImage;
 	
@@ -27,7 +27,7 @@
 	});
 
 	afterNavigate(() => {
-		axios({ method: Method.POST, url: '/gallery/views/' + data.image.id })
+		axios({ method: Method.POST, url: `/image/${data.image.id}/views` })
 			.catch(err => console.log(err?.message));
 	});
 </script>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IKeys } from "$lib/global";
+  import type { IKeys } from "$lib/types/global";
 
 	export let errors: IKeys<string>;
 </script>

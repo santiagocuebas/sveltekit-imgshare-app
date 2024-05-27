@@ -1,13 +1,13 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import { IconsPaths } from "$lib/enums";
+  import { IconsPaths } from "$lib/types/enums";
 
 	let className = '';
 	let visible: boolean | undefined = undefined;
 
 	const handleClick = () => {
 		setTimeout(() => className = !visible ? 'is-visible' : 'occult');
-		setTimeout(() => visible = !visible, visible ? 205 : 0);
+		setTimeout(() => visible = !visible, visible ? 225 : 0);
 	};
 </script>
 

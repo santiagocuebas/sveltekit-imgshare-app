@@ -1,4 +1,4 @@
-import type { ILink, IUserExtended } from "$lib/global";
+import type { ILink, IUserExtended } from "$lib/types/global";
 import { writable } from "svelte/store";
 
 function createSelectUser(user: IUserExtended | null) {
@@ -21,13 +21,7 @@ function createSelectUser(user: IUserExtended | null) {
 
       return user;
     }),
-    setUser: (user: IUserExtended) => {
-      if (typeof user.links === 'string') {
-        user.links = JSON.parse(user.links ?? '[]');
-      }
-
-      set(user);
-    },
+    setUser: (user: IUserExtended) => set(user),
     resetUser: () => set(null)
   }
 }

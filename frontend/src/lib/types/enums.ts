@@ -11,6 +11,11 @@ export enum Method {
   DELETE = 'DELETE'
 }
 
+export enum Score {
+  LIKE = 'likes',
+  DISLIKE = 'dislikes'
+}
+
 export enum LinksOptions {
   POST = 'post',
   FAVORITE = 'favorite',

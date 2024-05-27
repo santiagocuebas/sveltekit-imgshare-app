@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { LayoutServerData } from './$types';
-  import type { RawUser } from '$lib/global';
+  import type { IUser } from '$lib/types/global';
 	import { beforeUpdate, onMount } from 'svelte';
 	import jsCookie from 'js-cookie';
   import axios from '$lib/axios';
@@ -9,7 +9,7 @@
 	import { user } from '$lib/stores';
 	import '../app.css';
 
-	export let data: LayoutServerData & { user: RawUser & { links: string } };
+	export let data: LayoutServerData & { user: IUser };
 
 	let visible = true;
 	let pathname: string;

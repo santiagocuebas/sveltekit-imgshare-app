@@ -1,39 +1,15 @@
 import { Router } from 'express';
 import { userCtrl } from '../controllers/index.js';
 import { isValidToken, getDataToken } from '../middleware/logged.js';
-import { Image } from '../models/index.js';
 
 const router = Router();
 
 router.get('/:username/data', userCtrl.getUserData);
 
-router.get('/:username/:isPublic/:sort', getDataToken, userCtrl.getImages);
+router.get('/:username/order', getDataToken, userCtrl.getImages);
 
-router.post(
-	'/:username/upload',
-	isValidToken,
-	async (req, res) => {
-		if (req.user.username !== req.params.username) return res.status(401).json();
-		
-		const recentImages = await Image.find({
-			where: { author: req.params.username },
-			order: { createdAt: 'DESC' },
-			select: { id: true, filename: true },
-			take: 3
-		});
+router.post('/:username/upload', isValidToken, userCtrl.postUpload);
 
-		return res.json({ images: recentImages });
-	}
-);
-
-router.post(
-	'/:username/settings',
-	isValidToken,
-	(req, res) => {
-		if (req.user.username !== req.params.username) return res.status(401).json();
-
-		return res.json({ });
-	}
-);
+router.post('/:username/settings', isValidToken, userCtrl.postSettings);
 
 export default router;

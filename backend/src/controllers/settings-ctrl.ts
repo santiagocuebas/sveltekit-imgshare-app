@@ -1,130 +1,96 @@
-import type { Direction, ILink } from '../global.js';
-import { v2 as cloudinary } from 'cloudinary';
+import type { Direction } from '../types/global.js';
 import {
 	encryptPassword,
 	deleteUserComments,
 	deleteUserImages,
-	dataUri,
-	getId
+	deleteFile,
+	uploadFile,
+	updateUser,
 } from '../libs/index.js';
-import { Image, Comment } from '../models/index.js';
+import { Image, Comment, User } from '../models/index.js';
+import { Folder } from '../types/enums.js';
 
 export const postAvatar: Direction = async (req, res) => {
-	const { username, avatar } = req.user;
-	const file = dataUri(req);
+	try {
+		const { username, avatar } = req.user;
 
-	if (file) {
-		// Set avatar location
-		const data = await cloudinary.uploader
-			.upload(file, { public_id: await getId(), folder: 'imgshare/avatar/' })
-			.catch(() => {
-				console.error('An error occurred while trying to uploaded the image');
-				return null;
-			});
+		const file = await uploadFile(req.file, Folder.USER, avatar);
 
-		if (data) {
-			// Unlink old avatar
-			if (!avatar.includes('default')) {
-				const avatarFullFilename = avatar.split('/').reverse();
-				const avatarFilename = avatarFullFilename[0].split('.');
-				
-				await cloudinary.uploader
-					.destroy('imgshare/avatar/' + avatarFilename[0])
-					.catch(() => {
-						console.error('An error occurred while trying to delete the image');
-					});
-			}
+		if (file === null) throw new Error();
 
-			// Update databases with the new avatar
-			Image.update({ author: username }, { avatar: data.secure_url });
-			Comment.update({ author: username }, { avatar: data.secure_url });
+		// Update databases with the new avatar
+		await Image.update({ author: username }, { avatar: file.secure_url });
+		await Comment.update({ author: username }, { avatar: file.secure_url });
+		await User.update({ username }, { avatar: file.secure_url });
 
-			req.user.avatar = data.secure_url;
-			await req.user.save();
-
-			return res.json({
-				filename: data.secure_url,
-				message: 'Your avatar has been successfully updated'
-			});
-		}
+		return res.json({
+			success: true,
+			filename: file.secure_url,
+			message: 'Your avatar has been successfully updated',
+		});
 	}
-
-	return res.json({
-		message: { errors: 'An error occurred while trying to change the avatar' }
-	});
+	catch {
+		return res.status(401).json({
+			success: false,
+			message: 'An error occurred while trying to change the avatar',
+		});
+	}
 };
 
 export const postDescription: Direction = async (req, res) => {
 	// Update description
-	if (req.body.description?.length < 8000) {
-		req.user.description = req.body.description;
-		await req.user.save();
-		
-		return res.json({
-			message: 'Your description has been successfully updated'
-		});
-	}
+	const [success, message] = await updateUser(req.user.username,
+		{ description: req.body.description });
 
-	return res.json({
-		message: { description: 'Have exceeded the character limit' }
-	});
+	return res.status(success ? 200 : 401).json({ success, message });
 };
 
 export const postPassword: Direction = async (req, res) => {
 	// Update password
-	req.user.password = await encryptPassword(req.body.password);
-	await req.user.save();
-	
-	return res.json({ message: 'Your password has been successfully updated' });
+	const [success, message] = await updateUser(req.user.username,
+		{ password: await encryptPassword(req.body.password) });
+
+	return res.status(success ? 200 : 401).json({ success, message });
 };
 
 export const postLinks: Direction = async (req, res) => {
-	const links: ILink[] = JSON.parse(req.user.links);
-	links.push({ title: req.body.title, url: req.body.url });
+	const link = `{ "title": "${req.body.title}", "url": "${req.body.url}" }`;
 
 	// Update links
-	req.user.links = JSON.stringify(links);
-	await req.user.save();
-	
-	return res.json({ message: 'Your link has been successfully updated' });
+	const [success, message] = await updateUser(req.user.username,
+		{ links: () => `links || '${link}'::jsonb` });
+
+	return res.status(success ? 200 : 401).json({ success, message });
 };
 
 export const deleteLinks: Direction = async (req, res) => {
-	const links: ILink[] = JSON.parse(req.user.links);
-
 	// Update links
-	const newLinks = links.filter(link => link.title !== req.body.title);
+	const linkIndex = req.user.links.findIndex(link => link.title === req.body.title);
 
-	req.user.links = JSON.stringify(newLinks);
-	await req.user.save();
-	
-	return res.json({
-		change: true,
-		message: 'Your link has been successfully deleted'
-	});
+	const [success, message] = await updateUser(req.user.username,
+		{ links: () => `links - ${linkIndex}` });
+
+	return res.status(success ? 200 : 401).json({ success, message });
 };
 
 export const deleteUser: Direction = async (req, res) => {
-	const { username, avatar } = req.user;
+	try {
+		const { username, avatar } = req.user;
 
-	// Delete avatar
-	if (!avatar.includes('default')) {
-		const avatarFullFilename = avatar.split('/').reverse();
-		const avatarFilename = avatarFullFilename[0].split('.');
+		// Delete avatar
+		if (!avatar.includes('default')) await deleteFile(avatar, Folder.USER);
 
-		await cloudinary.uploader
-			.destroy('imgshare/avatar/' + avatarFilename[0])
-			.catch(() => {
-				console.error('An error occurred while trying to delete the image');
-			});
+		// Delete user and all theirs images and comments and filters all their ratings
+		await deleteUserImages(username);
+		await deleteUserComments(username);
+		await User.delete({ username });
+
+		return res.json({ success: true });
 	}
-
-	// Delete all images and comments of user and filters all their ratings
-	deleteUserImages(username);
-	deleteUserComments(username);
-
-	// Delete user
-	await req.user.remove();
-
-	return res.json({});
+	catch {
+		return res.status(401).json({
+			success: false,
+			message: 'An error occurred while trying to delete your user account',
+		});
+	}
 };

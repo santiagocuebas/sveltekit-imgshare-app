@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { IImage } from "$lib/global";
+	import type { IImage } from "$lib/types/global";
 	import { goto } from "$app/navigation";
   import axios from "$lib/axios";
-	import { Method } from "$lib/enums";
 	import { clickOutside } from "$lib/services";
+	import { Method } from "$lib/types/enums";
 
 	export let image: IImage | null;
 	export let description: boolean;
@@ -18,19 +18,22 @@
 	const changePublic = async () => {
 		visible = false;
 
-		if (image) image.isPublic = !image.isPublic;
+		const data = await axios({
+			method: Method.POST,
+			url: `/image/${image?.id}/public`
+		}).then(() => true)
+			.catch(() => false);
 
-		axios({ method: Method.POST, url: `/image/${image?.id}/public` })
-			.catch(err => console.log(err.message));
+		
+		if (data && image) image.isPublic = !image.isPublic;
 	};
 
-	const deleteImage = () => {
+	const deleteImage = async () => {
 		visible = false;
 
 		axios({ method: Method.DELETE, url: `/image/${image?.id}` })
+			.then(() => goto('/'))
 			.catch(err => console.log(err.message));
-
-		goto('/');
 	};
 </script>
 

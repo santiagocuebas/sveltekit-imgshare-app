@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { IComment } from '$lib/global';
-	import { Method } from '$lib/enums';
+	import type { IComment } from '$lib/types/global';
 	import { handleForm } from "$lib/services";
   import { user } from '$lib/stores';
+	import { Method } from '$lib/types/enums';
 
 	export let id: string | undefined;
 	export let comments: IComment[];
@@ -11,22 +11,22 @@
 	let visible = false;
 	let inputElement: HTMLInputElement;
 
-	const changeVisibility = (value: boolean) => {
+	const changeVisibility = () => {
 		input = '';
 		inputElement.blur();
-		visible = value;
+		visible = false;
 	};
 
 	async function handleSubmit(this: HTMLFormElement) {
-		const data: { comment: IComment | null } = await handleForm(this)
+		const data: IComment | null = await handleForm(this)
 			.catch(err => {
 				console.error(err?.message);
-				return { comment: null }
+				return null;
 			});
 
-		if (data.comment) comments = [data.comment, ...comments];
+		if (data) comments = [data, ...comments];
 
-		changeVisibility(false);
+		changeVisibility();
 	}
 </script>
 
@@ -36,7 +36,7 @@
 		Post
 	</h2>
 	<form
-		action="/image/{id}/comment"
+		action="/comment/?id={id}"
 		method={Method.POST}
 		on:submit|preventDefault={handleSubmit}
 	>
@@ -55,7 +55,7 @@
 		>
 		{#if visible}
 			<span>
-				<button on:click={() => changeVisibility(false)}>
+				<button on:click={() => changeVisibility()}>
 					Cancel
 				</button>
 				<button class="blue" disabled={!input.length}>
