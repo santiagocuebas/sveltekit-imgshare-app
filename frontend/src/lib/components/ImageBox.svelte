@@ -2,6 +2,7 @@
 	import type { IImage } from '$lib/types/global';
 	import { format } from 'timeago.js';
 	import axios from '$lib/axios';
+	import { DIR } from '$lib/config';
 	import { catchLike, handleForm } from '$lib/services';
 	import { user } from '$lib/stores';
 	import { Method, Score } from '$lib/types/enums';
@@ -53,7 +54,7 @@
 <div id="image-author">
 	<picture>
 		<a href="/user/{image?.author}">
-			<img src={image?.avatar} alt={image?.author}>
+			<img src={DIR + '/' + image?.avatar} alt={image?.author}>
 		</a>
 	</picture>
 	<div>
@@ -66,7 +67,7 @@
 	</div>
 </div>
 <picture id="image-content">
-	<img alt={image?.title} src={image?.filename}>
+	<img alt={image?.title} src={DIR + '/' + image?.filename}>
 </picture>
 <div id="image-description">
 	{#if description}

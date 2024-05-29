@@ -1,11 +1,12 @@
 import type { CustomValidator } from 'express-validator';
-import { extname } from 'path';
+import type { ILink } from '../types/global.js';
+import { AvailableExts } from '../dictonary.js';
 import { matchPassword } from '../libs/index.js';
 import { User } from '../models/index.js';
-import { Ext, Score, UserRole } from '../types/enums.js';
-import { ILink } from '../types/global.js';
+import { Score, UserRole } from '../types/enums.js';
 
 const roles: string[] = Object.values(UserRole);
+const values: string[] = Object.keys(AvailableExts);
 
 export const isValidUsername: CustomValidator = async (username) => {
 	const user: User | null = await User.findOneBy({ username });
@@ -118,15 +119,11 @@ export const validPermissions: CustomValidator = (value, { req }) => {
 };
 
 export const isUndefinedImage: CustomValidator = (_value, { req }) => {
-	return req.file !== undefined && req.file.buffer instanceof Buffer;
+	return req.file !== undefined;
 };
 
 export const isValidExtension: CustomValidator = (_value, { req }) => {
-	const file = req.file;
-	const ext: string = extname(file.originalname).toLowerCase();
-	const values: string[] = Object.values(Ext);
-
-	return values.includes(ext);
+	return values.includes(req.file.mimetype);
 };
 
 export const isValidImageSize: CustomValidator = (_value, { req }) => {

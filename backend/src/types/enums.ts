@@ -11,8 +11,8 @@ export enum Score {
 }
 
 export enum Folder {
-	USER = 'imgshare/avatar/',
-	PUBLIC = 'imgshare/',
+	USER = 'uploads/avatar/',
+	PUBLIC = 'uploads/',
 }
 
 export enum OrderGallery {
@@ -24,11 +24,4 @@ export enum OrderGallery {
 export enum ShowValues {
 	PUBLIC = 'PUBLIC',
 	PRIVATE = 'PRIVATE',
-}
-
-export enum Ext {
-	PNG = '.png',
-	JPG = '.jpg',
-	JPEG = '.jpeg',
-	GIF = '.gif',
 }

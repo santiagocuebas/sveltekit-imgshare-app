@@ -1,45 +1,28 @@
-import { v2 as cloudinary } from 'cloudinary';
-import DatauriParser from 'datauri/parser.js';
+import fs from 'fs/promises';
+import { resolve } from 'path';
 import { getId } from './index.js';
 import { AvailableExts } from '../dictonary.js';
-
-const parser = new DatauriParser();
 
 export const uploadFile = async (
 	file: Express.Multer.File | undefined,
 	folder: string,
-	avatar: string | null,
 	type?: string,
 ) => {
-	const fileString = file
-		? parser.format(AvailableExts[file.mimetype], file.buffer).content
-		: undefined;
+	if (file === undefined) return null;
 
-	if (fileString === undefined) return null;
+	const id = await getId(type);
+	const filename = folder + id + AvailableExts[file.mimetype];
+	const targetPath = resolve(filename);
 
-	const public_id = avatar && !avatar.includes('default')
-		? avatar.split('/').at(-1)?.split('.').at(0)
-		: await getId(type);
+	await fs.rename(file.path, targetPath);
 
-	const data = await cloudinary
-		.uploader
-		.upload(fileString, { public_id, folder })
-		.catch(() => {
-			console.log('An error occurred while trying to uploaded the image');
-			return null;
-		});
-
-	return data;
+	return { id, filename };
 };
 
-export const deleteFile = async (fileURL: string, folder: string) => {
-	const [avatarFullFilename] = fileURL.split('/').reverse();
-	const [avatarFilename] = avatarFullFilename.split('.');
+export const deleteFile = async (fileURL: string) => {
+	const path = resolve(fileURL);
 
-	await cloudinary
-		.uploader
-		.destroy(folder + avatarFilename)
-		.catch(() => {
-			console.error('An error occurred while trying to delete the image');
-		});
+	await fs
+		.unlink(path)
+		.catch(err => console.error(err));
 };

@@ -19,8 +19,6 @@ export const getImage: Direction = async (req, res) => {
 
 		if (image === null) throw new Error();
 
-		console.log(typeof image.views, image.views);
-
 		image.views++;
 
 		// Get comments of images
@@ -46,14 +44,14 @@ export const getImage: Direction = async (req, res) => {
 
 export const postUpload: Direction = async (req, res) => {
 	try {
-		const file = await uploadFile(req.file, Folder.PUBLIC, null, 'Image');
+		const file = await uploadFile(req.file, Folder.PUBLIC);
 
 		if (file === null) throw undefined;
 
 		// Create a new image
 		const image = await Image.create({
-			id: file.public_id.replace(Folder.PUBLIC, ''),
-			filename: file.secure_url,
+			id: file.id,
+			filename: file.filename,
 			author: req.user.username,
 			avatar: req.user.avatar,
 			title: req.body.title,
@@ -132,7 +130,7 @@ export const deleteImage: Direction = async (req, res) => {
 		if (image === null) throw undefined;
 
 		// Delete a image and all their comments
-		await deleteFile(image.filename, Folder.PUBLIC);
+		await deleteFile(image.filename);
 		await Comment.delete({ imageId: image.id });
 		await image.remove();
 

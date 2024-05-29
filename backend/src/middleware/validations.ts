@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { validationResult, type ValidationChain } from 'express-validator';
+import fs from 'fs/promises';
 import { getErrorMessage } from '../libs/index.js';
 
 export const validate = (validations: ValidationChain[]) => {
@@ -11,8 +12,18 @@ export const validate = (validations: ValidationChain[]) => {
 		if (!errs.isEmpty()) {
 			const errors = getErrorMessage(errs.array());
 
+			if (req.file) {
+				await fs
+					.unlink(req.file.path)
+					.catch(err => console.error(err));
+			}
+
 			if (req.baseUrl === '/api/settings') {
 				return res.status(401).json({ success: false, message: errors });
+			}
+
+			if (req.baseUrl === '/api/admin') {
+				return res.status(401).json({ change: false });
 			}
 
 			return res.status(401).json({ errors });

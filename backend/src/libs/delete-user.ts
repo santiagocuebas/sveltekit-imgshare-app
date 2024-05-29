@@ -1,12 +1,11 @@
 import { deleteFile } from './index.js';
 import { Image, Comment } from '../models/index.js';
-import { Folder } from '../types/enums.js';
 
 export const deleteUserImages = async (author: string) => {
-	const imagesUser = await Image.findBy({ author });
+	const images = await Image.findBy({ author });
 
-	for (const image of imagesUser) {
-		await deleteFile(image.avatar, Folder.PUBLIC);
+	for (const image of images) {
+		await deleteFile(image.filename);
 	}
 
 	await Image.delete({ author });

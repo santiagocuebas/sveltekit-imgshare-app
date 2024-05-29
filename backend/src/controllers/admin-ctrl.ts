@@ -8,7 +8,7 @@ import {
 	updateUser,
 } from '../libs/index.js';
 import { User } from '../models/index.js';
-import { Folder, UserRole } from '../types/enums.js';
+import { UserRole } from '../types/enums.js';
 
 export const getUsers: Direction = async (req, res) => {
 	const findRole = new FindOperator<UserRole>('not', UserRole.SUPER);
@@ -59,7 +59,7 @@ export const deleteUser: Direction = async (req, res) => {
 		const user = req.foreignUser;
 
 		// Delete avatar
-		if (!user.avatar.includes('default')) await deleteFile(user.avatar, Folder.USER);
+		if (!user.avatar.includes('default')) await deleteFile(user.avatar);
 
 		// Delete all images and comments of user and filters all their ratings
 		await deleteUserImages(user.username);

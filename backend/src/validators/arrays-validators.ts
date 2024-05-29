@@ -1,4 +1,4 @@
-import { body, ValidationChain } from 'express-validator';
+import { body, query, ValidationChain } from 'express-validator';
 import {
 	isValidUsername,
 	isValidEmail,
@@ -73,7 +73,7 @@ export const ImageDescription: ValidationChain[] = [
 ];
 
 export const Score: ValidationChain[] = [
-	body('description', 'Enter a valid description')
+	query('score')
 		.exists({ values: 'falsy' }).bail()
 		.isString().bail()
 		.custom(isValidScore),

@@ -2,6 +2,7 @@
   import { afterUpdate } from "svelte";
 	import { format } from 'timeago.js';
 	import axios from "$lib/axios";
+	import { DIR } from "$lib/config";
 	import { clickOutside, handleForm } from "$lib/services";
 	import { user as properUser, selectUser as user } from '$lib/stores';
   import { Method, UserRole } from "$lib/types/enums";
@@ -68,7 +69,7 @@
 <div id="user-box">
 	<div id="user-data">
 		<picture>
-			<img src={$user?.avatar} alt={$user?.username}>
+			<img src={DIR + '/' + $user?.avatar} alt={$user?.username}>
 		</picture>
 		<div>
 			<h3>

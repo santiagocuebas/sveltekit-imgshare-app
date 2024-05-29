@@ -19,13 +19,15 @@ export const postAvatar: Direction = async (req, res) => {
 		if (file === null) throw new Error();
 
 		// Update databases with the new avatar
-		await Image.update({ author: username }, { avatar: file.secure_url });
-		await Comment.update({ author: username }, { avatar: file.secure_url });
-		await User.update({ username }, { avatar: file.secure_url });
+		await Image.update({ author: username }, { avatar: file.filename });
+		await Comment.update({ author: username }, { avatar: file.filename });
+		await User.update({ username }, { avatar: file.filename });
+
+		if (avatar.includes('default')) await deleteFile(avatar);
 
 		return res.json({
 			success: true,
-			filename: file.secure_url,
+			filename: file.filename,
 			message: 'Your avatar has been successfully updated',
 		});
 	}
@@ -76,9 +78,8 @@ export const deleteLinks: Direction = async (req, res) => {
 export const deleteUser: Direction = async (req, res) => {
 	try {
 		const { username, avatar } = req.user;
-
 		// Delete avatar
-		if (!avatar.includes('default')) await deleteFile(avatar, Folder.USER);
+		if (!avatar.includes('default')) await deleteFile(avatar);
 
 		// Delete user and all theirs images and comments and filters all their ratings
 		await deleteUserImages(username);

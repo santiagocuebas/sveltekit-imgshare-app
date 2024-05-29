@@ -10,7 +10,7 @@ export class Image extends Content implements IImage {
 	@Column('varchar', { length: 40, nullable: false })
 	public title!: string;
 
-	@Column('string', { length: 4200, default: '' })
+	@Column('varchar', { length: 4200, default: '' })
 	public description!: string;
 
 	@Column('boolean', { default: true })

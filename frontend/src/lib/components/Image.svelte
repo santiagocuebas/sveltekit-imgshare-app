@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { DIR } from "$lib/config";
   import type { IImage } from "$lib/types/global";
 
   export let image: IImage;
@@ -6,7 +7,7 @@
 
 <a href='/gallery/{image.id}' title="{image.title}">
   <picture>
-    <img loading="lazy" alt={image.title} src={image.filename}>
+    <img loading="lazy" alt={image.title} src={DIR + '/' + image.filename}>
   </picture>
   <div>
     <h2>

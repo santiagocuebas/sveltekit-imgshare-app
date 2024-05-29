@@ -2,6 +2,7 @@
 	import type { IComment } from "$lib/types/global";
 	import { format } from "timeago.js";
 	import axios from "$lib/axios";
+	import { DIR } from "$lib/config";
   import { clickOutside, catchLike, handleForm } from "$lib/services";
 	import { user } from '$lib/stores';
 	import { Method, Score, UserRole } from "$lib/types/enums";
@@ -65,7 +66,7 @@
 <div class="comment">
 	<picture class="avatar-comment">
 		<a href="/user/{comment.author}">
-			<img src={comment.avatar} alt={comment.author}>
+			<img src={DIR + '/' + comment.avatar} alt={comment.author}>
 		</a>
 	</picture>
 	<div class="author-comment">

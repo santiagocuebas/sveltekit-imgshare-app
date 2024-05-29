@@ -13,7 +13,7 @@ export class Comment extends Content implements IComment {
 	@Column('varchar')
 	public receiver!: string;
 
-	@Column('string', { length: 4200, default: '' })
+	@Column('varchar', { length: 4200, default: '' })
 	public comment!: string;
 
 	@Column('boolean', { default: false })

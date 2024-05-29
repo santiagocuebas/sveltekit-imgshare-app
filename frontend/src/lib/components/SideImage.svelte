@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { IImage } from "$lib/types/global";
+  import { DIR } from "$lib/config";
 	import { format } from "timeago.js";
 
 	export let image: IImage;
@@ -13,7 +14,7 @@
 		{image.title}
 	</h2>
 	<p>
-		{image.author}
+		{DIR + '/' + image.author}
 	</p>
 	<div>
 		{image.views} views &#x25CF; {format(image.createdAt)}

@@ -29,15 +29,14 @@
 
 		const data: ResponseSubmit = await handleForm(this)
 			.catch(err => {
-				console.log(err.message);
-				goto('/');
+				return err.response?.data ?? { };
 			});
 
 		if (data.url) goto('/gallery/' + data.url);
 		else if (data.errors) {
 			errors = data.errors;
 			isDisabled = false;
-		}
+		} else goto('/');
 	}
 </script>
 
