@@ -1,59 +1,53 @@
 import type { Direction } from '../types/global.js';
-import { SelectOption } from '../dictonary.js';
+import { SelectOption, orderGallery } from '../dictonary.js';
 import { queryOption, deleteFile, uploadFile, updateImage } from '../libs/index.js';
-import { Image, Comment } from '../models/index.js';
+import { Image, Comment, User } from '../models/index.js';
 import { Folder, UserRole } from '../types/enums.js';
 
 export const getImage: Direction = async (req, res) => {
-	const isPublic = !req.user || req.user.role === UserRole.EDITOR
-		? true
-		: undefined;
+	const isPublic = !req.user || req.user.role === UserRole.EDITOR ? true : undefined;
 
 	try {
 		// Find image if exists
 		const image = await Image.findOne({
 			where: [
 				{ id: req.params.id, isPublic },
-				{ id: req.params.id, author: req.user?.username ?? '' },
-			] });
+				{ id: req.params.id, author: req.user?.username ?? '' }
+			]
+		});
 
 		if (image === null) throw new Error();
-
-		console.log(typeof image.views, image.views);
 
 		image.views++;
 
 		// Get comments of images
 		const comments = await Comment.find({
 			where: { imageId: image.id },
-			order: { createdAt: 'DESC' },
+			order: orderGallery.COMMENT
 		});
 
 		// Get recent images
 		const sidebarImages = await Image.find({
-			select: SelectOption.UnscoredImages,
 			where: { isPublic: true },
-			order: { createdAt: 'DESC' },
-			take: 20,
+			order: orderGallery.NEWEST,
+			select: SelectOption.UnscoredImages,
+			take: 20
 		});
 
 		return res.json({ image, comments, sidebarImages });
-	}
-	catch {
+	} catch {
 		return res.status(401).json(null);
 	}
 };
 
 export const postUpload: Direction = async (req, res) => {
 	try {
-		const file = await uploadFile(req.file, Folder.PUBLIC, null, 'Image');
-
-		if (file === null) throw undefined;
+		const file = await uploadFile(req.file, Folder.PUBLIC);
 
 		// Create a new image
 		const image = await Image.create({
-			id: file.public_id.replace(Folder.PUBLIC, ''),
-			filename: file.secure_url,
+			id: file.id,
+			filename: file.filename,
 			author: req.user.username,
 			avatar: req.user.avatar,
 			title: req.body.title,
@@ -61,24 +55,32 @@ export const postUpload: Direction = async (req, res) => {
 			likes: [],
 			dislikes: [],
 			favorites: [],
-			totalComments: [],
+			totalComments: []
 		}).save();
 
 		return res.json({ url: image.id });
-	}
-	catch {
+	} catch {
 		return res.status(401).json({
-			error: { message: 'Someting went wrong while processing your request' },
+			error: { message: 'Someting went wrong while processing your request' }
 		});
 	}
 };
 
 export const postViews: Direction = async (req, res) => {
-	// Find image if exists
-	const success = await updateImage({ id: req.params.id },
-		{ views: () => 'views + 1' });
+	try {
+		// Find image if exists
+		const image = await Image.findOneBy({ id: req.params.id });
 
-	return res.status(success ? 200 : 401).json();
+		if (image === null) throw undefined;
+
+		await Image.update({ id: image.id }, { views: () => 'views + 1' });
+		await User.update({ username: image.author },
+			{ totalViews: () => 'totalViews + 1' });
+
+		return res.json();
+	} catch {
+		return res.status(401).json();
+	}
 };
 
 export const postPublic: Direction = async (req, res) => {
@@ -123,9 +125,7 @@ export const postFavorite: Direction = async (req, res) => {
 
 export const deleteImage: Direction = async (req, res) => {
 	try {
-		const author = req.user.role === UserRole.EDITOR
-			? req.user.username
-			: undefined;
+		const author = req.user.role === UserRole.EDITOR ? req.user.username : undefined;
 
 		const image = await Image.findOneBy({ id: req.params.id, author });
 
@@ -134,11 +134,12 @@ export const deleteImage: Direction = async (req, res) => {
 		// Delete a image and all their comments
 		await deleteFile(image.filename, Folder.PUBLIC);
 		await Comment.delete({ imageId: image.id });
+		await User.update({ username: image.author },
+			{ totalViews: () => `totalViews - ${image.views}` });
 		await image.remove();
 
 		return res.json();
-	}
-	catch {
+	} catch {
 		return res.status(401).json(null);
 	}
 };

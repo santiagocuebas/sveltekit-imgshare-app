@@ -16,7 +16,7 @@ export class Image extends Content implements IImage {
 	@Column('boolean', { default: true })
 	public isPublic!: boolean;
 
-	@Column('int', { default: 0 })
+	@Column({ default: 0 })
 	public views!: number;
 
 	@Column('text', { array: true, default: {} })

@@ -1,4 +1,4 @@
-import { body, ValidationChain } from 'express-validator';
+import { body, query, ValidationChain } from 'express-validator';
 import {
 	isValidUsername,
 	isValidEmail,
@@ -17,7 +17,7 @@ import {
 	validPermissions,
 	existsLink,
 	existsForeignLink,
-	isValidScore,
+	isValidScore
 } from './custom-validators.js';
 
 export const Signup: ValidationChain[] = [
@@ -36,10 +36,10 @@ export const Signup: ValidationChain[] = [
 	body('password', 'Enter a valid password')
 		.exists({ values: 'falsy' }).bail()
 		.isString().bail()
-		.matches(/[0-9]/).withMessage('Password must contain a number').bail()
-		.isLength({ min: 8, max: 40 }).withMessage('Password must contain at least 8 characters'),
+		.isStrongPassword().withMessage('The password must contains at least a lowercase, a uppercase, a number and a special character').bail()
+		.isLength({ max: 40 }).withMessage('Password must not haven\'t more than 40 characters'),
 	body('confirmPassword')
-		.custom(confirmPassword),
+		.custom(confirmPassword)
 ];
 
 export const Signin: ValidationChain[] = [
@@ -50,7 +50,7 @@ export const Signin: ValidationChain[] = [
 	body('password', 'Enter a valid password')
 		.exists({ values: 'falsy' }).bail()
 		.isLength({ min: 8, max: 40 }).bail()
-		.custom(isCorrectPassword),
+		.custom(isCorrectPassword)
 ];
 
 export const Upload: ValidationChain[] = [
@@ -63,39 +63,39 @@ export const Upload: ValidationChain[] = [
 		.isLength({ min: 3, max: 60 }).withMessage('The title must contain between 3 and 60 characters'),
 	body('description', 'Enter a valid description')
 		.isString().bail()
-		.isLength({ max: 4200 }).withMessage('Have exceeded the max number of characters allowed'),
+		.isLength({ max: 4200 }).withMessage('Have exceeded the max number of characters allowed')
 ];
 
 export const ImageDescription: ValidationChain[] = [
 	body('description', 'Enter a valid description')
 		.isString().bail()
-		.isLength({ max: 4200 }).withMessage('Have exceeded the max number of characters allowed'),
+		.isLength({ max: 4200 }).withMessage('Have exceeded the max number of characters allowed')
 ];
 
 export const Score: ValidationChain[] = [
-	body('description', 'Enter a valid description')
+	query('score')
 		.exists({ values: 'falsy' }).bail()
 		.isString().bail()
-		.custom(isValidScore),
+		.custom(isValidScore)
 ];
 
 export const CommentEdit: ValidationChain[] = [
 	body('comment', 'Enter a valid comment')
 		.isString().bail()
-		.isLength({ min: 1, max: 4200 }).withMessage('Have exceeded the max number of characters allowed'),
+		.isLength({ min: 1, max: 4200 }).withMessage('Have exceeded the max number of characters allowed')
 ];
 
 export const Avatar: ValidationChain[] = [
 	body('image', 'Enter a valid image archive')
 		.custom(isUndefinedImage).bail()
 		.custom(isValidExtension).bail()
-		.custom(isValidAvatarSize),
+		.custom(isValidAvatarSize)
 ];
 
 export const UserDescription: ValidationChain[] = [
 	body('description', 'Enter a valid description')
 		.isString().bail()
-		.isLength({ max: 8400 }).withMessage('Have exceeded the character limit'),
+		.isLength({ max: 8400 }).withMessage('Have exceeded the character limit')
 ];
 
 export const Password: ValidationChain[] = [
@@ -103,10 +103,10 @@ export const Password: ValidationChain[] = [
 		.custom(isCorrectCurrentPassword),
 	body('password', 'Enter a valid password')
 		.exists({ values: 'falsy' }).bail()
-		.matches(/[0-9]/).withMessage('Password must contain a number').bail()
-		.isLength({ min: 8, max: 40 }).withMessage('Password must contain at least 8 characters'),
+		.isStrongPassword().withMessage('The password must contains at least a lowercase, a uppercase, a number and a special character').bail()
+		.isLength({ max: 40 }).withMessage('Password must not haven\'t more than 40 characters'),
 	body('confirmPassword')
-		.custom(confirmPassword),
+		.custom(confirmPassword)
 ];
 
 export const Link: ValidationChain[] = [
@@ -126,21 +126,21 @@ export const Link: ValidationChain[] = [
 		.isLength({ max: 4000 }).bail()
 		.toLowerCase()
 		.custom(isValidURL).bail()
-		.custom(limitLinks),
+		.custom(limitLinks)
 ];
 
 export const DeleteLink: ValidationChain[] = [
 	body('title', 'The link you are trying to delete not exist')
 		.exists({ values: 'falsy' }).bail()
 		.isString().bail()
-		.custom(existsLink),
+		.custom(existsLink)
 ];
 
 export const DeleteForeignLink: ValidationChain[] = [
 	body('title', 'The link you are trying to delete not exist')
 		.exists({ values: 'falsy' }).bail()
 		.isString().bail()
-		.custom(existsForeignLink),
+		.custom(existsForeignLink)
 ];
 
 export const Role: ValidationChain[] = [
@@ -148,7 +148,7 @@ export const Role: ValidationChain[] = [
 		.exists({ values: 'falsy' }).bail()
 		.isString().bail()
 		.custom(existsRole).bail()
-		.custom(validPermissions).withMessage('You haven\'t the necessary permissions to do this operation'),
+		.custom(validPermissions).withMessage('You haven\'t the necessary permissions to do this operation')
 ];
 
 export const Contact: ValidationChain[] = [
@@ -162,5 +162,5 @@ export const Contact: ValidationChain[] = [
 		.isEmail(),
 	body('message', 'Enter a valid message')
 		.isString().bail()
-		.isLength({ min: 5, max: 4200 }).withMessage('Have exceeded the max number of characters allowed'),
+		.isLength({ min: 5, max: 4200 }).withMessage('Have exceeded the max number of characters allowed')
 ];

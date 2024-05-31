@@ -4,11 +4,11 @@ export interface IKeys<T> {
 
 export interface IUser {
 	username: string;
-  avatar: string;
-  description: string;
+	avatar: string;
+	description: string;
 	email: string;
-  role: string;
-  links: ILink[];
+	role: string;
+	links: ILink[];
 }
 
 export interface IUserExtended extends IUser {
@@ -87,9 +87,9 @@ export interface SettingsProps {
 
 export interface DisabledButton {
 	[index: string]: ((value: string) => boolean) | ((pass: IKeys<boolean>) => boolean) | ((value: ILink) => boolean);
-	avatar: (value: any) => boolean;
-	description: (value: any) => boolean;
-	password: (value: any) => boolean;
-	link: (value: any) => boolean;
+	avatar: (value: unknown) => boolean;
+	description: (value: unknown) => boolean;
+	password: (value: unknown) => boolean;
+	link: (value: unknown) => boolean;
 	deleteuser: () => boolean;
 }

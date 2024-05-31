@@ -9,7 +9,7 @@ export function clickOutside(node: Element) {
 
 	return {
 		destroy() {
-			document.removeEventListener('click', handleClick, true)
+			document.removeEventListener('click', handleClick, true);
 		}
 	};
 }

@@ -55,11 +55,11 @@
 		>
 		{#if visible}
 			<span>
-				<button on:click={() => changeVisibility()}>
-					Cancel
-				</button>
 				<button class="blue" disabled={!input.length}>
 					Comment
+				</button>
+				<button on:click={changeVisibility}>
+					Cancel
 				</button>
 			</span>
 		{/if}
@@ -98,17 +98,17 @@
 	}
 
 	span {
-		@apply flex ml-auto gap-2.5;
+		@apply flex flex-row-reverse ml-auto gap-2.5;
 
 		& button {
 			@apply w-[100px] h-10 bg-white font-bold hover:bg-[#dddddd];
 
-			&[disabled] {
-				@apply bg-[#dddddd] text-[#888888] cursor-auto;
-			}
-
 			&.blue {
 				@apply bg-[#5383d3] text-white hover:bg-[#4373c3];
+			}
+
+			&[disabled] {
+				@apply bg-[#dddddd] text-[#888888] cursor-auto;
 			}
 		}
 	}

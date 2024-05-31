@@ -1,27 +1,25 @@
 import type { Direction } from '../types/global.js';
 import { FindOperator, Like } from 'typeorm';
-import { SelectOption } from '../dictonary.js';
+import { SelectOption, orderGallery } from '../dictonary.js';
 import {
 	deleteFile,
 	deleteUserComments,
 	deleteUserImages,
-	updateUser,
+	updateUser
 } from '../libs/index.js';
 import { User } from '../models/index.js';
 import { Folder, UserRole } from '../types/enums.js';
 
 export const getUsers: Direction = async (req, res) => {
 	const findRole = new FindOperator<UserRole>('not', UserRole.SUPER);
-	const username = req.query.username?.length
-		? Like(`%${req.query.username}%`)
-		: undefined;
+	const username = req.query.username?.length ? Like(`%${req.query.username}%`) : undefined;
 
 	// Find all users
 	const users = await User
 		.find({
 			select: SelectOption.Users,
 			where: { role: findRole, username },
-			order: { createdAt: 'DESC' },
+			order: orderGallery.USER
 		})
 		.catch(() => []);
 
@@ -61,16 +59,13 @@ export const deleteUser: Direction = async (req, res) => {
 		// Delete avatar
 		if (!user.avatar.includes('default')) await deleteFile(user.avatar, Folder.USER);
 
-		// Delete all images and comments of user and filters all their ratings
+		// Delete user and all theirs images and comments and filters all their ratings
 		await deleteUserImages(user.username);
 		await deleteUserComments(user.username);
-
-		// Delete user
 		await User.delete({ username: user.username });
 
 		return res.json({ change: true });
-	}
-	catch {
+	} catch {
 		return res.status(401).json({ change: false });
 	}
 };

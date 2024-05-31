@@ -7,6 +7,6 @@ export const getPartialUser = (user: IUser) => {
 		description: user.description,
 		links: user.links,
 		email: user.email,
-		role: user.role,
+		role: user.role
 	};
 };

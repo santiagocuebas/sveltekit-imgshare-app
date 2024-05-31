@@ -1,5 +1,5 @@
 import type {
-	QueryPartialEntity,
+	QueryPartialEntity
 } from 'typeorm/query-builder/QueryPartialEntity.js';
 import type { IImage } from '../types/global.js';
 import { Score } from '../types/enums.js';

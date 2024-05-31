@@ -4,13 +4,12 @@ import { SelectOption, orderGallery } from '../dictonary.js';
 import { Image } from '../models/index.js';
 
 export const getImages: Direction = async (req, res) => {
-	console.log(req.query);
 	// Find all images
 	const images = await Image
 		.find({
 			where: { isPublic: true },
 			order: orderGallery[String(req.query.order)] ?? orderGallery.NEWEST,
-			select: SelectOption.Images,
+			select: SelectOption.Images
 		})
 		.catch(() => []);
 
@@ -25,10 +24,10 @@ export const getSearch: Direction = async (req, res) => {
 		.find({
 			where: [
 				{ title: Like(`%${searchParams}%`), isPublic: true },
-				{ description: Like(`%${searchParams}%`), isPublic: true },
+				{ description: Like(`%${searchParams}%`), isPublic: true }
 			],
-			order: { createdAt: 'DESC', views: 'DESC' },
-			select: SelectOption.Images,
+			order: orderGallery.NEWEST,
+			select: SelectOption.Images
 		})
 		.catch(() => []);
 

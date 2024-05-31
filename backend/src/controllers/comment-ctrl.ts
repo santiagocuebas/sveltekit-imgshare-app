@@ -1,7 +1,7 @@
 import type { Direction } from '../types/global.js';
 import { getId, queryOption, updateComment } from '../libs/index.js';
 import { Comment, Image } from '../models/index.js';
-import { UserRole } from '../types/enums.js';
+import { TypeId, UserRole } from '../types/enums.js';
 
 export const postComment: Direction = async (req, res) => {
 	try {
@@ -11,7 +11,7 @@ export const postComment: Direction = async (req, res) => {
 		if (image === null) throw new Error();
 
 		const newComment = await Comment.create({
-			id: await getId('Comment', 16),
+			id: await getId(TypeId.COMMENT, 16),
 			imageId: image.id,
 			imageDir: image.filename,
 			receiver: image.author,
@@ -19,7 +19,7 @@ export const postComment: Direction = async (req, res) => {
 			avatar: req.user.avatar,
 			comment: req.body.comment,
 			likes: [],
-			dislikes: [],
+			dislikes: []
 		}).save();
 
 		// Update total comments
@@ -27,8 +27,7 @@ export const postComment: Direction = async (req, res) => {
 		await image.save();
 
 		return res.json(newComment);
-	}
-	catch {
+	} catch {
 		return res.status(401).json(null);
 	}
 };
@@ -56,8 +55,8 @@ export const deleteComment: Direction = async (req, res) => {
 		const comment = await Comment.findOne({
 			where: [
 				{ id: req.params.id, author },
-				{ id: req.params.id, receiver: author },
-			],
+				{ id: req.params.id, receiver: author }
+			]
 		});
 
 		if (comment === null) throw undefined;
@@ -68,8 +67,7 @@ export const deleteComment: Direction = async (req, res) => {
 		await comment.remove();
 
 		return res.json();
-	}
-	catch (error) {
+	} catch (error) {
 		return res.status(401).json();
 	}
 };

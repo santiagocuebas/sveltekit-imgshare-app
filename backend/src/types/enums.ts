@@ -2,33 +2,31 @@ export enum UserRole {
 	EDITOR = 'editor',
 	MOD = 'mod',
 	ADMIN = 'admin',
-	SUPER = 'superadmin',
+	SUPER = 'superadmin'
 }
 
 export enum Score {
 	LIKE = 'likes',
-	DISLIKE = 'dislikes',
+	DISLIKE = 'dislikes'
 }
 
 export enum Folder {
 	USER = 'imgshare/avatar/',
-	PUBLIC = 'imgshare/',
+	PUBLIC = 'imgshare/'
 }
 
 export enum OrderGallery {
 	NEWEST = 'NEWEST',
 	OLDEST = 'OLDEST',
-	VIEWED = 'VIEWED',
+	VIEWED = 'VIEWED'
 }
 
 export enum ShowValues {
 	PUBLIC = 'PUBLIC',
-	PRIVATE = 'PRIVATE',
+	PRIVATE = 'PRIVATE'
 }
 
-export enum Ext {
-	PNG = '.png',
-	JPG = '.jpg',
-	JPEG = '.jpeg',
-	GIF = '.gif',
+export enum TypeId {
+	COMMENT = 'comment',
+	IMAGE = 'image'
 }

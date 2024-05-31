@@ -6,7 +6,7 @@ const cloudinaryConfig: Direction = (_req, _res, next) => {
 	cloudinary.config({
 		cloud_name: CLOUDINARY_NAME,
 		api_key: CLOUDINARY_KEY,
-		api_secret: CLOUDINARY_SECRET,
+		api_secret: CLOUDINARY_SECRET
 	});
 
 	next();

@@ -34,14 +34,13 @@ export const isAdminToken: Direction = async (req, res, next) => {
 };
 
 export const isValidUser: Direction = async (req, res, next) => {
-	console.log(req.query);
 	const user = await User.findOneBy({ username: String(req.query.username) });
 
 	if (
-		user !== null
-		&& req.user.username !== user.username
-		&& user.role !== UserRole.SUPER
-		&& (user.role !== UserRole.ADMIN || req.user.role === UserRole.SUPER)
+		user !== null &&
+		req.user.username !== user.username &&
+		user.role !== UserRole.SUPER &&
+		(user.role !== UserRole.ADMIN || req.user.role === UserRole.SUPER)
 	) {
 		req.foreignUser = user;
 

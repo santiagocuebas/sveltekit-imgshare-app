@@ -4,7 +4,7 @@ import {
 	BaseEntity,
 	Column,
 	PrimaryColumn,
-	CreateDateColumn,
+	CreateDateColumn
 } from 'typeorm';
 import { UserRole } from '../types/enums.js';
 
@@ -16,7 +16,7 @@ export class User extends BaseEntity implements IUser {
 	@Column('varchar', {
 		length: 100,
 		unique: true,
-		nullable: false,
+		nullable: false
 	})
 	public email!: string;
 
@@ -31,11 +31,11 @@ export class User extends BaseEntity implements IUser {
 
 	@Column('enum', {
 		enum: UserRole,
-		default: UserRole.EDITOR,
+		default: UserRole.EDITOR
 	})
 	public role!: UserRole;
 
-	@Column('int', { default: 0 })
+	@Column({ default: 0 })
 	public totalViews!: number;
 
 	@Column('jsonb', { nullable: false, default: '[]' })

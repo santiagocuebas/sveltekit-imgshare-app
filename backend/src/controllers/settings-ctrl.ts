@@ -5,7 +5,7 @@ import {
 	deleteUserImages,
 	deleteFile,
 	uploadFile,
-	updateUser,
+	updateUser
 } from '../libs/index.js';
 import { Image, Comment, User } from '../models/index.js';
 import { Folder } from '../types/enums.js';
@@ -16,23 +16,20 @@ export const postAvatar: Direction = async (req, res) => {
 
 		const file = await uploadFile(req.file, Folder.USER, avatar);
 
-		if (file === null) throw new Error();
-
 		// Update databases with the new avatar
-		await Image.update({ author: username }, { avatar: file.secure_url });
-		await Comment.update({ author: username }, { avatar: file.secure_url });
-		await User.update({ username }, { avatar: file.secure_url });
+		await Image.update({ author: username }, { avatar: file.filename });
+		await Comment.update({ author: username }, { avatar: file.filename });
+		await User.update({ username }, { avatar: file.filename });
 
 		return res.json({
 			success: true,
-			filename: file.secure_url,
-			message: 'Your avatar has been successfully updated',
+			filename: file.filename,
+			message: 'Your avatar has been successfully updated'
 		});
-	}
-	catch {
+	} catch {
 		return res.status(401).json({
 			success: false,
-			message: 'An error occurred while trying to change the avatar',
+			message: 'An error occurred while trying to change the avatar'
 		});
 	}
 };
@@ -86,11 +83,10 @@ export const deleteUser: Direction = async (req, res) => {
 		await User.delete({ username });
 
 		return res.json({ success: true });
-	}
-	catch {
+	} catch {
 		return res.status(401).json({
 			success: false,
-			message: 'An error occurred while trying to delete your user account',
+			message: 'An error occurred while trying to delete your user account'
 		});
 	}
 };

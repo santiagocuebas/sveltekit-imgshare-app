@@ -1,10 +1,10 @@
 import type { CustomValidator } from 'express-validator';
-import { extname } from 'path';
+import { AvailableExts } from '../dictonary.js';
 import { matchPassword } from '../libs/index.js';
 import { User } from '../models/index.js';
-import { Ext, Score, UserRole } from '../types/enums.js';
-import { ILink } from '../types/global.js';
+import { Score, UserRole } from '../types/enums.js';
 
+const mimetypes: string[] = Object.keys(AvailableExts);
 const roles: string[] = Object.values(UserRole);
 
 export const isValidUsername: CustomValidator = async (username) => {
@@ -33,8 +33,8 @@ export const isRegisterUser: CustomValidator = async (value) => {
 	const user: User | null = await User.findOne({
 		where: [
 			{ username: value },
-			{ email: value },
-		],
+			{ email: value }
+		]
 	});
 
 	if (!user) throw new Error('The user no exists');
@@ -43,18 +43,17 @@ export const isRegisterUser: CustomValidator = async (value) => {
 };
 
 export const isCorrectPassword: CustomValidator = async (value, { req }) => {
-	if (req.body.username) {
-		const user: User | null = await User.findOne({
-			where: [
-				{ username: req.body.username },
-				{ email: req.body.username },
-			],
-		});
+	const user: User | null = await User.findOne({
+		where: [
+			{ username: req.body.username ?? '' },
+			{ email: req.body.username ?? '' }
+		]
+	});
 
-		if (user) {
-			const match = await matchPassword(value, user.password);
-			if (match) return true;
-		}
+	if (user) {
+		const match = await matchPassword(value, user.password);
+
+		if (match) return true;
 	}
 
 	throw new Error('Incorrect password');
@@ -97,15 +96,19 @@ export const limitLinks: CustomValidator = async (_value, { req }) => {
 };
 
 export const existsLink: CustomValidator = async (value, { req }) => {
-	return req.user.links
-		.map((link: ILink) => link.title)
-		.includes(value);
+	for (const link of req.user.links) {
+		if (link.title === value) return true;
+	}
+
+	return false;
 };
 
 export const existsForeignLink: CustomValidator = async (value, { req }) => {
-	return req.foreignUser.links
-		.map((link: ILink) => link.title)
-		.includes(value);
+	for (const link of req.foreignUser.links) {
+		if (link.title === value) return true;
+	}
+
+	return false;
 };
 
 export const existsRole: CustomValidator = (value) => {
@@ -113,8 +116,8 @@ export const existsRole: CustomValidator = (value) => {
 };
 
 export const validPermissions: CustomValidator = (value, { req }) => {
-	return req.user.role === UserRole.SUPER
-		|| (req.user.role === UserRole.ADMIN && value !== UserRole.ADMIN);
+	return req.user.role === UserRole.SUPER ||
+	(req.user.role === UserRole.ADMIN && value !== UserRole.ADMIN);
 };
 
 export const isUndefinedImage: CustomValidator = (_value, { req }) => {
@@ -122,11 +125,7 @@ export const isUndefinedImage: CustomValidator = (_value, { req }) => {
 };
 
 export const isValidExtension: CustomValidator = (_value, { req }) => {
-	const file = req.file;
-	const ext: string = extname(file.originalname).toLowerCase();
-	const values: string[] = Object.values(Ext);
-
-	return values.includes(ext);
+	return mimetypes.includes(req.file.mimetype);
 };
 
 export const isValidImageSize: CustomValidator = (_value, { req }) => {

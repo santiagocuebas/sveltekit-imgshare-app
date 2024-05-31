@@ -1,6 +1,6 @@
 import type { FindOptionsWhere, TypeORMError } from 'typeorm';
 import type {
-	QueryPartialEntity,
+	QueryPartialEntity
 } from 'typeorm/query-builder/QueryPartialEntity.js';
 import type { IUser } from '../types/global.js';
 import { Image, Comment, User } from '../models/index.js';
@@ -8,7 +8,7 @@ import { UserRole } from '../types/enums.js';
 
 export const updateUser = async (
 	username: string,
-	optionsQuery: QueryPartialEntity<User>,
+	optionsQuery: QueryPartialEntity<User>
 ) => {
 	return User
 		.update({ username }, optionsQuery)
@@ -26,7 +26,7 @@ export const updateUser = async (
 export const updateImage = async (
 	findQuery: FindOptionsWhere<Image>,
 	optionsQuery: QueryPartialEntity<Image>,
-	user?: IUser,
+	user?: IUser
 ) => {
 	if (user?.role === UserRole.EDITOR) findQuery['author'] = user.username;
 
@@ -41,7 +41,7 @@ export const updateImage = async (
 
 export const updateComment = async (
 	findQuery: FindOptionsWhere<Comment>,
-	optionsQuery: QueryPartialEntity<Comment>,
+	optionsQuery: QueryPartialEntity<Comment>
 ) => {
 	return Comment
 		.update(findQuery, optionsQuery)

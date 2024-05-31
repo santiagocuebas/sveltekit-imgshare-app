@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
+	import jsCookie from 'js-cookie';
   import axios from "$lib/axios";
   import { user } from "$lib/stores";
   import { Method } from "$lib/types/enums";
@@ -14,6 +15,7 @@
 
 		if (data !== null) {
 			axios.defaults.headers.common['Authorization'] = '';
+			jsCookie.remove('authenticate', { path: '/', expires: 0 });	
 			user.resetUser();
 			goto('/');
 		}
@@ -37,7 +39,7 @@
 		@apply flex fixed justify-center w-screen min-w-[510px] h-screen top-0 bg-[#000000bb] z-[1000];
 
 		& div {
-			@apply flex justify-around flex-wrap w-fit max-w-[600px] h-min mt-32 p-5 bg-white rounded-xl;
+			@apply flex justify-around flex-wrap w-1/2 max-w-[600px] h-min mt-40 p-5 bg-white rounded-xl;
 		}
 	}
 
@@ -46,7 +48,7 @@
 	}
 
 	button {
-		box-shadow: 0 0 0 2px #444444;
+		box-shadow: 0 0 0 1px #444444;
 		@apply w-[100px] py-2 bg-[#c23838] text-[20px] font-bold text-white
 		[&.blue]:bg-[#384dc2];
 	}

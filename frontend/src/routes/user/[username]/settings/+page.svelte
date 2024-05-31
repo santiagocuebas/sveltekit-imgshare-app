@@ -48,8 +48,8 @@
 	
 	export const checkOldPassword = async () => {
 		const options = {
-			method: 'POST',
-			url: '/api/auth/password',
+			method: Method.POST,
+			url: '/auth/password',
 			data: { password: passwordValue.old }
 		};
 

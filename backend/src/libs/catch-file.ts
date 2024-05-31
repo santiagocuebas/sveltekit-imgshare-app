@@ -2,34 +2,30 @@ import { v2 as cloudinary } from 'cloudinary';
 import DatauriParser from 'datauri/parser.js';
 import { getId } from './index.js';
 import { AvailableExts } from '../dictonary.js';
+import { TypeId } from '../types/enums.js';
 
 const parser = new DatauriParser();
 
 export const uploadFile = async (
 	file: Express.Multer.File | undefined,
 	folder: string,
-	avatar: string | null,
-	type?: string,
+	avatar?: string
 ) => {
 	const fileString = file
 		? parser.format(AvailableExts[file.mimetype], file.buffer).content
 		: undefined;
 
-	if (fileString === undefined) return null;
+	if (fileString === undefined) throw undefined;
 
 	const public_id = avatar && !avatar.includes('default')
 		? avatar.split('/').at(-1)?.split('.').at(0)
-		: await getId(type);
+		: await getId(avatar ?? TypeId.IMAGE);
 
 	const data = await cloudinary
 		.uploader
-		.upload(fileString, { public_id, folder })
-		.catch(() => {
-			console.log('An error occurred while trying to uploaded the image');
-			return null;
-		});
+		.upload(fileString, { public_id, folder });
 
-	return data;
+	return { id: public_id, filename: data.secure_url };
 };
 
 export const deleteFile = async (fileURL: string, folder: string) => {

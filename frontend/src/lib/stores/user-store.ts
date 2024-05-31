@@ -1,5 +1,5 @@
-import type { ILink, IUser } from "$lib/types/global";
-import { writable } from "svelte/store";
+import type { ILink, IUser } from '$lib/types/global';
+import { writable } from 'svelte/store';
 
 function createUser(user: IUser | null) {
 	const { subscribe, set, update } = writable(user);
@@ -28,7 +28,7 @@ function createUser(user: IUser | null) {
 		}),
 		setUser: (user: IUser) => set(user),
 		resetUser: () => set(null)
-	}
+	};
 }
 
 export const user = createUser(null);

@@ -8,16 +8,17 @@ export const validate = (validations: ValidationChain[]) => {
 
 		const errs = validationResult(req);
 
-		if (!errs.isEmpty()) {
-			const errors = getErrorMessage(errs.array());
+		if (errs.isEmpty()) return next();
 
-			if (req.baseUrl === '/api/settings') {
-				return res.status(401).json({ success: false, message: errors });
-			}
+		const errors = getErrorMessage(errs.array());
+		let message: unknown = { }; 
 
-			return res.status(401).json({ errors });
+		if (req.baseUrl === '/api/auth') message = { errors };
+		else if (req.baseUrl === '/api/admin') message = { change: false };
+		else if (req.baseUrl === '/api/settings') {
+			message = { success: false, message: errors };
 		}
 
-		return next();
+		return res.status(401).json(message);
 	};
 };

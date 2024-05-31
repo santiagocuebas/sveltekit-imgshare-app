@@ -4,7 +4,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 /** @type {import('vite').UserConfig} */
 const config = {
 	plugins: [
-		sveltekit(),
+		sveltekit()
 		// nodePolyfills({
 		// 	include: ['http', 'https', 'stream'],
 		// 	globals: {

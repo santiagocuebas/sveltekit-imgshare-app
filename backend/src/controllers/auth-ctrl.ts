@@ -3,7 +3,7 @@ import {
 	encryptPassword,
 	getPartialUser,
 	getSerializedCookie,
-	matchPassword,
+	matchPassword
 } from '../libs/index.js';
 import { User } from '../models/index.js';
 
@@ -28,7 +28,7 @@ export const postSignup: Direction = async (req, res) => {
 			email: req.body.email,
 			password: await encryptPassword(req.body.password),
 			description: '',
-			links: [],
+			links: []
 		}).save();
 
 		// Create a cookie of authentication
@@ -36,8 +36,7 @@ export const postSignup: Direction = async (req, res) => {
 		const partialUser = getPartialUser(user);
 
 		return res.json({ user: partialUser, token });
-	}
-	catch (error) {
+	} catch (error) {
 		return res.status(401).json();
 	}
 };
@@ -48,8 +47,8 @@ export const postSignin: Direction = async (req, res) => {
 		const user = await User.findOne({
 			where: [
 				{ username: req.body.username },
-				{ email: req.body.username },
-			],
+				{ email: req.body.username }
+			]
 		}) as User;
 
 		// Create a cookie of authentication
@@ -57,8 +56,7 @@ export const postSignin: Direction = async (req, res) => {
 		const partialUser = getPartialUser(user);
 
 		return res.json({ user: partialUser, token });
-	}
-	catch {
+	} catch {
 		return res.status(401).json();
 	}
 };

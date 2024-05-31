@@ -11,7 +11,7 @@ router.post('/', validate(array.Contact), async (req, res) => {
 		from: req.body.email,
 		to: account.user,
 		subject: req.body.subject,
-		text: req.body.message,
+		text: req.body.message
 	}).then((info) => {
 		console.log('Message sent: %s', info.messageId);
 		return getTestMessageUrl(info);

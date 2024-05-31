@@ -1,11 +1,11 @@
-import { Score } from "$lib/types/enums";
+import { Score } from '$lib/types/enums';
 
 export const catchLike = (
 	scores: [string[], string[]],
 	score: string,
 	username: string
 ) => {
-	let patchedcores = (score === Score.LIKE) ? scores : scores.reverse();
+	const patchedcores = (score === Score.LIKE) ? scores : scores.reverse();
 
 	patchedcores[0] = patchedcores[0].includes(username)
 		? patchedcores[0].filter(name => username !== name)

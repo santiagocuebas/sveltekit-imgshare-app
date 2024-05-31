@@ -1,7 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
 import multer from 'multer';
 import { cloudinaryConfig } from './cloudinary.js';
 import { ORIGIN } from './config.js';
@@ -15,12 +14,11 @@ const storage = multer.memoryStorage();
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(cors({
 	origin: ORIGIN,
 	methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
 	allowedHeaders: ['origin', 'authorization', 'x-requested-with', 'content-type', 'accept'],
-	credentials: true,
+	credentials: true
 }));
 app.use('*', cloudinaryConfig);
 
