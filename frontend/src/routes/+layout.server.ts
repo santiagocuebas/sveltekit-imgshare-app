@@ -5,7 +5,7 @@ export const load = (async ({ cookies }) => {
 	const token = cookies.get('authenticate');
 
 	if (!token) return { };
-	
+
 	const data = await axios({ url: '/auth', headers: { Authorization: token } })
 		.then(res => res.data)
 		.catch(() => {});

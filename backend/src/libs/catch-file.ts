@@ -6,9 +6,9 @@ import { AvailableExts } from '../dictonary.js';
 export const uploadFile = async (
 	file: Express.Multer.File | undefined,
 	folder: string,
-	type?: string,
+	type?: string
 ) => {
-	if (file === undefined) return null;
+	if (file === undefined) throw undefined;
 
 	const id = await getId(type);
 	const filename = folder + id + AvailableExts[file.mimetype];

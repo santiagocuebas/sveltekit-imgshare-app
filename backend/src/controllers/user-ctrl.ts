@@ -7,45 +7,36 @@ import { ShowValues, UserRole } from '../types/enums.js';
 export const getUserData: Direction = async (req, res) => {
 	try {
 		// Find user
-		const user = await User.findOne({
+		const foreignUser = await User.findOne({
 			where: { username: req.params.username },
-			select: SelectOption.User,
+			select: SelectOption.User
 		});
 
-		if (user === null) throw undefined;
+		if (foreignUser === null) throw undefined;
 
 		// Get images of user
 		const images = await Image.find({
-			where: { author: user.username, isPublic: true },
-			order: { createdAt: 'DESC' },
-			select: SelectOption.Images,
+			where: { author: foreignUser.username, isPublic: true },
+			order: orderGallery.NEWEST,
+			select: SelectOption.Images
 		});
 
 		// Get comments of user
 		const comments = await Comment.find({
-			where: { author: user.username },
-			order: { createdAt: 'DESC' },
-			select: SelectOption.PartialComments,
+			where: { author: foreignUser.username },
+			order: orderGallery.COMMENT,
+			select: SelectOption.PartialComments
 		});
 
 		// Get favorites images of user
 		const favorites = await Image.find({
-			where: { favorites: ArrayContains([user.username]), isPublic: true },
-			order: { createdAt: 'DESC' },
-			select: SelectOption.FavoriteImages,
+			where: { favorites: ArrayContains([foreignUser.username]), isPublic: true },
+			order: orderGallery.NEWEST,
+			select: SelectOption.FavoriteImages
 		});
 
-		return res.json({
-			images,
-			comments,
-			favorites,
-			foreignUser: {
-				...user,
-				totalViews: images.reduce((value, image) => value + Number(image.views), 0),
-			},
-		});
-	}
-	catch {
+		return res.json({ images, comments, favorites, foreignUser });
+	} catch {
 		return res.status(401).json(null);
 	}
 };
@@ -60,9 +51,7 @@ export const getImages: Direction = async (req, res) => {
 		let isPublic: boolean | undefined = true;
 
 		if (
-			req.user?.username === user.username
-			|| req.user?.role === UserRole.ADMIN
-			|| req.user?.role === UserRole.SUPER
+			req.user?.username === user.username || req.user?.role === UserRole.ADMIN || req.user?.role === UserRole.SUPER
 		) {
 			if (isVisible === ShowValues.PRIVATE) isPublic = false;
 			else if (isVisible !== ShowValues.PUBLIC) isPublic = undefined;
@@ -72,12 +61,11 @@ export const getImages: Direction = async (req, res) => {
 		const images = await Image.find({
 			where: { author: user.username, isPublic },
 			order: orderGallery[String(order)] ?? orderGallery.NEWEST,
-			select: SelectOption.Images,
+			select: SelectOption.Images
 		});
 
 		return res.json({ images });
-	}
-	catch {
+	} catch {
 		return res.status(401).json();
 	}
 };
@@ -88,9 +76,9 @@ export const postUpload: Direction = async (req, res) => {
 	const recentImages = await Image
 		.find({
 			where: { author: req.params.username },
-			order: { createdAt: 'DESC' },
+			order: orderGallery.NEWEST,
 			select: SelectOption.RecentImages,
-			take: 3,
+			take: 3
 		})
 		.catch(() => []);
 

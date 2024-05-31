@@ -15,7 +15,7 @@ router.use(isValidUser);
 router.post(
 	'/description',
 	validate(array.UserDescription),
-	adminCtrl.postDescription,
+	adminCtrl.postDescription
 );
 
 router.post('/role', validate(array.Role), adminCtrl.postRole);

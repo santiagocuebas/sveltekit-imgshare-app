@@ -9,26 +9,21 @@ export const validate = (validations: ValidationChain[]) => {
 
 		const errs = validationResult(req);
 
-		if (!errs.isEmpty()) {
-			const errors = getErrorMessage(errs.array());
+		if (errs.isEmpty()) return next();
 
-			if (req.file) {
-				await fs
-					.unlink(req.file.path)
-					.catch(err => console.error(err));
-			}
+		const errors = getErrorMessage(errs.array());
+		let message: unknown = { };
 
-			if (req.baseUrl === '/api/settings') {
-				return res.status(401).json({ success: false, message: errors });
-			}
+		if (req.file) await fs
+			.unlink(req.file.path)
+			.catch(err => console.error(err));
 
-			if (req.baseUrl === '/api/admin') {
-				return res.status(401).json({ change: false });
-			}
-
-			return res.status(401).json({ errors });
+		if (req.baseUrl === '/api/auth') message = { errors };
+		else if (req.baseUrl === '/api/admin') message = { change: false };
+		else if (req.baseUrl === '/api/settings') {
+			message = { success: false, message: errors };
 		}
 
-		return next();
+		return res.status(401).json(message);
 	};
 };

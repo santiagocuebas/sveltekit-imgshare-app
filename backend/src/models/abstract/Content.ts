@@ -4,7 +4,7 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
-	PrimaryColumn,
+	PrimaryColumn
 } from 'typeorm';
 
 @Entity()

@@ -5,9 +5,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const tailwindConfig = join(__dirname, 'tailwind.config.js');
 
 export default {
-  plugins: {
-    'tailwindcss/nesting': {},
-    tailwindcss: { config: tailwindConfig },
-    autoprefixer: {}
-  }
-}
+	plugins: {
+		'tailwindcss/nesting': {},
+		tailwindcss: { config: tailwindConfig },
+		autoprefixer: {}
+	}
+};

@@ -13,7 +13,7 @@ export const deleteUserImages = async (author: string) => {
 	await Image.update({ }, {
 		likes: () => `array_remove(likes, '${author}')`,
 		dislikes: () => `array_remove(dislikes, '${author}')`,
-		favorites: () => `array_remove(favorites, '${author}')`,
+		favorites: () => `array_remove(favorites, '${author}')`
 	});
 };
 
@@ -22,6 +22,6 @@ export const deleteUserComments = async (author: string) => {
 
 	await Comment.update({ }, {
 		likes: () => `array_remove(likes, '${author}')`,
-		dislikes: () => `array_remove(dislikes, '${author}')`,
+		dislikes: () => `array_remove(dislikes, '${author}')`
 	});
 };

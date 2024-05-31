@@ -13,7 +13,7 @@ router.post('/avatar', validate(array.Avatar), settingsCtrl.postAvatar);
 router.post(
 	'/description',
 	validate(array.UserDescription),
-	settingsCtrl.postDescription,
+	settingsCtrl.postDescription
 );
 
 router.post('/password', validate(array.Password), settingsCtrl.postPassword);

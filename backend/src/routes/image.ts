@@ -19,7 +19,7 @@ router.post('/:id/public', imageCtrl.postPublic);
 router.post(
 	'/:id/description',
 	validate(array.ImageDescription),
-	imageCtrl.postDescription,
+	imageCtrl.postDescription
 );
 
 router.post('/:id/score', validate(array.Score), imageCtrl.postScore);

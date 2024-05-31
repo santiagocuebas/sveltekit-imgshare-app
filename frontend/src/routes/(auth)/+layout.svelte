@@ -14,16 +14,15 @@
 	let errors: IKeys<string> | null = null;
 	
 	const setUppercase = (value: string) => {
-		const firstLetter = value.at(0) ?? 's';
+		const firstLetter = value?.at(0) ?? 's';
 
-		return value.replace(firstLetter, firstLetter.toUpperCase());
+		return value?.replace(firstLetter, firstLetter.toUpperCase());
 	}; 
 	
 	async function handleSubmit(this: HTMLFormElement) {
 		const data: ResponseSubmit = await handleForm(this)
 			.catch(err => {
-				console.log(err.message);
-				goto('/');
+				return err.response?.data ?? { };
 			});
 
 		if (data.user) {
@@ -35,6 +34,7 @@
 			goto('/user/' + data.user.username);
 			user.setUser(data.user);
 		} else if (data.errors) errors = data.errors;
+		else goto('/');
 	}
 
 	beforeUpdate(() => pathname = location.pathname.replace('/', ''));

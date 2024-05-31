@@ -11,5 +11,5 @@ export const AppDatabase = new DataSource({
 	database: DB_DATABASE,
 	synchronize: false,
 	logging: false,
-	entities: [Comment, Image, User],
+	entities: [Comment, Image, User]
 });

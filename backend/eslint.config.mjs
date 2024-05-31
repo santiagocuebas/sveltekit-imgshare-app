@@ -4,13 +4,19 @@ import tseslint from 'typescript-eslint';
 import stylistic from '@stylistic/eslint-plugin';
 
 export default [
-	{ languageOptions: { globals: globals.browser } },
+	{ languageOptions: { globals: globals.node } },
 	pluginJs.configs.recommended,
 	...tseslint.configs.recommended,
-	stylistic.configs.customize({
-		indent: 'tab',
-		quotes: 'single',
-		semi: true
-	}),
-	{ plugins: { '@stylistic': stylistic } }
+	{ plugins: { '@stylistic': stylistic } },
+	{
+		rules: {
+			'@stylistic/indent': ['error', 'tab'],
+			'@stylistic/quotes': ['error', 'single'],
+			'@stylistic/semi': ['error', 'always'],
+			'@stylistic/no-extra-semi': 'error',
+			'@stylistic/brace-style': ['error', '1tbs'],
+			'@stylistic/operator-linebreak': ['error', 'after', { 'overrides': { '?': 'before', ':': 'before' } }],
+			'@stylistic/comma-dangle': ['error', 'never']
+		}
+	}
 ];

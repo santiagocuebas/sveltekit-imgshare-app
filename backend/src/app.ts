@@ -19,7 +19,7 @@ app.use(cors({
 	origin: ORIGIN,
 	methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
 	allowedHeaders: ['origin', 'authorization', 'x-requested-with', 'content-type', 'accept'],
-	credentials: true,
+	credentials: true
 }));
 
 // Uploads Directory

@@ -1,4 +1,4 @@
-import axios from "$lib/axios";
+import axios from '$lib/axios';
 
 export async function handleForm(form: HTMLFormElement) {
 	return axios({

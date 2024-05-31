@@ -2,7 +2,7 @@ import type { PageLoad } from './$types';
 import axios from '$lib/axios';
 
 export const load = (async () => {
-	return axios({ url: `/gallery` })
+	return axios({ url: '/gallery' })
 		.then(res => res.data)
 		.catch(err => {
 			console.error(err.message);

@@ -1,5 +1,5 @@
 export const getLinks = (username: string) => {
-  return [
+	return [
 		{
 			href: `/user/${username}/post`,
 			className: 'fa-regular fa-image',

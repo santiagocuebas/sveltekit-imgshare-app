@@ -3,7 +3,7 @@ import { authCtrl } from '../controllers/index.js';
 import {
 	isValidToken,
 	isNotValidToken,
-	getDataToken,
+	getDataToken
 } from '../middleware/logged.js';
 import { validate } from '../middleware/validations.js';
 import * as array from '../validators/arrays-validators.js';
@@ -18,14 +18,14 @@ router.post(
 	'/signup',
 	isNotValidToken,
 	validate(array.Signup),
-	authCtrl.postSignup,
+	authCtrl.postSignup
 );
 
 router.post(
 	'/signin',
 	isNotValidToken,
 	validate(array.Signin),
-	authCtrl.postSignin,
+	authCtrl.postSignin
 );
 
 export default router;
