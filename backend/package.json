@@ -4,6 +4,10 @@
   "type": "module",
   "description": "",
   "main": "build/index.js",
+  "engines": {
+    "node": "18.x"
+  },
+  "packageManager": "pnpm@9.2.0",
   "scripts": {
     "start": "node build/index.js",
     "dev": "nodemon src/index.ts",

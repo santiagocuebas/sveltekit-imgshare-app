@@ -54,8 +54,10 @@
 	async function deleteComment() {
 		visible = false;
 
-		const data = await axios({ method: Method.DELETE, url: `/comment/${comment.id}` })
-			.then(() => true)
+		const data = await axios({
+			method: Method.DELETE,
+			url: `/comment/${comment.id}`
+		}).then(() => true)
 			.catch(() => false);
 
 		if (data) comments = comments.filter(({ id }) => id !== comment.id);
