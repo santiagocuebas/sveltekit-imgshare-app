@@ -6,9 +6,9 @@ import * as array from '../validators/arrays-validators.js';
 
 const router = Router();
 
-router.use(isValidToken);
-
 router.get('/:id', getDataToken, imageCtrl.getImage);
+
+router.use(isValidToken);
 
 router.post('/upload', validate(array.Upload), imageCtrl.postUpload);
 
