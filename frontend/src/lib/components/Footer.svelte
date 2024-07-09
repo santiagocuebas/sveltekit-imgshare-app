@@ -36,7 +36,7 @@
 		{#if visible}
 			<ul>
 				<li>
-					<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#ffffff">
+					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 						<path d={IconsPaths.GITHUB} />
 					</svg>
 					Github Repo
@@ -46,40 +46,29 @@
 					><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
 				</li>
 				<li>
-					<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#ffffff">
+					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 						<path d={IconsPaths.NETLIFY} />
 					</svg>
 					Frontend Deploy On Netlify
 				</li>
 				<li>
-					<svg width="24" height="24" viewBox="0 0 24 50" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" preserveAspectRatio="xMidYMid">
-						<g>
-							<path d={IconsPaths.CSHLINEONE} />
-							<path d={IconsPaths.CSHLINETWO} fill-opacity="0.75" />
-							<path d={IconsPaths.CSHLINETHREE} fill-opacity="0.65" />
-							<path d={IconsPaths.CSHLINEFOUR} fill-opacity="0.4" />
-							<path d={IconsPaths.CSHLINEFIVE} fill-opacity="0.25" />
-							<path d={IconsPaths.CSHLINESIX} />
-							<path d={IconsPaths.CSHLINESEVEN} fill-opacity="0.75" />
-							<path d={IconsPaths.CSHLINEEIGHT} fill-opacity="0.65" />
-							<path d={IconsPaths.CSHLINENINE} fill-opacity="0.4" />
-							<path d={IconsPaths.CSHLINETEN} fill-opacity="0.25"/>
-						</g>
+					<svg viewBox="-8 -8 181 181" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid">
+						<path d={IconsPaths.RENDER} />
 					</svg>
-					Backend Deploy On Cyclic.sh
+					Backend Deploy On Render
 				</li>
 				<li>
-					<svg width="24" height="24" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="#5383d3">
+					<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 						<g>
-							<path d={IconsPaths.CRDBONE} fill="#ffffff" />
-							<path d={IconsPaths.CRDBTWO} />
-							<path d={IconsPaths.CRDBTHREE} />
+							<path d={IconsPaths.CRDBONE} />
+							<path d={IconsPaths.CRDBTWO} fill="#5383d3" />
+							<path d={IconsPaths.CRDBTHREE} fill="#5383d3" />
 						</g>
 					</svg>
 					Data Uploaded On CockroachDB
 				</li>
 				<li>
-					<svg svg width="24" height="24" viewBox="0 -44 256 256" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" fill="#ffffff">
+					<svg viewBox="0 -44 256 256" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid">
 						<g>
 							<path d={IconsPaths.CLOUDINARY} />
 							<path d={IconsPaths.LINEONE} />
@@ -132,6 +121,10 @@
 
 				& li {
 					@apply flex relative items-center w-full py-[5px] px-5 text-[18px] cursor-default gap-2.5 [&_a]:text-white;
+				}
+
+				& svg {
+					@apply w-6 h-6 fill-white;
 				}
 			}
 		}

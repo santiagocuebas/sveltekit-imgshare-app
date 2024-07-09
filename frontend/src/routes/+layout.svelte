@@ -4,8 +4,8 @@
 	import { beforeUpdate, onMount } from 'svelte';
 	import jsCookie from 'js-cookie';
   import axios from '$lib/axios';
-	import { Nav, BoxUser, Footer } from '$lib/components';
 	import { NODE_ENV } from '$lib/config';
+	import { Nav, BoxUser, Footer } from '$lib/components';
 	import { user } from '$lib/stores';
 	import '../app.css';
 
